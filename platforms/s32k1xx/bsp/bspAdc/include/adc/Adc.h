@@ -281,7 +281,7 @@ bsp::BspReturnCode Adc<AdcResolution, AdcConfiguration, maxChannels>::dma(bool a
     }
     else
     {
-        fAdc.SC2 = fAdc.SC2 | ~(1 << 3);
+        fAdc.SC2 = fAdc.SC2 & ~(1 << 3);
     }
     return bsp::BSP_OK;
 }

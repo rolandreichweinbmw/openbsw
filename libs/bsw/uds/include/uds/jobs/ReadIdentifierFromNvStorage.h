@@ -3,7 +3,8 @@
 #ifndef GUARD_CD9511BA_E53E_4A4F_B67E_C77B9C04A598
 #define GUARD_CD9511BA_E53E_4A4F_B67E_C77B9C04A598
 
-#include "estd/uncopyable.h"
+#include <etl/uncopyable.h>
+
 #include "platform/estdint.h"
 #include "uds/async/AsyncDiagJobHelper.h"
 #include "uds/connection/PositiveResponse.h"
@@ -16,10 +17,8 @@ namespace uds
  * Generic implementation of a ReadDataByIdentifier which can respond with a
  * value read from NvStorage.
  */
-class ReadIdentifierFromNvStorage : public DataIdentifierJob
+class ReadIdentifierFromNvStorage : public DataIdentifierJob, public ::etl::uncopyable
 {
-    UNCOPYABLE(ReadIdentifierFromNvStorage);
-
 public:
     /**
      * \brief Fixed length functionality

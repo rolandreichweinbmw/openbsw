@@ -8,7 +8,7 @@
 #ifndef GUARD_B1CC6DFA_78C8_4A71_9631_03FBEE82C1DE
 #define GUARD_B1CC6DFA_78C8_4A71_9631_03FBEE82C1DE
 
-#include <estd/forward_list.h>
+#include <etl/intrusive_forward_list.h>
 
 namespace can
 {
@@ -20,7 +20,7 @@ class IFilter;
  *
  */
 class IFilteredCANFrameSentListener
-: public ::estd::forward_list_node<IFilteredCANFrameSentListener>
+: public ::etl::forward_link<0>
 {
 protected:
     IFilteredCANFrameSentListener();
@@ -41,7 +41,7 @@ public:
 };
 
 inline IFilteredCANFrameSentListener::IFilteredCANFrameSentListener()
-: ::estd::forward_list_node<IFilteredCANFrameSentListener>()
+: ::etl::forward_link<0>()
 {}
 
 } // namespace can

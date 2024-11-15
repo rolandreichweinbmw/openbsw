@@ -9,8 +9,9 @@
 #include <transport/TransportConfiguration.h>
 #include <transport/TransportMessage.h>
 
-#include <estd/forward_list.h>
-#include <estd/uncopyable.h>
+#include <etl/intrusive_forward_list.h>
+#include <etl/uncopyable.h>
+
 #include <platform/estdint.h>
 
 namespace transport
@@ -23,10 +24,8 @@ class AbstractTransportLayer;
  *
  * \see ITransportMessageProvidingListener
  */
-class TransportRouterSimple : public ITransportMessageProvidingListener
+class TransportRouterSimple : public ITransportMessageProvidingListener, public etl::uncopyable
 {
-    UNCOPYABLE(TransportRouterSimple);
-
 public:
     static uint8_t const NUM_BUFFERS             = 3U;
     static uint8_t const NUM_FUNCTIONAL_BUFFERS  = 8U;
@@ -42,7 +41,7 @@ public:
         uint16_t sourceId,
         uint16_t targetId,
         uint16_t size,
-        ::estd::slice<uint8_t const> const& peek,
+        ::etl::span<uint8_t const> const& peek,
         TransportMessage*& pTransportMessage) override;
 
     void releaseTransportMessage(TransportMessage& transportMessage) override;
@@ -64,7 +63,7 @@ private:
         ITransportMessageProcessedListener* pNotificationListener,
         AbstractTransportLayer::ErrorCode& result);
 
-    typedef ::estd::forward_list<AbstractTransportLayer> TransportLayerList;
+    typedef ::etl::intrusive_forward_list<AbstractTransportLayer, etl::forward_link<0>> TransportLayerList;
 
     bool _locked[NUM_BUFFERS];
     bool _functionalLocked[NUM_FUNCTIONAL_BUFFERS];

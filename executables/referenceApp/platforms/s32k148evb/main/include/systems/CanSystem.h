@@ -8,7 +8,7 @@
 
 #include <systems/ICanSystem.h>
 
-#include <estd/singleton.h>
+#include <etl/singleton_base.h>
 
 namespace bios
 {
@@ -45,7 +45,7 @@ namespace systems
 class CanSystem
 : public ::can::ICanSystem
 , public ::lifecycle::SingleContextLifecycleComponent
-, public ::estd::singleton<CanSystem>
+, public ::etl::singleton_base<CanSystem>
 {
 public:
     /**

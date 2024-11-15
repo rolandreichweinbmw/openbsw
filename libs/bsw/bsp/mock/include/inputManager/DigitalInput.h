@@ -5,14 +5,14 @@
 
 #include <bsp/Bsp.h>
 
-#include <estd/singleton.h>
+#include <etl/singleton_base.h>
 #include <platform/estdint.h>
 
 #include <gmock/gmock.h>
 
 namespace bios
 {
-class DigitalInput : public ::estd::singleton<DigitalInput>
+class DigitalInput : public ::etl::singleton_base<DigitalInput>
 {
 public:
     // Api for all DynamicClients
@@ -30,7 +30,7 @@ public:
         MOCK_METHOD(::bsp::BspReturnCode, get, (DigitalInputId, bool&), ());
     };
 
-    DigitalInput() : ::estd::singleton<DigitalInput>(*this) {}
+    DigitalInput() : ::etl::singleton_base<DigitalInput>(*this) {}
 
     static ::bsp::BspReturnCode get(DigitalInputId a, bool& b)
     {

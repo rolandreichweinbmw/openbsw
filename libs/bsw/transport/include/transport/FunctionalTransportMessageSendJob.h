@@ -10,10 +10,12 @@
 
 #include <cstdint>
 
+#include <etl/intrusive_forward_list.h>
+
 namespace transport
 {
 class FunctionalTransportMessageSendJob
-: public ::estd::forward_list_node<FunctionalTransportMessageSendJob>
+: public ::etl::forward_link<0>
 {
 public:
     FunctionalTransportMessageSendJob() = default;

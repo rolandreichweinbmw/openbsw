@@ -3,12 +3,12 @@
 #ifndef GUARD_899F066E_9209_43DF_B727_D4C75179C021
 #define GUARD_899F066E_9209_43DF_B727_D4C75179C021
 
-#include <estd/forward_list.h>
-#include <estd/uncopyable.h>
+#include <etl/intrusive_forward_list.h>
+#include <etl/uncopyable.h>
 
 namespace uds
 {
-class ICommunicationStateListener : public ::estd::forward_list_node<ICommunicationStateListener>
+class ICommunicationStateListener : public ::etl::forward_link<0>, public ::etl::uncopyable
 {
 public:
     enum CommunicationState
@@ -30,10 +30,12 @@ public:
     ICommunicationStateListener() {}
 
     virtual void communicationStateChanged(CommunicationState newState) = 0;
-
-private:
-    UNCOPYABLE(ICommunicationStateListener);
 };
+
+inline bool operator==(const ICommunicationStateListener& lhs, const ICommunicationStateListener& rhs)
+{
+    return &lhs == &rhs;
+}
 
 } // namespace uds
 

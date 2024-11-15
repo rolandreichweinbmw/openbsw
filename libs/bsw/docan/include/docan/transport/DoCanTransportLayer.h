@@ -14,7 +14,7 @@
 #include <async/Types.h>
 #include <async/util/MemberCall.h>
 
-#include <estd/functional.h>
+#include <etl/span.h>
 
 namespace docan
 {
@@ -79,11 +79,11 @@ private:
         MessageSizeType messageSize,
         FrameIndexType frameCount,
         FrameSizeType consecutiveFrameDataSize,
-        ::estd::slice<uint8_t const> const& data) override;
+        ::etl::span<uint8_t const> const& data) override;
     void consecutiveDataFrameReceived(
         DataLinkAddressType receptionAddress,
         uint8_t sequenceNumber,
-        ::estd::slice<uint8_t const> const& data) override;
+        ::etl::span<uint8_t const> const& data) override;
     void flowControlFrameReceived(
         DataLinkAddressType receptionAddress,
         FlowStatus flowStatus,
@@ -183,7 +183,7 @@ void DoCanTransportLayer<DataLinkLayer>::firstDataFrameReceived(
     MessageSizeType messageSize,
     FrameIndexType frameCount,
     FrameSizeType consecutiveFrameDataSize,
-    ::estd::slice<uint8_t const> const& data)
+    ::etl::span<uint8_t const> const& data)
 {
     _receiver.firstDataFrameReceived(
         connection, messageSize, frameCount, consecutiveFrameDataSize, data);
@@ -193,7 +193,7 @@ template<class DataLinkLayer>
 void DoCanTransportLayer<DataLinkLayer>::consecutiveDataFrameReceived(
     DataLinkAddressType receptionAddress,
     uint8_t sequenceNumber,
-    ::estd::slice<uint8_t const> const& data)
+    ::etl::span<uint8_t const> const& data)
 {
     _receiver.consecutiveDataFrameReceived(receptionAddress, sequenceNumber, data);
 }

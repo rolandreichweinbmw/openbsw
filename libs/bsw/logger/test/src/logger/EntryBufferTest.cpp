@@ -4,6 +4,8 @@
 
 #include <gtest/gtest.h>
 
+#include <etl/span.h>
+
 #include <vector>
 
 using namespace ::logger;
@@ -14,7 +16,7 @@ struct EntryBufferTest : ::testing::Test
     void checkNextEntry(
         B& buffer, typename B::EntryRef& entryRef, int32_t expectedIdx = -1, int32_t entrySize = -1)
     {
-        ::estd::slice<uint8_t> const* pEntry = nullptr;
+        ::etl::span<uint8_t> const* pEntry = nullptr;
         if (expectedIdx >= 0 && expectedIdx < int32_t(fEntries.size()))
         {
             pEntry = &(*(fEntries.begin() + expectedIdx));
@@ -26,7 +28,7 @@ struct EntryBufferTest : ::testing::Test
         ASSERT_EQ(
             bufferSize,
             buffer.getNextEntry(
-                ::estd::slice<uint8_t>::from_pointer(pReadBuffer + 1, bufferSize), entryRef));
+                ::etl::span<uint8_t>(pReadBuffer + 1, bufferSize), entryRef));
         EXPECT_EQ(0xafU, pReadBuffer[0]);
         EXPECT_EQ(0xafU, pReadBuffer[bufferSize + 1]);
         if (pEntry)
@@ -44,7 +46,7 @@ struct EntryBufferTest : ::testing::Test
         {
             pEntry[i] = value++;
         }
-        fEntries.push_back(::estd::slice<uint8_t>::from_pointer(pEntry, size));
+        fEntries.push_back(::etl::span<uint8_t>(pEntry, size));
         buffer.addEntry(fEntries.back());
     }
 
@@ -56,7 +58,7 @@ struct EntryBufferTest : ::testing::Test
         }
     }
 
-    std::vector<::estd::slice<uint8_t>> fEntries;
+    std::vector<::etl::span<uint8_t>> fEntries;
 };
 
 TEST_F(EntryBufferTest, testEntryRefConstructorAndAssignment)

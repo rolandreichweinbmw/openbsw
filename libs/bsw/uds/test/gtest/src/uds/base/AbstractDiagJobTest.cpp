@@ -12,7 +12,7 @@
 
 #include <async/Async.h>
 
-#include <estd/array.h>
+#include <etl/array.h>
 
 #include <gtest/gtest.h>
 
@@ -99,7 +99,7 @@ struct AbstractDiagJobTest : public Test
     IncomingDiagConnection fIncomingConnection{::async::CONTEXT_INVALID};
     StrictMock<DiagSessionManagerMock> fSessionManager;
     transport::TransportMessage fResponseMessage;
-    ::estd::array<uint8_t, 6U> fRequestBuffer{};
+    ::etl::array<uint8_t, 6U> fRequestBuffer{};
 
     static DiagSession::DiagSessionMask const& EMPTY_SESSION_MASK()
     {

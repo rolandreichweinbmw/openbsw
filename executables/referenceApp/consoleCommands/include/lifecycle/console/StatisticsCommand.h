@@ -7,7 +7,7 @@
 #include <runtime/StatisticsContainer.h>
 #include <util/command/GroupCommand.h>
 
-#include <estd/optional.h>
+#include <etl/optional.h>
 
 namespace lifecycle
 {
@@ -36,7 +36,7 @@ private:
     TaskStatistics _taskStatistics;
     IsrGroupStatistics _isrGroupStatistics;
 
-    ::estd::optional<uint32_t> _ticksPerUs;
+    ::etl::optional<uint32_t> _ticksPerUs;
     uint32_t _totalRuntime;
 };
 

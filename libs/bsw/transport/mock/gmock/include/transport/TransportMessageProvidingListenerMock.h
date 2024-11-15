@@ -9,6 +9,8 @@
 
 #include <set>
 
+#include <etl/span.h>
+
 namespace transport
 {
 class TransportMessageProvidingListenerMock : public ITransportMessageProvidingListener
@@ -32,7 +34,7 @@ public:
             uint16_t sourceId,
             uint16_t targetId,
             uint16_t size,
-            ::estd::slice<uint8_t const> const& peek,
+            ::etl::span<uint8_t const> const& peek,
             TransportMessage*& pTransportMessage));
 
     MOCK_METHOD1(releaseTransportMessage, void(TransportMessage& transportMessage));
@@ -48,7 +50,7 @@ public:
         uint16_t sourceId,
         uint16_t targetId,
         uint16_t size,
-        ::estd::slice<uint8_t const> const& peek,
+        ::etl::span<uint8_t const> const& peek,
         TransportMessage*& pTransportMessage);
     ReceiveResult messageReceivedImplementation(
         uint8_t sourceBusId,

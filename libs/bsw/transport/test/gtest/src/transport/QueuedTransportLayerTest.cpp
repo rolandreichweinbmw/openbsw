@@ -23,7 +23,7 @@ namespace
 class QueuedTransportLayerTest : public ::testing::Test
 {
 public:
-    using JobPool = ::estd::declare::object_pool<
+    using JobPool = ::etl::pool<
         TransportMessageSendJob,
         TransportConfiguration::MAXIMUM_NUMBER_OF_TRANSPORT_MESSAGES>;
 
@@ -31,7 +31,7 @@ public:
 
     QueuedTransportLayerTest()
     {
-        _jobPool.clear();
+        _jobPool.release_all();
         QueuedTransportLayer::initializeJobPool(_jobPool);
     }
 
@@ -234,6 +234,8 @@ TEST_F(QueuedTransportLayerTest, MessageProcessedNoListenerSendFailWithPendingSe
         .Times(1)
         .WillOnce(Return(AbstractTransportLayer::ErrorCode::TP_OK));
     ASSERT_EQ(AbstractTransportLayer::ErrorCode::TP_OK, _queued.send(msg, 0));
+    EXPECT_EQ(1U, _queued.numberOfJobsSent());
+    EXPECT_EQ(0U, _queued.numberOfJobsToBeSent());
     EXPECT_CALL(_transportLayerMock, send(_, _))
         .Times(1)
         .WillOnce(Return(AbstractTransportLayer::ErrorCode::TP_QUEUE_FULL));

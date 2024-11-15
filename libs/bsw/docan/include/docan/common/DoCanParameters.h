@@ -5,8 +5,8 @@
 
 #include <transport/AbstractTransportLayer.h>
 
-#include <estd/array.h>
-#include <estd/functional.h>
+#include <etl/delegate.h>
+#include <util/estd/assert.h>
 #include <platform/estdint.h>
 
 namespace docan
@@ -41,7 +41,7 @@ public:
      * \param maxBlockSize maximum block size to send in flow control frames
      */
     DoCanParameters(
-        ::estd::function<uint32_t(void)> systemUs,
+        ::etl::delegate<uint32_t(void)> systemUs,
         uint16_t waitAllocateTimeout,
         uint16_t waitRxTimeout,
         uint16_t waitTxCallbackTimeout,
@@ -132,7 +132,7 @@ public:
     static uint8_t encodeMinSeparationTime(uint32_t minSeparationTimeUs);
 
 private:
-    ::estd::function<uint32_t(void)> const _systemUs;
+    ::etl::delegate<uint32_t(void)> const _systemUs;
     uint16_t _waitAllocateTimeout;
     uint16_t _waitRxTimeout;
     uint16_t _waitTxCallbackTimeout;
@@ -148,7 +148,7 @@ private:
  */
 
 inline DoCanParameters::DoCanParameters(
-    ::estd::function<uint32_t(void)> const systemUs,
+    ::etl::delegate<uint32_t(void)> const systemUs,
     uint16_t const waitAllocateTimeout,
     uint16_t const waitRxTimeout,
     uint16_t const waitTxCallbackTimeout,

@@ -5,7 +5,7 @@
 
 #include "util/eeprom/IEepromHelper.h"
 
-#include <estd/memory.h>
+#include <etl/memory.h>
 
 #include <gmock/gmock.h>
 
@@ -20,7 +20,7 @@ struct EepromHelperMock : IEepromHelper
 
 ACTION_P(CopyFromBuffer, buf)
 {
-    ::estd::memory::copy(::estd::slice<uint8_t>::from_pointer(arg2, arg3), buf);
+    ::etl::mem_copy(buf, arg3, arg2);
 }
 } // namespace eeprom
 

@@ -23,8 +23,6 @@
 #include <uds/services/testerpresent/TesterPresent.h>
 #include <uds/services/writedata/WriteDataByIdentifier.h>
 
-#include <estd/singleton.h>
-
 namespace lifecycle
 {
 class LifecycleManager;
@@ -39,11 +37,8 @@ namespace uds
 {
 class UdsSystem
 : public lifecycle::AsyncLifecycleComponent
-, public ::estd::singleton<UdsSystem>
 , private ::async::IRunnable
 {
-    using Base = ::estd::singleton<UdsSystem>;
-
 public:
     UdsSystem(
         lifecycle::LifecycleManager& lManager,

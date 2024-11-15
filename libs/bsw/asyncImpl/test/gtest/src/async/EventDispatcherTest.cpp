@@ -4,6 +4,8 @@
 
 #include <gmock/gmock.h>
 
+#include <etl/delegate.h>
+
 namespace
 {
 using namespace ::async;
@@ -12,7 +14,7 @@ using namespace ::testing;
 class EventDispatcherTest : public Test
 {
 public:
-    using HandlerFunctionType = ::estd::function<void()>;
+    using HandlerFunctionType = ::etl::delegate<void()>;
 
     MOCK_METHOD0(handleEvent1, void());
     MOCK_METHOD0(handleEvent2, void());

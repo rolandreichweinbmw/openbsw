@@ -2,9 +2,11 @@
 
 #include "runtime/StatisticsContainer.h"
 
-#include <estd/gtest_extensions.h>
+#include <util/estd/gtest_extensions.h>
 
 #include <gmock/gmock.h>
+
+#include <etl/span.h>
 
 namespace
 {
@@ -29,12 +31,12 @@ struct TestEntry : public TestStatistics
 class TestNames
 {
 public:
-    explicit TestNames(::estd::slice<char const*> const& names) : _names(names) {}
+    explicit TestNames(::etl::span<char const*> const& names) : _names(names) {}
 
     char const* getName(size_t idx) const { return _names[idx]; }
 
 private:
-    ::estd::slice<char const*> _names;
+    ::etl::span<char const*> _names;
 };
 
 TEST(StatisticsContainerTest, testStatisticsArray)

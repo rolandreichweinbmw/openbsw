@@ -21,8 +21,8 @@
 #include <io/Io.h>
 #include <lifecycle/AsyncLifecycleComponent.h>
 
-#include <estd/deque.h>
-#include <estd/uncopyable.h>
+#include <etl/deque.h>
+#include <etl/uncopyable.h>
 #include <platform/estdint.h>
 
 namespace bios
@@ -33,10 +33,8 @@ namespace bios
  * \see FlexCANDevice
  * \see common::AbstractTimeout
  */
-class CanFlex2Transceiver : public ::can::AbstractCANTransceiver
+class CanFlex2Transceiver : public ::can::AbstractCANTransceiver, public ::etl::uncopyable
 {
-    UNCOPYABLE(CanFlex2Transceiver);
-
 public:
     CanFlex2Transceiver(
         ::async::ContextType context,
@@ -161,7 +159,7 @@ private:
         ::can::CANFrame const& _frame;
     };
 
-    using TxQueue = ::estd::declare::deque<TxJobWithCallback, 3>;
+    using TxQueue = ::etl::deque<TxJobWithCallback, 3>;
 
     static CanFlex2Transceiver* fpCanTransceivers[8];
     FlexCANDevice::Config const& fdevConfig;

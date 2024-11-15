@@ -1,3 +1,5 @@
+include(FetchContent)
+
 add_subdirectory(googletest EXCLUDE_FROM_ALL)
 
 # add the custom extensions for unit tests
@@ -35,3 +37,19 @@ set(SUPPORT_EXPONENTIAL_SPECIFIERS
 add_subdirectory(printf EXCLUDE_FROM_ALL)
 
 add_subdirectory(freeRtos EXCLUDE_FROM_ALL)
+
+set(etl_SOURCE_DIR include)
+
+FetchContent_Declare(
+  etl
+  GIT_REPOSITORY https://github.com/ETLCPP/etl.git
+  GIT_TAG 20.39.4
+  EXCLUDE_FROM_ALL
+)
+
+FetchContent_MakeAvailable(etl)
+
+target_include_directories(
+    etl
+    INTERFACE
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/etl/include>")

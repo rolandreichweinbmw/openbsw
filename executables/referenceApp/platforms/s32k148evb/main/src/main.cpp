@@ -13,9 +13,6 @@
 
 #include <lifecycle/LifecycleManager.h>
 
-#include <estd/indestructible.h>
-#include <estd/optional.h>
-
 extern void app_main();
 
 extern "C"

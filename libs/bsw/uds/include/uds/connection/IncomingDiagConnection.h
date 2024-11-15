@@ -4,7 +4,6 @@
 #define GUARD_763F7F47_7274_458B_B4A3_BDB48E3A689D
 
 #include "async/util/Call.h"
-#include "estd/uncopyable.h"
 #include "transport/ITransportMessageProcessedListener.h"
 #include "transport/TransportMessage.h"
 #include "uds/DiagCodes.h"
@@ -12,7 +11,9 @@
 #include "uds/connection/ErrorCode.h"
 #include "uds/connection/PositiveResponse.h"
 
-#include <estd/vec.h>
+#include <etl/delegate.h>
+#include <etl/uncopyable.h>
+#include <etl/vector.h>
 
 namespace transport
 {
@@ -42,10 +43,10 @@ class DiagConnectionManager;
  *
  * \see     transport::ITransportMessageProcessedListener
  */
-class IncomingDiagConnection : public transport::ITransportMessageProcessedListener
+class IncomingDiagConnection
+: public transport::ITransportMessageProcessedListener
+, public etl::uncopyable
 {
-    UNCOPYABLE(IncomingDiagConnection);
-
 public:
     void setDiagSessionManager(IDiagSessionManager& diagSessionManager)
     {
@@ -61,31 +62,17 @@ public:
     IncomingDiagConnection(::async::ContextType const diagContext)
     : fResponsePendingTimeout(*this)
     , fGlobalPendingTimeout(*this)
-    , fTransportMessageProcessedClosure(TransportMessageClosure::CallType(
-          TransportMessageClosure::CallType::fct::create<
-              IncomingDiagConnection,
-              &IncomingDiagConnection::asyncTransportMessageProcessed>(*this),
-          nullptr,
-          ProcessingResult::PROCESSED_ERROR))
-    , fSendPositiveResponseClosure(SendPositiveResponseClosure::CallType(
-          SendPositiveResponseClosure::CallType::fct::
-              create<IncomingDiagConnection, &IncomingDiagConnection::asyncSendPositiveResponse>(
-                  *this),
-          0U,
-          nullptr))
-    , fSendNegativeResponseClosure(SendNegativeResponseClosure::CallType(
-          SendNegativeResponseClosure::CallType::fct::
-              create<IncomingDiagConnection, &IncomingDiagConnection::asyncSendNegativeResponse>(
-                  *this),
-          0U,
-          nullptr))
+    , fTransportMessageProcessedClosure(
+          [&]() { asyncTransportMessageProcessed(nullptr, ProcessingResult::PROCESSED_ERROR); })
+    , fSendPositiveResponseClosure([&]() { asyncSendPositiveResponse(0U, nullptr); })
+    , fSendNegativeResponseClosure([&]() { asyncSendNegativeResponse(0U, nullptr); })
     , fTriggerNextNestedRequestDelegate(::async::Function::CallType::create<
                                         IncomingDiagConnection,
                                         &IncomingDiagConnection::triggerNextNestedRequest>(*this))
     {
         fContext = diagContext;
         fPendingMessage.init(&fPendingMessageBuffer[0], PENDING_MESSAGE_BUFFER_LENGTH);
-        for (uint8_t cnt = 0U; cnt < fIdentifiers.max_size; cnt++)
+        for (uint8_t cnt = 0U; cnt < fIdentifiers.capacity(); cnt++)
         {
             fIdentifiers[cnt] = 0U;
         }
@@ -323,16 +310,9 @@ public:
     void triggerNextNestedRequest();
     void endNestedRequest();
 
-    using SendPositiveResponseClosure
-        = ::async::Call<::estd::closure<void(uint16_t, AbstractDiagJob*)>>;
-    using SendNegativeResponseClosure
-        = ::async::Call<::estd::closure<void(uint8_t, AbstractDiagJob*)>>;
-    using TransportMessageClosure
-        = ::async::Call<::estd::closure<void(transport::TransportMessage*, ProcessingResult)>>;
-
-    TransportMessageClosure fTransportMessageProcessedClosure;
-    SendPositiveResponseClosure fSendPositiveResponseClosure;
-    SendNegativeResponseClosure fSendNegativeResponseClosure;
+    ::async::Function fTransportMessageProcessedClosure;
+    ::async::Function fSendPositiveResponseClosure;
+    ::async::Function fSendNegativeResponseClosure;
     ::async::Function fTriggerNextNestedRequestDelegate;
     transport::ITransportMessageProcessedListener* fpRequestNotificationListener = nullptr;
     transport::TransportMessage fPendingMessage                                  = {};
@@ -341,7 +321,7 @@ public:
     NestedDiagRequest* fNestedRequest                                                = nullptr;
     uint8_t fPendingMessageBuffer[PENDING_MESSAGE_BUFFER_LENGTH]                     = {};
     uint8_t fNegativeResponseTempBuffer[DiagCodes::NEGATIVE_RESPONSE_MESSAGE_LENGTH] = {};
-    ::estd::vec<uint8_t, MAXIMUM_NUMBER_OF_IDENTIFIERS> fIdentifiers;
+    ::etl::vector<uint8_t, MAXIMUM_NUMBER_OF_IDENTIFIERS> fIdentifiers;
     bool fIsResuming         = false;
     uint32_t fPendingTimeOut = DEFAULT_PENDING_TIMEOUT_MS;
 };

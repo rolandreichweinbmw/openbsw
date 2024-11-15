@@ -5,9 +5,8 @@
 
 #include "async/Types.h"
 
+#include <etl/intrusive_forward_list.h>
 #include <util/string/ConstString.h>
-
-#include <estd/forward_list.h>
 
 #define FUNCTION_EXECUTION_MONITOR_CONCAT_INTERNAL(x, y) x##y
 #define FUNCTION_EXECUTION_MONITOR_CONCAT(x, y)          FUNCTION_EXECUTION_MONITOR_CONCAT_INTERNAL(x, y)
@@ -26,7 +25,7 @@ template<class RuntimeMonitor>
 class FunctionExecutionMonitor
 {
 public:
-    struct Point final : public ::estd::forward_list_node<Point>
+    struct Point final : public ::etl::forward_link<0>
     {
         explicit Point(char const* name);
         ~Point();
@@ -34,9 +33,11 @@ public:
         char const* _name;
         typename RuntimeMonitor::FunctionEntryType _entry;
         typename RuntimeMonitor::FunctionStatisticsType _snapshot;
+
+        bool operator==(Point const& other) { return this == &other; }
     };
 
-    using PointListType = ::estd::forward_list<Point>;
+    using PointListType = ::etl::intrusive_forward_list<Point, ::etl::forward_link<0>>;
 
     class Scope final
     {

@@ -12,9 +12,9 @@ extern "C"
 {
 void disableAllInterrupts(void)
 {
-    if (::interrupts::DisableEnableAllInterruptsMock::instantiated())
+    if (::interrupts::DisableEnableAllInterruptsMockSingleton::is_valid())
     {
-        ::interrupts::DisableEnableAllInterruptsMock::instance().disableAllInterrupts();
+        ::interrupts::DisableEnableAllInterruptsMockSingleton::instance().disableAllInterrupts();
     }
     else
     {
@@ -24,9 +24,9 @@ void disableAllInterrupts(void)
 
 void enableAllInterrupts(void)
 {
-    if (::interrupts::DisableEnableAllInterruptsMock::instantiated())
+    if (::interrupts::DisableEnableAllInterruptsMockSingleton::is_valid())
     {
-        ::interrupts::DisableEnableAllInterruptsMock::instance().enableAllInterrupts();
+        ::interrupts::DisableEnableAllInterruptsMockSingleton::instance().enableAllInterrupts();
     }
     else
     {
@@ -36,9 +36,10 @@ void enableAllInterrupts(void)
 
 bool areInterruptsDisabled(void)
 {
-    if (::interrupts::DisableEnableAllInterruptsMock::instantiated())
+    if (::interrupts::DisableEnableAllInterruptsMockSingleton::is_valid())
     {
-        return ::interrupts::DisableEnableAllInterruptsMock::instance().areInterruptsDisabled();
+        return ::interrupts::DisableEnableAllInterruptsMockSingleton::instance()
+            .areInterruptsDisabled();
     }
     return (
         interrupts::DisableEnableAllInterruptsMock::disableAllInterruptsCount
@@ -47,9 +48,10 @@ bool areInterruptsDisabled(void)
 
 bool areInterruptsEnabled(void)
 {
-    if (::interrupts::DisableEnableAllInterruptsMock::instantiated())
+    if (::interrupts::DisableEnableAllInterruptsMockSingleton::is_valid())
     {
-        return ::interrupts::DisableEnableAllInterruptsMock::instance().areInterruptsEnabled();
+        return ::interrupts::DisableEnableAllInterruptsMockSingleton::instance()
+            .areInterruptsEnabled();
     }
     return (
         interrupts::DisableEnableAllInterruptsMock::disableAllInterruptsCount

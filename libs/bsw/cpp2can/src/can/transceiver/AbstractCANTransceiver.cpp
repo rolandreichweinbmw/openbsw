@@ -48,7 +48,8 @@ void AbstractCANTransceiver::addVIPCANFrameListener(ICANFrameListener& listener)
 void AbstractCANTransceiver::removeCANFrameListener(ICANFrameListener& listener)
 {
     ESR_UNUSED const SuspendResumeAllInterruptsScopedLock lock;
-    _listeners.remove(listener);
+    _listeners.remove_if([&](ICANFrameListener const& _listener)
+                         { return &listener == &_listener; });
 }
 
 void AbstractCANTransceiver::addCANFrameSentListener(IFilteredCANFrameSentListener& listener)
@@ -60,7 +61,8 @@ void AbstractCANTransceiver::addCANFrameSentListener(IFilteredCANFrameSentListen
 void AbstractCANTransceiver::removeCANFrameSentListener(IFilteredCANFrameSentListener& listener)
 {
     ESR_UNUSED const SuspendResumeAllInterruptsScopedLock lock;
-    _sentListeners.remove(listener);
+    _sentListeners.remove_if([&](IFilteredCANFrameSentListener const& _listener)
+                             { return &listener == &_listener; });
 }
 
 void AbstractCANTransceiver::notifyListeners(CANFrame const& frame)

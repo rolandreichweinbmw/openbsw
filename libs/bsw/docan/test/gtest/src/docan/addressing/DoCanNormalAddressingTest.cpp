@@ -2,7 +2,7 @@
 
 #include "docan/addressing/DoCanNormalAddressing.h"
 
-#include <estd/memory.h>
+#include <etl/memory.h>
 
 #include <gmock/gmock.h>
 
@@ -36,8 +36,9 @@ TEST(DoCanNormalAddressingTest, testEncodeSingleFrameWithAddress)
     EXPECT_EQ(0x1238934U, canId);
     // expect valid encoded single frame
     uint8_t const expectedPayload[] = {0x33};
-    ::estd::slice<uint8_t> payload  = payloadBuffer;
-    EXPECT_TRUE(::estd::memory::is_equal(expectedPayload, payload));
+    ::etl::span<uint8_t> payload    = payloadBuffer;
+    EXPECT_TRUE(
+        0 == ::etl::mem_compare(&expectedPayload[0], sizeof(expectedPayload), payload.begin()));
 }
 
 } // anonymous namespace

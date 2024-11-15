@@ -8,7 +8,7 @@
 #include "uds/base/AbstractDiagJob.h"
 #include "uds/connection/IncomingDiagConnection.h"
 
-#include <estd/functional.h>
+#include <etl/utility.h>
 
 namespace uds
 {
@@ -50,11 +50,9 @@ protected:
 private:
     void asyncProcess(
         IncomingDiagConnection* connection, uint8_t const request[], uint16_t requestLength);
-    using ProcessClosureType
-        = ::async::Call<::estd::closure<void(IncomingDiagConnection*, uint8_t const*, uint16_t)>>;
 
     AsyncDiagJobHelper fAsyncJobHelper;
-    ProcessClosureType fProcess;
+    ::async::Function fProcess;
     ::async::ContextType fContext;
 };
 
@@ -65,14 +63,9 @@ template<class T>
 template<typename... Args>
 AsyncDiagJob<T>::AsyncDiagJob(
     IAsyncDiagHelper& asyncHelper, ::async::ContextType context, Args&&... args)
-: T(::std::forward<Args>(args)...)
+: T(::etl::forward<Args>(args)...)
 , fAsyncJobHelper(asyncHelper, *this, context)
-, fProcess(ProcessClosureType::CallType(
-      ProcessClosureType::CallType::fct::create<AsyncDiagJob<T>, &AsyncDiagJob<T>::asyncProcess>(
-          *this),
-      nullptr,
-      nullptr,
-      0U))
+, fProcess([&]() { asyncProcess(nullptr, nullptr, 0U); })
 , fContext(context)
 {}
 
@@ -93,13 +86,9 @@ DiagReturnCode::Type AsyncDiagJob<T>::process(
         return fAsyncJobHelper.enqueueRequest(connection, request, requestLength);
     }
     fAsyncJobHelper.startAsyncRequest(connection);
-    fProcess = ProcessClosureType::CallType(
-        ProcessClosureType::CallType::fct::create<AsyncDiagJob<T>, &AsyncDiagJob<T>::asyncProcess>(
-            *this),
-        &connection,
-        request,
-        requestLength);
-
+    auto lambda
+        = [&, request, requestLength]() { asyncProcess(&connection, request, requestLength); };
+    fProcess = ::async::Function(lambda);
     ::async::execute(fContext, fProcess);
 
     return DiagReturnCode::OK;

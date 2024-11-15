@@ -5,7 +5,7 @@
 namespace io
 {
 
-::estd::slice<uint8_t> BufferedWriter::allocate(size_t const size)
+::etl::span<uint8_t> BufferedWriter::allocate(size_t const size)
 {
     size_t const MAXIMUM_BUFFER_SIZE = _destination.maxSize();
     if (size > MAXIMUM_BUFFER_SIZE)
@@ -25,13 +25,13 @@ namespace io
         }
     }
     _size = size;
-    return _current.subslice(_size);
+    return _current.subspan(0, _size);
 }
 
 void BufferedWriter::commit()
 {
-    (void)_current.advance(_size);
-    _size = 0;
+    _current = _current.subspan(_size);
+    _size    = 0;
 }
 
 void BufferedWriter::flush()

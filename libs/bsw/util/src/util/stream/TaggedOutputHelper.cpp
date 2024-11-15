@@ -2,6 +2,8 @@
 
 #include "util/stream/TaggedOutputHelper.h"
 
+#include <etl/string_view.h>
+
 namespace util
 {
 namespace stream
@@ -16,18 +18,22 @@ void TaggedOutputHelper::reset() { _lineStart = true; }
 
 bool TaggedOutputHelper::isLineStart() const { return _lineStart; }
 
-void TaggedOutputHelper::writeBytes(IOutputStream& strm, ::estd::slice<uint8_t const> const& buffer)
+void TaggedOutputHelper::writeBytes(IOutputStream& strm, ::etl::span<uint8_t const> const& buffer)
 {
     for (auto&& data : buffer)
     {
         if (_lineStart)
         {
             _lineStart = false;
-            strm.write(::estd::make_str(_prefix));
+            ::etl::string_view view(_prefix);
+            strm.write(::etl::span<uint8_t const>(
+                reinterpret_cast<uint8_t const*>(view.begin()), view.size()));
         }
         if (data == static_cast<uint8_t>('\n'))
         {
-            strm.write(::estd::make_str(_suffix));
+            ::etl::string_view view(_suffix);
+            strm.write(::etl::span<uint8_t const>(
+                reinterpret_cast<uint8_t const*>(view.begin()), view.size()));
             _lineStart = true;
         }
         else
@@ -37,11 +43,19 @@ void TaggedOutputHelper::writeBytes(IOutputStream& strm, ::estd::slice<uint8_t c
     }
 }
 
+void TaggedOutputHelper::writeBytes(IOutputStream& strm, ::etl::string_view const& view)
+{
+    ::etl::span<uint8_t const> buffer{reinterpret_cast<uint8_t const*>(view.begin()), view.size()};
+    return writeBytes(strm, buffer);
+}
+
 void TaggedOutputHelper::endLine(IOutputStream& strm)
 {
     if (!_lineStart)
     {
-        strm.write(::estd::make_str(_suffix));
+        ::etl::string_view view(_suffix);
+        strm.write(::etl::span<uint8_t const>(
+            reinterpret_cast<uint8_t const*>(view.begin()), view.size()));
         _lineStart = true;
     }
 }

@@ -3,7 +3,8 @@
 #ifndef GUARD_1D16CA52_0D50_482A_A390_EEAA69ECB2CF
 #define GUARD_1D16CA52_0D50_482A_A390_EEAA69ECB2CF
 
-#include <estd/forward_list.h>
+#include <etl/intrusive_forward_list.h>
+
 #include <platform/estdint.h>
 
 namespace uds
@@ -16,12 +17,18 @@ class DiagSession;
  *
  * \see IDiagSessionManager
  */
-class IDiagSessionChangedListener : public ::estd::forward_list_node<IDiagSessionChangedListener>
+class IDiagSessionChangedListener : public ::etl::forward_link<0>
 {
 public:
     virtual void diagSessionChanged(DiagSession const& session) = 0;
     virtual void diagSessionResponseSent(uint8_t responseCode)  = 0;
 };
+
+inline bool
+operator==(IDiagSessionChangedListener const& lhs, IDiagSessionChangedListener const& rhs)
+{
+    return &lhs == &rhs;
+}
 
 } // namespace uds
 

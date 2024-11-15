@@ -8,15 +8,12 @@
 #include <transport/ITransportSystem.h>
 #include <transport/routing/TransportRouterSimple.h>
 
-#include <estd/singleton.h>
-
 namespace transport
 {
 class AbstractTransportLayer;
 
 class TransportSystem
-: public ::estd::singleton<TransportSystem>
-, public ::transport::ITransportSystem
+: public ::transport::ITransportSystem
 , public ::lifecycle::AsyncLifecycleComponent
 {
 public:

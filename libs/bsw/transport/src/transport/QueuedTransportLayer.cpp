@@ -58,7 +58,7 @@ AbstractTransportLayer::ErrorCode QueuedTransportLayer::send(
         }
         else
         {
-            fJobsSent.push_back(*pJob);
+            fJobsSent.push_front(*pJob);
 
             mutex.unlock();
             status = fTransportLayer.send(transportMessage, this);
@@ -68,7 +68,7 @@ AbstractTransportLayer::ErrorCode QueuedTransportLayer::send(
             {
                 // job has NOT been sent --> remove from pending send jobs
                 fJobsSent.remove(*pJob);
-                fJobsToBeSent.push_back(*pJob);
+                fJobsToBeSent.push_front(*pJob);
                 status = ErrorCode::TP_OK;
             }
             else if (status != ErrorCode::TP_OK)
@@ -101,7 +101,7 @@ AbstractTransportLayer::ErrorCode QueuedTransportLayer::send(
         TransportMessageSendJob* const pJob = getSendJob(transportMessage, pNotificationListener);
         if (pJob != nullptr)
         {
-            fJobsToBeSent.push_back(*pJob);
+            fJobsToBeSent.push_front(*pJob);
             status = ErrorCode::TP_OK;
         }
         else
@@ -157,7 +157,7 @@ void QueuedTransportLayer::transportMessageProcessed(
     {
         TransportMessageSendJob& job = fJobsToBeSent.front();
         fJobsToBeSent.pop_front();
-        fJobsSent.push_back(job);
+        fJobsSent.push_front(job);
         TransportMessage& tpMessage = *job.getTransportMessage();
 
         mutex.unlock();
@@ -204,11 +204,11 @@ TransportMessageSendJob* QueuedTransportLayer::getSendJob(
 {
     if (sfpSendJobPool != nullptr)
     {
-        if (!sfpSendJobPool->empty())
+        if (!sfpSendJobPool->full())
         {
-            TransportMessageSendJob& job
-                = sfpSendJobPool->allocate().construct(&transportMessage, pNotificationListener);
-            return &job;
+            TransportMessageSendJob* job = sfpSendJobPool->create<TransportMessageSendJob>(
+                &transportMessage, pNotificationListener);
+            return job;
         }
     }
     return nullptr;
@@ -218,7 +218,7 @@ TransportMessageSendJob* QueuedTransportLayer::getSendJob(
 void QueuedTransportLayer::releaseSendJob(TransportMessageSendJob const& job)
 {
     // This cannot be reached if sfpSendJobPool is not set
-    sfpSendJobPool->release(job);
+    sfpSendJobPool->release(&job);
 }
 
 } // namespace transport

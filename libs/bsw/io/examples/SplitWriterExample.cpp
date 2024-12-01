@@ -5,6 +5,8 @@
 
 #include <gmock/gmock.h>
 
+#include <etl/memory.h>
+
 namespace splitWriterExample
 {
 
@@ -26,7 +28,7 @@ void forwardData(::io::IReader& source, ::io::IWriter& destination)
         auto dstData = destination.allocate(srcData.size());
         if (dstData.size() >= srcData.size())
         {
-            ::estd::memory::copy(dstData, srcData);
+            ::etl::mem_copy(srcData.begin(), srcData.end(), dstData.begin());
             destination.commit();
             // Only release data after successful forwarding.
             source.release();

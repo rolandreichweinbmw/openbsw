@@ -8,6 +8,8 @@
 #include <bsp/timer/SystemTimerMock.h>
 #include <os/FreeRtosMock.h>
 
+#include <etl/singleton_base.h>
+
 namespace
 {
 using namespace ::async;
@@ -17,13 +19,13 @@ ACTION_P(StopDispatch, cut) { cut->stopDispatch(); }
 
 ACTION_P(CopyArgPointee2, pointer) { *arg2 = *pointer; }
 
-class TestBindingMock : public ::estd::singleton<TestBindingMock>
+class TestBindingMock : public ::etl::singleton_base<TestBindingMock>
 {
 public:
     static EventMaskType const WAIT_EVENTS_TICK_COUNT = 100U;
     using BaseType_t                                  = int32_t;
 
-    TestBindingMock() : ::estd::singleton<TestBindingMock>(*this) {}
+    TestBindingMock() : ::etl::singleton_base<TestBindingMock>(*this) {}
 
     static BaseType_t* getHigherPriorityTaskWoken()
     {

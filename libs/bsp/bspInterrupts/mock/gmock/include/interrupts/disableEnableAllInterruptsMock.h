@@ -3,17 +3,18 @@
 #ifndef GUARD_CC8D6EF3_72E3_4627_9D48_663E57A3AC49
 #define GUARD_CC8D6EF3_72E3_4627_9D48_663E57A3AC49
 
-#include "estd/singleton.h"
 #include "interrupts/disableEnableAllInterrupts.h"
+
+#include <etl/singleton.h>
 
 #include <gmock/gmock.h>
 
 namespace interrupts
 {
-class DisableEnableAllInterruptsMock : public ::estd::singleton<DisableEnableAllInterruptsMock>
+class DisableEnableAllInterruptsMock
 {
 public:
-    DisableEnableAllInterruptsMock() : ::estd::singleton<DisableEnableAllInterruptsMock>(*this)
+    DisableEnableAllInterruptsMock()
     {
         EXPECT_EQ(disableAllInterruptsCount, enableAllInterruptsCount);
         disableAllInterruptsCount = 0U;
@@ -34,6 +35,8 @@ public:
     static uint32_t disableAllInterruptsCount;
     static uint32_t enableAllInterruptsCount;
 };
+
+using DisableEnableAllInterruptsMockSingleton = etl::singleton<DisableEnableAllInterruptsMock>;
 
 } /* namespace interrupts */
 

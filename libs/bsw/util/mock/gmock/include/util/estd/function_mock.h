@@ -3,7 +3,7 @@
 #ifndef GUARD_F2D205E8_1FBD_44A5_A199_4E62CDF32712
 #define GUARD_F2D205E8_1FBD_44A5_A199_4E62CDF32712
 
-#include <estd/functional.h>
+#include <etl/delegate.h>
 
 #include <gmock/gmock.h>
 
@@ -20,9 +20,9 @@ struct function_mock<R(Ps...)>
 
     MOCK_METHOD0(callee, void());
 
-    operator ::estd::function<R(Ps...)>()
+    operator ::etl::delegate<R(Ps...)>()
     {
-        return ::estd::function<R(Ps...)>::template create<self_type, &self_type::callee>(*this);
+        return ::etl::delegate<R(Ps...)>::template create<self_type, &self_type::callee>(*this);
     }
 };
 

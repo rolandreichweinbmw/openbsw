@@ -44,7 +44,6 @@ target_link_libraries(
             bspMcu
             configuration
             etl
-            estd
             lifecycle
             consoleCommands
             logger

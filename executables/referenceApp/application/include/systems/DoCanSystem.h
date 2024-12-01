@@ -3,6 +3,8 @@
 #ifndef GUARD_EB6712AB_E148_4A24_B106_2B72D43439AC
 #define GUARD_EB6712AB_E148_4A24_B106_2B72D43439AC
 
+#include <etl/vector.h>
+
 #include <async/Async.h>
 #include <async/IRunnable.h>
 #include <busid/BusId.h>
@@ -101,7 +103,7 @@ private:
     ::docan::DoCanParameters _parameters;
     ::docan::declare::DoCanTransportLayerConfig<DataLinkLayerType, 80U, 15U, 64U>
         _transportLayerConfig;
-    ::estd::declare::vector<DoCanPhysicalCanTransceiver<AddressingType>, NUM_CAN_TRANSPORT_LAYERS>
+    ::etl::vector<DoCanPhysicalCanTransceiver<AddressingType>, NUM_CAN_TRANSPORT_LAYERS>
         _physicalTransceivers;
     TransportLayers _transportLayers;
     TickGeneratorRunnableAdapter _tickGenerator;

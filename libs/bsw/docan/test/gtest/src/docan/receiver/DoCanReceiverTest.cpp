@@ -18,7 +18,8 @@
 #include <util/logger/ComponentMappingMock.h>
 #include <util/logger/LoggerOutputMock.h>
 
-#include <estd/functional.h>
+#include <etl/span.h>
+#include <etl/generic_pool.h>
 
 #include <limits>
 
@@ -78,7 +79,7 @@ struct DoCanReceiverTest : ::testing::Test
     static uint16_t const minSeparationTime      = 0U;
     static uint8_t const maxBlockSize            = 0U;
     DoCanParameters _parameters{
-        ::estd::function<uint32_t()>::create<DoCanReceiverTest, &DoCanReceiverTest::systemUs>(
+        ::etl::delegate<uint32_t()>::create<DoCanReceiverTest, &DoCanReceiverTest::systemUs>(
             *this),
         waitAllocateTimeout,
         waitRxTimeout,
@@ -98,7 +99,7 @@ struct DoCanReceiverTest : ::testing::Test
 
 TEST_F(DoCanReceiverTest, testAssertsOnTooSmallBlocksInBlockPool)
 {
-    ::util::estd::declare::block_pool<1U, sizeof(void*)> messageReceiverBlockPool;
+    ::etl::generic_pool<sizeof(void*), alignof(void*), 1U> messageReceiverBlockPool;
     DoCanReceiver<DataLinkLayer> cut(
         _busId,
         _context,
@@ -114,10 +115,11 @@ TEST_F(DoCanReceiverTest, testAssertsOnTooSmallBlocksInBlockPool)
 
 TEST_F(DoCanReceiverTest, testAssertsOnTooBigBlocksInBlockPool)
 {
-    ::util::estd::declare::block_pool<
-        1U,
+    ::etl::generic_pool<
         static_cast<size_t>(::std::numeric_limits<DataLinkLayer::FrameSizeType>::max()) + 1U
-            + sizeof(::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>)>
+            + sizeof(::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>),
+            1U,
+            1U>
         messageReceiverBlockPool;
     DoCanReceiver<DataLinkLayer> cut(
         _busId,
@@ -137,8 +139,8 @@ TEST_F(DoCanReceiverTest, testAssertsOnTooBigBlocksInBlockPool)
  */
 TEST_F(DoCanReceiverTest, testReceiveSingleFrameMessageAndShutdown)
 {
-    ::util::estd::declare::
-        block_pool<5U, sizeof(::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>)>
+    using T = ::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>;
+    ::etl::generic_pool<sizeof(T), alignof(T), 5U>
             messageReceiverBlockPool;
     DoCanReceiver<DataLinkLayer> cut(
         _busId,
@@ -151,8 +153,8 @@ TEST_F(DoCanReceiverTest, testReceiveSingleFrameMessageAndShutdown)
         _loggerComponent);
     cut.init();
 
-    uint8_t const data[] = {0xab, 0xcd, 0xef, 0x19, 0x28};
-    ::estd::slice<uint8_t const> peek;
+    ::etl::span<uint8_t const> data{{0xab, 0xcd, 0xef, 0x19, 0x28}};
+    ::etl::span<uint8_t const> peek;
     EXPECT_CALL(_messageProvidingListenerMock, getTransportMessage(_busId, 0x14, 0x23, 5U, _, _))
         .WillOnce(DoAll(
             SaveArg<4>(&peek),
@@ -172,14 +174,14 @@ TEST_F(DoCanReceiverTest, testReceiveSingleFrameMessageAndShutdown)
         DoCanTransportAddressPair(0x14, 0x23));
     cut.firstDataFrameReceived(connection, 5U, 1U, 7U, data);
     ASSERT_EQ(5U, peek.size());
-    EXPECT_TRUE(::estd::memory::is_equal(data, peek));
+    EXPECT_TRUE(::etl::equal(data, peek));
     Mock::VerifyAndClearExpectations(&_messageProvidingListenerMock);
     Mock::VerifyAndClearExpectations(&_flowControlFrameTransmitterMock);
     EXPECT_EQ(
-        0,
-        ::estd::memory::compare(
+        true,
+        ::etl::equal(
             data,
-            ::estd::slice<uint8_t const>::from_pointer(
+            ::etl::span<uint8_t const>(
                 _transportMessage1.getPayload(), _transportMessage1.getPayloadLength())));
     EXPECT_EQ(0x14U, _transportMessage1.getSourceId());
     EXPECT_EQ(0x23U, _transportMessage1.getTargetId());
@@ -198,8 +200,8 @@ TEST_F(DoCanReceiverTest, testReceiveSingleFrameMessageAndShutdown)
 
 TEST_F(DoCanReceiverTest, testReceiveShortSingleFrameMessageAndShutdown)
 {
-    ::util::estd::declare::
-        block_pool<5U, sizeof(::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>)>
+    using T = ::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>;
+    ::etl::generic_pool<sizeof(T), alignof(T), 5U>
             messageReceiverBlockPool;
     DoCanReceiver<DataLinkLayer> cut(
         _busId,
@@ -212,8 +214,8 @@ TEST_F(DoCanReceiverTest, testReceiveShortSingleFrameMessageAndShutdown)
         _loggerComponent);
     cut.init();
 
-    uint8_t const data[] = {0xab, 0xcd, 0xef};
-    ::estd::slice<uint8_t const> peek;
+    ::etl::span<uint8_t const> data{{0xab, 0xcd, 0xef}};
+    ::etl::span<uint8_t const> peek;
     EXPECT_CALL(_messageProvidingListenerMock, getTransportMessage(_busId, 0x14, 0x23, 3U, _, _))
         .WillOnce(DoAll(
             SaveArg<4>(&peek),
@@ -233,14 +235,14 @@ TEST_F(DoCanReceiverTest, testReceiveShortSingleFrameMessageAndShutdown)
         DoCanTransportAddressPair(0x14, 0x23));
     cut.firstDataFrameReceived(connection, 3U, 1U, 0, data);
     ASSERT_EQ(3U, peek.size());
-    EXPECT_TRUE(::estd::memory::is_equal(data, peek));
+    EXPECT_TRUE(::etl::equal(data, peek));
     Mock::VerifyAndClearExpectations(&_messageProvidingListenerMock);
     Mock::VerifyAndClearExpectations(&_flowControlFrameTransmitterMock);
     EXPECT_EQ(
-        0,
-        ::estd::memory::compare(
+        true,
+        ::etl::equal(
             data,
-            ::estd::slice<uint8_t const>::from_pointer(
+            ::etl::span<uint8_t const>(
                 _transportMessage1.getPayload(), _transportMessage1.getPayloadLength())));
     EXPECT_EQ(0x14U, _transportMessage1.getSourceId());
     EXPECT_EQ(0x23U, _transportMessage1.getTargetId());
@@ -262,9 +264,8 @@ TEST_F(DoCanReceiverTest, testReceiveShortSingleFrameMessageAndShutdown)
  */
 TEST_F(DoCanReceiverTest, testReceiveSecondSingleFrameMessage)
 {
-    ::util::estd::declare::
-        block_pool<5U, sizeof(::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>)>
-            messageReceiverBlockPool;
+    using T = ::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>;
+    ::etl::generic_pool<sizeof(T), alignof(T), 5U> messageReceiverBlockPool;
     DoCanReceiver<DataLinkLayer> cut(
         _busId,
         _context,
@@ -276,8 +277,9 @@ TEST_F(DoCanReceiverTest, testReceiveSecondSingleFrameMessage)
         _loggerComponent);
     cut.init();
 
-    uint8_t const data1[] = {0xab, 0xcd, 0xef, 0x19, 0x28};
-    ::estd::slice<uint8_t const> peek1;
+    uint8_t const data1_c[] = {0xab, 0xcd, 0xef, 0x19, 0x28};
+    ::etl::span<uint8_t const> data1(&data1_c[0], sizeof(data1_c));
+    ::etl::span<uint8_t const> peek1;
     // receive the single frame
     EXPECT_CALL(_messageProvidingListenerMock, getTransportMessage(_busId, 0x14, 0x23, 5U, _, _))
         .WillOnce(
@@ -294,11 +296,12 @@ TEST_F(DoCanReceiverTest, testReceiveSecondSingleFrameMessage)
         7U,
         data1);
     ASSERT_EQ(5U, peek1.size());
-    EXPECT_TRUE(::estd::memory::is_equal(data1, peek1));
+    EXPECT_TRUE(::etl::equal(data1, peek1));
     Mock::VerifyAndClearExpectations(&_messageProvidingListenerMock);
     // receive second single frame
-    uint8_t const data2[] = {0xab, 0xdc, 0xfd, 0x91, 0x28, 0x31};
-    ::estd::slice<uint8_t const> peek2;
+    uint8_t const data2_c[] = {0xab, 0xdc, 0xfd, 0x91, 0x28, 0x31};
+    ::etl::span<uint8_t const> data2(&data2_c[0], sizeof(data2_c));
+    ::etl::span<uint8_t const> peek2;
     EXPECT_CALL(_messageProvidingListenerMock, getTransportMessage(_busId, 0x17, 0x43, 6U, _, _))
         .WillOnce(DoAll(
             SaveArg<4>(&peek2),
@@ -320,14 +323,14 @@ TEST_F(DoCanReceiverTest, testReceiveSecondSingleFrameMessage)
         7U,
         data2);
     ASSERT_EQ(6U, peek2.size());
-    EXPECT_TRUE(::estd::memory::is_equal(data2, peek2));
+    EXPECT_TRUE(::etl::equal(data2, peek2));
     Mock::VerifyAndClearExpectations(&_messageProvidingListenerMock);
     Mock::VerifyAndClearExpectations(&_flowControlFrameTransmitterMock);
     EXPECT_EQ(
-        0,
-        ::estd::memory::compare(
+        true,
+        ::etl::equal(
             data2,
-            ::estd::slice<uint8_t const>::from_pointer(
+            ::etl::span<uint8_t const>(
                 _transportMessage2.getPayload(), _transportMessage2.getPayloadLength())));
     EXPECT_EQ(0x17U, _transportMessage2.getSourceId());
     EXPECT_EQ(0x43U, _transportMessage2.getTargetId());
@@ -351,10 +354,10 @@ TEST_F(DoCanReceiverTest, testReceiveSecondSingleFrameMessage)
     Mock::VerifyAndClearExpectations(&_messageProvidingListenerMock);
     Mock::VerifyAndClearExpectations(&_flowControlFrameTransmitterMock);
     EXPECT_EQ(
-        0,
-        ::estd::memory::compare(
+        true,
+        ::etl::equal(
             data1,
-            ::estd::slice<uint8_t const>::from_pointer(
+            ::etl::span<uint8_t const>(
                 _transportMessage1.getPayload(), _transportMessage1.getPayloadLength())));
     EXPECT_EQ(0x14U, _transportMessage1.getSourceId());
     EXPECT_EQ(0x23U, _transportMessage1.getTargetId());
@@ -366,9 +369,8 @@ TEST_F(DoCanReceiverTest, testReceiveSecondSingleFrameMessage)
 
 TEST_F(DoCanReceiverTest, testReceiveSingleFrameMessageWithReceptionError)
 {
-    ::util::estd::declare::
-        block_pool<5U, sizeof(::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>)>
-            messageReceiverBlockPool;
+    using T = ::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>;
+    ::etl::generic_pool<sizeof(T), alignof(T), 5U> messageReceiverBlockPool;
     DoCanReceiver<DataLinkLayer> cut(
         _busId,
         _context,
@@ -380,7 +382,7 @@ TEST_F(DoCanReceiverTest, testReceiveSingleFrameMessageWithReceptionError)
         _loggerComponent);
     cut.init();
 
-    uint8_t data[] = {0xab, 0xcd, 0xef, 0x19, 0x28};
+    ::etl::span<uint8_t const> data{{0xab, 0xcd, 0xef, 0x19, 0x28}};
     EXPECT_CALL(_messageProvidingListenerMock, getTransportMessage(_busId, 0x14, 0x23, 5U, _, _))
         .WillOnce(DoAll(
             SetArgReferee<5>(&_transportMessage1),
@@ -404,10 +406,10 @@ TEST_F(DoCanReceiverTest, testReceiveSingleFrameMessageWithReceptionError)
     Mock::VerifyAndClearExpectations(&_messageProvidingListenerMock);
     Mock::VerifyAndClearExpectations(&_flowControlFrameTransmitterMock);
     EXPECT_EQ(
-        0,
-        ::estd::memory::compare(
+        true,
+        ::etl::equal(
             data,
-            ::estd::slice<uint8_t const>::from_pointer(
+            ::etl::span<uint8_t const>(
                 _transportMessage1.getPayload(), _transportMessage1.getPayloadLength())));
     EXPECT_EQ(0x14U, _transportMessage1.getSourceId());
     EXPECT_EQ(0x23U, _transportMessage1.getTargetId());
@@ -423,9 +425,8 @@ TEST_F(DoCanReceiverTest, testReceiveSingleFrameMessageWithReceptionError)
 TEST_F(
     DoCanReceiverTest, testReceiveSecondSingleFrameMessageWithLimitedTransportMessagesAndShutdown)
 {
-    ::util::estd::declare::
-        block_pool<5U, sizeof(::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>)>
-            messageReceiverBlockPool;
+    using T = ::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>;
+    ::etl::generic_pool<sizeof(T), alignof(T), 5U> messageReceiverBlockPool;
     DoCanReceiver<DataLinkLayer> cut(
         _busId,
         _context,
@@ -503,9 +504,8 @@ TEST_F(
  */
 TEST_F(DoCanReceiverTest, testReceiveSecondSingleFrameMessageWithoutFreeMessageReceiverAndShutdown)
 {
-    ::util::estd::declare::
-        block_pool<1U, sizeof(::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>)>
-            messageReceiverBlockPool;
+    using T = ::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>;
+    ::etl::generic_pool<sizeof(T), alignof(T), 1U> messageReceiverBlockPool;
     DoCanReceiver<DataLinkLayer> cut(
         _busId,
         _context,
@@ -558,9 +558,8 @@ TEST_F(DoCanReceiverTest, testReceiveSecondSingleFrameMessageWithoutFreeMessageR
  */
 TEST_F(DoCanReceiverTest, testReceiveSegmentedMessageAndShutdown)
 {
-    ::util::estd::declare::
-        block_pool<5U, sizeof(::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>)>
-            messageReceiverBlockPool;
+    using T = ::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>;
+    ::etl::generic_pool<sizeof(T), alignof(T), 5U> messageReceiverBlockPool;
     DoCanReceiver<DataLinkLayer> cut(
         _busId,
         _context,
@@ -593,29 +592,29 @@ TEST_F(DoCanReceiverTest, testReceiveSegmentedMessageAndShutdown)
         sizeof(data),
         3U,
         7U,
-        ::estd::slice<uint8_t const>::from_pointer(data, 6U));
+        ::etl::span<uint8_t const>(data, 6U));
     // receive consecutive frame of an unknown receiver
     expectLog(LEVEL_WARN, 0x4455);
     cut.consecutiveDataFrameReceived(
-        0x4455, 0x1U, ::estd::slice<uint8_t const>::from_pointer(data + 6U, 7U));
+        0x4455, 0x1U, ::etl::span<uint8_t const>(data + 6U, 7U));
     // receive too short consecutive frame
     expectLog(LEVEL_WARN, 0x1234);
     cut.consecutiveDataFrameReceived(
-        0x1234, 0x1U, ::estd::slice<uint8_t const>::from_pointer(data + 6U, 2U));
+        0x1234, 0x1U, ::etl::span<uint8_t const>(data + 6U, 2U));
     // receive valid consecutive frames
     cut.consecutiveDataFrameReceived(
-        0x1234, 0x1U, ::estd::slice<uint8_t const>::from_pointer(data + 6U, 7U));
+        0x1234, 0x1U, ::etl::span<uint8_t const>(data + 6U, 7U));
     EXPECT_CALL(
         _messageProvidingListenerMock, messageReceived(_busId, Ref(_transportMessage1), NotNull()))
         .WillOnce(Return(ITransportMessageListener::ReceiveResult::RECEIVED_NO_ERROR));
     cut.consecutiveDataFrameReceived(
-        0x1234, 0x2U, ::estd::slice<uint8_t const>::from_pointer(data + 13U, 2U));
+        0x1234, 0x2U, ::etl::span<uint8_t const>(data + 13U, 2U));
     Mock::VerifyAndClearExpectations(&_messageProvidingListenerMock);
     EXPECT_EQ(
-        0,
-        ::estd::memory::compare(
-            data,
-            ::estd::slice<uint8_t const>::from_pointer(
+        true,
+        ::etl::equal(
+            ::etl::span<uint8_t>(data),
+            ::etl::span<uint8_t const>(
                 _transportMessage1.getPayload(), _transportMessage1.getPayloadLength())));
     EXPECT_EQ(0x14U, _transportMessage1.getSourceId());
     EXPECT_EQ(0x23U, _transportMessage1.getTargetId());
@@ -637,10 +636,8 @@ TEST_F(
     ASSERT_GT(nowUs, ::std::numeric_limits<int32_t>::max());
     constexpr uint8_t MESSAGE_SIZE   = 12; // Should be only 2 frames
     constexpr uint8_t NO_OF_MESSAGES = 12;
-    ::util::estd::declare::block_pool<
-        NO_OF_MESSAGES,
-        sizeof(::docan::declare::DoCanMessageReceiver<DataLinkLayer, MESSAGE_SIZE>)>
-        messageReceiverBlockPool;
+    using T = ::docan::declare::DoCanMessageReceiver<DataLinkLayer, MESSAGE_SIZE>;
+    ::etl::generic_pool<sizeof(T), alignof(T), NO_OF_MESSAGES> messageReceiverBlockPool;
     DoCanReceiver<DataLinkLayer> cut(
         _busId,
         _context,
@@ -684,7 +681,7 @@ TEST_F(
             MESSAGE_SIZE,
             2U,
             7U,
-            ::estd::slice<uint8_t const>::from_pointer(data[i], 6U));
+            ::etl::span<uint8_t const>(data[i], 6U));
 
         nowUs++;
         cut.cyclicTask(nowUs);
@@ -716,7 +713,7 @@ TEST_F(
                 .WillOnce(Return(ITransportMessageListener::ReceiveResult::RECEIVED_NO_ERROR));
             // receive valid consecutive frames
             cut.consecutiveDataFrameReceived(
-                0x1234 + i, 0x1U, ::estd::slice<uint8_t const>::from_pointer(data[i] + 6U, 6U));
+                0x1234 + i, 0x1U, ::etl::span<uint8_t const>(data[i] + 6U, 6U));
         }
 
         nowUs++;
@@ -751,9 +748,8 @@ TEST_F(DoCanReceiverTest, testMultipleDifferentTimeoutsWithDifferentExpiry)
     constexpr uint8_t RX_TIMEOUT       = 0; // Even
     constexpr uint8_t ALLOCATE_TIMEOUT = 1; // Odd
 
-    ::util::estd::declare::block_pool<
-        NO_OF_MESSAGES,
-        sizeof(::docan::declare::DoCanMessageReceiver<DataLinkLayer, MESSAGE_SIZE>)>
+    using T = ::docan::declare::DoCanMessageReceiver<DataLinkLayer, MESSAGE_SIZE>;
+    ::etl::generic_pool<sizeof(T), alignof(T), NO_OF_MESSAGES>
         messageReceiverBlockPool;
     DoCanReceiver<DataLinkLayer> cut(
         _busId,
@@ -812,7 +808,7 @@ TEST_F(DoCanReceiverTest, testMultipleDifferentTimeoutsWithDifferentExpiry)
             MESSAGE_SIZE,
             2U,
             7U,
-            ::estd::slice<uint8_t const>::from_pointer(data[i], 6U));
+            ::etl::span<uint8_t const>(data[i], 6U));
     }
 
     Mock::VerifyAndClearExpectations(&_flowControlFrameTransmitterMock);
@@ -915,9 +911,8 @@ TEST_F(DoCanReceiverTest, testMultipleDifferentTimeoutsWithDifferentExpiry)
 
 TEST_F(DoCanReceiverTest, testReceiveSegmentedMessageWithWrongSequenceNumberAndShutdown)
 {
-    ::util::estd::declare::
-        block_pool<5U, sizeof(::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>)>
-            messageReceiverBlockPool;
+    using T = ::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>;
+    ::etl::generic_pool<sizeof(T), alignof(T), 5U> messageReceiverBlockPool;
     DoCanReceiver<DataLinkLayer> cut(
         _busId,
         _context,
@@ -950,7 +945,7 @@ TEST_F(DoCanReceiverTest, testReceiveSegmentedMessageWithWrongSequenceNumberAndS
         sizeof(data),
         3U,
         7U,
-        ::estd::slice<uint8_t const>::from_pointer(data, 6U));
+        ::etl::span<uint8_t const>(data, 6U));
 
     // receive invalid consecutive frames, index 2 instead of 1
     // To test bad sequence number, second index frame needs to be the same size as is expected from
@@ -959,7 +954,7 @@ TEST_F(DoCanReceiverTest, testReceiveSegmentedMessageWithWrongSequenceNumberAndS
     expectLog(
         LEVEL_WARN, 0x1234, "DoCanReceiver(%s)::%s(%s): Frame with bad sequence number received");
     cut.consecutiveDataFrameReceived(
-        0x1234, 0x2U, ::estd::slice<uint8_t const>::from_pointer(data + 13U, 7U));
+        0x1234, 0x2U, ::etl::span<uint8_t const>(data + 13U, 7U));
     Mock::VerifyAndClearExpectations(&_messageProvidingListenerMock);
     // shutdown
     cut.shutdown();
@@ -971,8 +966,8 @@ TEST_F(DoCanReceiverTest, testReceiveSegmentedMessageWithWrongSequenceNumberAndS
  */
 TEST_F(DoCanReceiverTest, testReceiveFirstConsecutiveFrameOfSegmentedMessageDuringAllocation)
 {
-    ::util::estd::declare::
-        block_pool<5U, sizeof(::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>)>
+    using T = ::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>;
+    ::etl::generic_pool<sizeof(T), alignof(T), 5U>
             messageReceiverBlockPool;
     DoCanReceiver<DataLinkLayer> cut(
         _busId,
@@ -1004,12 +999,12 @@ TEST_F(DoCanReceiverTest, testReceiveFirstConsecutiveFrameOfSegmentedMessageDuri
         sizeof(data),
         3U,
         7U,
-        ::estd::slice<uint8_t const>::from_pointer(data, 6U));
+        ::etl::span<uint8_t const>(data, 6U));
     Mock::VerifyAndClearExpectations(&_messageProvidingListenerMock);
     // and immediately the consecutive one which isn't expected
     expectLog(LEVEL_WARN, 0x1234);
     cut.consecutiveDataFrameReceived(
-        0x1234U, 0x1U, ::estd::slice<uint8_t const>::from_pointer(data + 6U, 7U));
+        0x1234U, 0x1U, ::etl::span<uint8_t const>(data + 6U, 7U));
 
     // shutdown
     cut.shutdown();
@@ -1023,9 +1018,8 @@ TEST_F(
     DoCanReceiverTest,
     testReceiveSegmentedMessageAndSingleFrameMessagesWithLimitedResourcesAndShutdown)
 {
-    ::util::estd::declare::
-        block_pool<5U, sizeof(::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>)>
-            messageReceiverBlockPool;
+    using T = ::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>;
+    ::etl::generic_pool<sizeof(T), alignof(T), 5U> messageReceiverBlockPool;
     DoCanReceiver<DataLinkLayer> cut(
         _busId,
         _context,
@@ -1058,7 +1052,7 @@ TEST_F(
         sizeof(data1),
         3U,
         7U,
-        ::estd::slice<uint8_t const>::from_pointer(data1, 6U));
+        ::etl::span<uint8_t const>(data1, 6U));
     Mock::VerifyAndClearExpectations(&_messageProvidingListenerMock);
     Mock::VerifyAndClearExpectations(&_flowControlFrameTransmitterMock);
     // receive a single frame message
@@ -1128,11 +1122,10 @@ TEST_F(
  */
 TEST_F(DoCanReceiverTest, testReceiveSegmentedMessageWithBlockSizeAndShutdown)
 {
-    ::util::estd::declare::
-        block_pool<5U, sizeof(::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>)>
-            messageReceiverBlockPool;
+    using T = ::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>;
+    ::etl::generic_pool<sizeof(T), alignof(T), 5U> messageReceiverBlockPool;
     DoCanParameters parameters(
-        ::estd::function<uint32_t()>::create<DoCanReceiverTest, &DoCanReceiverTest::systemUs>(
+        ::etl::delegate<uint32_t()>::create<DoCanReceiverTest, &DoCanReceiverTest::systemUs>(
             *this),
         100U,
         200U,
@@ -1174,7 +1167,7 @@ TEST_F(DoCanReceiverTest, testReceiveSegmentedMessageWithBlockSizeAndShutdown)
         sizeof(data),
         3U,
         7U,
-        ::estd::slice<uint8_t const>::from_pointer(data, 6U));
+        ::etl::span<uint8_t const>(data, 6U));
     Mock::VerifyAndClearExpectations(&_flowControlFrameTransmitterMock);
     Mock::VerifyAndClearExpectations(&_messageProvidingListenerMock);
     // receive consecutive frame
@@ -1182,13 +1175,13 @@ TEST_F(DoCanReceiverTest, testReceiveSegmentedMessageWithBlockSizeAndShutdown)
         _flowControlFrameTransmitterMock, sendFlowControl(_, 0x5678, FlowStatus::CTS, 1U, 0U))
         .WillOnce(Return(true));
     cut.consecutiveDataFrameReceived(
-        0x1234, 1U, ::estd::slice<uint8_t const>::from_pointer(data + 6U, 7U));
+        0x1234, 1U, ::etl::span<uint8_t const>(data + 6U, 7U));
     Mock::VerifyAndClearExpectations(&_flowControlFrameTransmitterMock);
     EXPECT_CALL(
         _messageProvidingListenerMock, messageReceived(_busId, Ref(_transportMessage1), NotNull()))
         .WillOnce(Return(ITransportMessageListener::ReceiveResult::RECEIVED_NO_ERROR));
     cut.consecutiveDataFrameReceived(
-        0x1234, 2U, ::estd::slice<uint8_t const>::from_pointer(data + 13U, 2U));
+        0x1234, 2U, ::etl::span<uint8_t const>(data + 13U, 2U));
     Mock::VerifyAndClearExpectations(&_flowControlFrameTransmitterMock);
     Mock::VerifyAndClearExpectations(&_messageProvidingListenerMock);
 
@@ -1199,9 +1192,8 @@ TEST_F(DoCanReceiverTest, testReceiveSegmentedMessageWithBlockSizeAndShutdown)
 
 TEST_F(DoCanReceiverTest, testReceptionOfSegmentedMessageIsCancelledByNextFirstFrame)
 {
-    ::util::estd::declare::
-        block_pool<5U, sizeof(::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>)>
-            messageReceiverBlockPool;
+    using T = ::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>;
+    ::etl::generic_pool<sizeof(T), alignof(T), 5U> messageReceiverBlockPool;
     DoCanReceiver<DataLinkLayer> cut(
         _busId,
         _context,
@@ -1234,10 +1226,10 @@ TEST_F(DoCanReceiverTest, testReceptionOfSegmentedMessageIsCancelledByNextFirstF
         sizeof(data1),
         3U,
         7U,
-        ::estd::slice<uint8_t const>::from_pointer(data1, 6U));
+        ::etl::span<uint8_t const>(data1, 6U));
     // receive consecutive frame
     (cut.consecutiveDataFrameReceived(
-        0x1234, 1U, ::estd::slice<uint8_t const>::from_pointer(data1 + 6U, 7U)));
+        0x1234, 1U, ::etl::span<uint8_t const>(data1 + 6U, 7U)));
     Mock::VerifyAndClearExpectations(&_flowControlFrameTransmitterMock);
     Mock::VerifyAndClearExpectations(&_messageProvidingListenerMock);
     // receive single frame
@@ -1265,10 +1257,10 @@ TEST_F(DoCanReceiverTest, testReceptionOfSegmentedMessageIsCancelledByNextFirstF
     EXPECT_EQ(0x14U, _transportMessage2.getSourceId());
     EXPECT_EQ(0x23U, _transportMessage2.getTargetId());
     EXPECT_EQ(
-        0,
-        ::estd::memory::compare(
-            data2,
-            ::estd::slice<uint8_t const>::from_pointer(
+        true,
+        ::etl::equal(
+            ::etl::span<uint8_t const>(data2),
+            ::etl::span<uint8_t const>(
                 _transportMessage2.getPayload(), _transportMessage2.getPayloadLength())));
 
     // shutdown should be delayed because processing is pending
@@ -1284,10 +1276,8 @@ TEST_F(DoCanReceiverTest, testReceiveSegmentedMessageBiggerThan4095MessageAndShu
     constexpr uint16_t MESSAGE_SIZE = 4095 * 2 - 1;
     constexpr uint8_t FRAME_SIZE    = 8;
     constexpr uint16_t FRAMES       = (MESSAGE_SIZE + FRAME_SIZE - 1) / FRAME_SIZE;
-    ::util::estd::declare::block_pool<
-        FRAMES,
-        sizeof(::docan::declare::DoCanMessageReceiver<DataLinkLayer, FRAME_SIZE>)>
-        messageReceiverBlockPool;
+    using T = ::docan::declare::DoCanMessageReceiver<DataLinkLayer, FRAME_SIZE>;
+    ::etl::generic_pool<sizeof(T), alignof(T), FRAMES> messageReceiverBlockPool;
     DoCanReceiver<DataLinkLayer> cut(
         _busId,
         _context,
@@ -1325,7 +1315,7 @@ TEST_F(DoCanReceiverTest, testReceiveSegmentedMessageBiggerThan4095MessageAndShu
         sizeof(data),
         FRAMES,
         FRAME_SIZE,
-        ::estd::slice<uint8_t const>::from_pointer(data, FRAME_SIZE - 1));
+        ::etl::span<uint8_t const>(data, FRAME_SIZE - 1));
 
     // Read rest
     EXPECT_CALL(
@@ -1337,21 +1327,21 @@ TEST_F(DoCanReceiverTest, testReceiveSegmentedMessageBiggerThan4095MessageAndShu
         (cut.consecutiveDataFrameReceived(
             0x1234,
             i & 0xF, // Valid Sequence values
-            ::estd::slice<uint8_t const>::from_pointer(data + (FRAME_SIZE * i) - 1, FRAME_SIZE)));
+            ::etl::span<uint8_t const>(data + (FRAME_SIZE * i) - 1, FRAME_SIZE)));
     }
     // Last should be different size
     (cut.consecutiveDataFrameReceived(
         0x1234,
         i & 0xF,
-        ::estd::slice<uint8_t const>::from_pointer(
+        ::etl::span<uint8_t const>(
             data + (FRAME_SIZE * i) - 1, (MESSAGE_SIZE % FRAME_SIZE) + 1)));
 
     Mock::VerifyAndClearExpectations(&_messageProvidingListenerMock);
     EXPECT_EQ(
-        0,
-        ::estd::memory::compare(
-            data,
-            ::estd::slice<uint8_t const>::from_pointer(
+        true,
+        ::etl::equal(
+            ::etl::span<uint8_t const>(data),
+            ::etl::span<uint8_t const>(
                 transportMessage.getPayload(), transportMessage.getPayloadLength())));
     EXPECT_EQ(0x14U, transportMessage.getSourceId());
     EXPECT_EQ(0x23U, transportMessage.getTargetId());
@@ -1366,9 +1356,8 @@ TEST_F(DoCanReceiverTest, testReceiveSegmentedMessageBiggerThan4095MessageAndShu
  */
 TEST_F(DoCanReceiverTest, testReceiveFirstFrameWithAllocationTimeout)
 {
-    ::util::estd::declare::
-        block_pool<5U, sizeof(::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>)>
-            messageReceiverBlockPool;
+    using T = ::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>;
+    ::etl::generic_pool<sizeof(T), alignof(T), 5U> messageReceiverBlockPool;
     DoCanReceiver<DataLinkLayer> cut(
         _busId,
         _context,
@@ -1412,9 +1401,8 @@ TEST_F(DoCanReceiverTest, testReceiveFirstFrameWithAllocationTimeout)
 
 TEST_F(DoCanReceiverTest, testReceiveInvalidFirstFrame)
 {
-    ::util::estd::declare::
-        block_pool<5U, sizeof(::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>)>
-            messageReceiverBlockPool;
+    using T = ::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>;
+    ::etl::generic_pool<sizeof(T), alignof(T), 5U> messageReceiverBlockPool;
     DoCanReceiver<DataLinkLayer> cut(
         _busId,
         _context,
@@ -1448,8 +1436,8 @@ TEST_F(DoCanReceiverTest, testReceiveInvalidFirstFrame)
 
 TEST_F(DoCanReceiverTest, testReceiveFirstFrameOfUnknownSender)
 {
-    ::util::estd::declare::
-        block_pool<5U, sizeof(::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>)>
+    using T = ::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>;
+    ::etl::generic_pool<sizeof(T), alignof(T), 5U>
             messageReceiverBlockPool;
     DoCanReceiver<DataLinkLayer> cut(
         _busId,
@@ -1488,9 +1476,8 @@ TEST_F(DoCanReceiverTest, testReceiveFirstFrameOfUnknownSender)
 
 TEST_F(DoCanReceiverTest, testReceiveFirstFrameOfUnknownReceiver)
 {
-    ::util::estd::declare::
-        block_pool<5U, sizeof(::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>)>
-            messageReceiverBlockPool;
+    using T = ::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>;
+    ::etl::generic_pool<sizeof(T), alignof(T), 5U> messageReceiverBlockPool;
     DoCanReceiver<DataLinkLayer> cut(
         _busId,
         _context,
@@ -1528,8 +1515,8 @@ TEST_F(DoCanReceiverTest, testReceiveFirstFrameOfUnknownReceiver)
 
 TEST_F(DoCanReceiverTest, testTransportMessageFailReceiveFirstFrame)
 {
-    ::util::estd::declare::
-        block_pool<5U, sizeof(::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>)>
+    using T = ::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>;
+    ::etl::generic_pool<sizeof(T), alignof(T), 5U>
             messageReceiverBlockPool;
     DoCanReceiver<DataLinkLayer> cut(
         _busId,
@@ -1571,9 +1558,8 @@ TEST_F(DoCanReceiverTest, testTransportMessageFailReceiveFirstFrame)
 
 TEST_F(DoCanReceiverTest, testReceiveSingleFrameMessagesWithoutAllocationSuccess)
 {
-    ::util::estd::declare::
-        block_pool<3U, sizeof(::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>)>
-            messageReceiverBlockPool;
+    using T = ::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>;
+    ::etl::generic_pool<sizeof(T), alignof(T), 3U> messageReceiverBlockPool;
     DoCanReceiver<DataLinkLayer> cut(
         _busId,
         _context,
@@ -1685,9 +1671,8 @@ TEST_F(DoCanReceiverTest, testReceiveSingleFrameMessagesWithoutAllocationSuccess
 
 TEST_F(DoCanReceiverTest, testIgnoreFunctionalFirstFrames)
 {
-    ::util::estd::declare::
-        block_pool<3U, sizeof(::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>)>
-            messageReceiverBlockPool;
+    using T = ::docan::declare::DoCanMessageReceiver<DataLinkLayer, 7U>;
+    ::etl::generic_pool<sizeof(T), alignof(T), 3U> messageReceiverBlockPool;
     DoCanReceiver<DataLinkLayer> cut(
         _busId,
         _context,

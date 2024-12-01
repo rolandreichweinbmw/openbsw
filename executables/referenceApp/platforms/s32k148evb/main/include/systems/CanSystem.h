@@ -8,8 +8,6 @@
 
 #include <systems/ICanSystem.h>
 
-#include <estd/singleton.h>
-
 namespace bios
 {
 class IEcuPowerStateController;
@@ -45,7 +43,6 @@ namespace systems
 class CanSystem
 : public ::can::ICanSystem
 , public ::lifecycle::SingleContextLifecycleComponent
-, public ::estd::singleton<CanSystem>
 {
 public:
     /**

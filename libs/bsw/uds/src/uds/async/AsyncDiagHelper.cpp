@@ -1,7 +1,7 @@
 // Copyright 2024 Accenture.
 
-#include "uds/async/AsyncDiagHelper.h"
 
+#include "uds/async/AsyncDiagHelper.h"
 #include "uds/connection/IncomingDiagConnection.h"
 
 #include <transport/TransportMessage.h>
@@ -19,11 +19,11 @@ AsyncDiagHelper::verify(uint8_t const* const request, uint16_t const requestLeng
 }
 
 AsyncDiagHelper::StoredRequest* AsyncDiagHelper::allocateRequest(
-    IncomingDiagConnection& connection, uint8_t const* const request, uint16_t const requestLength)
+    IncomingDiagConnection& connection, uint8_t const* request, uint16_t requestLength)
 {
-    if (!fStoredRequestPool.empty())
+    if (!fStoredRequestPool.full())
     {
-        return &fStoredRequestPool.allocate().construct(connection, request, requestLength);
+        return fStoredRequestPool.template create<AsyncDiagHelper::StoredRequest, IncomingDiagConnection&, uint8_t const*, uint16_t>(connection, etl::move(request), etl::move(requestLength));
     }
 
     return nullptr;
@@ -34,7 +34,7 @@ void AsyncDiagHelper::processAndReleaseRequest(AbstractDiagJob& job, StoredReque
     IncomingDiagConnection& connection = request.getConnection();
     DiagReturnCode::Type const responseCode
         = job.process(connection, request.getRequest(), request.getRequestLength());
-    fStoredRequestPool.release(request);
+    fStoredRequestPool.release(&request);
     if (responseCode != DiagReturnCode::OK)
     {
         (void)connection.sendNegativeResponse(static_cast<uint8_t>(responseCode), *this);

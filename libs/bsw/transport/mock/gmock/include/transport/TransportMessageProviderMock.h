@@ -13,6 +13,8 @@
 
 #include <gmock/gmock.h>
 
+#include <etl/span.h>
+
 namespace transport
 {
 class TransportMessageProviderMock : public ITransportMessageProvider
@@ -25,7 +27,7 @@ public:
             uint16_t,
             uint16_t,
             uint16_t,
-            ::estd::slice<uint8_t const> const&,
+            ::etl::span<uint8_t const> const&,
             TransportMessage*&));
 
     MOCK_METHOD1(releaseTransportMessage, void(TransportMessage&));

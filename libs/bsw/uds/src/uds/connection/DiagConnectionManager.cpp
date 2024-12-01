@@ -14,6 +14,8 @@
 #include "uds/connection/ManagedOutgoingDiagConnection.h"
 #include "uds/connection/OutgoingDiagConnection.h"
 
+#include <etl/pool.h>
+
 #include <async/Async.h>
 
 using ::transport::AbstractTransportLayer;
@@ -279,7 +281,7 @@ uint16_t DiagConnectionManager::getSourceDiagId() const { return fConfiguration.
 
 uint8_t DiagConnectionManager::getBusId() const { return fConfiguration.DiagBusId; }
 
-void DiagConnectionManager::shutdown(::estd::function<void()> const delegate)
+void DiagConnectionManager::shutdown(::etl::delegate<void()> const delegate)
 {
     fShutdownDelegate  = delegate;
     fShutdownRequested = true;
@@ -290,7 +292,7 @@ void DiagConnectionManager::checkShutdownProgress()
 {
     if (fShutdownRequested)
     {
-        ::estd::object_pool<IncomingDiagConnection> const& incomingDiagConnections
+        ::etl::ipool const& incomingDiagConnections
             = fConfiguration.incomingDiagConnectionPool();
 
         if ((!incomingDiagConnections.full()) || (!fReleasedOutgoingDiagConnections.empty()))

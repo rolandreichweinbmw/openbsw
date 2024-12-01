@@ -3,7 +3,8 @@
 #include "app/app.h"
 
 #include "console/console.h"
-#include "estd/typed_mem.h"
+#include <etl/optional.h>
+#include <etl/singleton.h>
 #include "logger/logger.h"
 #include "reset/softwareSystemReset.h"
 #include "systems/DemoSystem.h"
@@ -69,20 +70,20 @@ LifecycleManager lifecycleManager{
     TASK_SYSADMIN,
     ::lifecycle::LifecycleManager::GetTimestampType::create<&getSystemTimeUs32Bit>()};
 
-::estd::typed_mem<::systems::RuntimeSystem> runtimeSystem;
-::estd::typed_mem<::systems::SysAdminSystem> sysAdminSystem;
-::estd::typed_mem<::systems::DemoSystem> demoSystem;
+::etl::optional<::systems::RuntimeSystem> runtimeSystem;
+::etl::optional<::systems::SysAdminSystem> sysAdminSystem;
+::etl::optional<::systems::DemoSystem> demoSystem;
 
 #ifdef PLATFORM_SUPPORT_UDS
-::estd::typed_mem<::transport::TransportSystem> transportSystem;
+using TransportSystem = ::etl::singleton<::transport::TransportSystem>;
 #endif
 
 #ifdef PLATFORM_SUPPORT_CAN
-::estd::typed_mem<::docan::DoCanSystem> doCanSystem;
+::etl::optional<::docan::DoCanSystem> doCanSystem;
 #endif
 
 #ifdef PLATFORM_SUPPORT_UDS
-::estd::typed_mem<::uds::UdsSystem> udsSystem;
+using UdsSystem = ::etl::singleton<::uds::UdsSystem>;
 #endif
 
 class LifecycleMonitor : private ::lifecycle::ILifecycleListener
@@ -141,21 +142,20 @@ void run()
     ::platform::platformLifecycleAdd(lifecycleManager, 3U);
     /* runlevel 4 */
 #ifdef PLATFORM_SUPPORT_UDS
-    lifecycleManager.addComponent("transport", transportSystem.emplace(TASK_UDS), 4U);
+    TransportSystem::create(TASK_UDS);
+    lifecycleManager.addComponent("transport", TransportSystem::instance(), 4U);
 #endif
 
     /* runlevel 5 */
 #ifdef PLATFORM_SUPPORT_CAN
     lifecycleManager.addComponent(
-        "docan", doCanSystem.emplace(*transportSystem, ::systems::getCanSystem(), TASK_CAN), 5U);
+        "docan", doCanSystem.emplace(TransportSystem::instance(), ::systems::getCanSystem(), TASK_CAN), 5U);
 #endif
 
     /* runlevel 6 */
 #ifdef PLATFORM_SUPPORT_UDS
-    lifecycleManager.addComponent(
-        "uds",
-        udsSystem.emplace(lifecycleManager, *transportSystem, TASK_UDS, LOGICAL_ADDRESS),
-        6U);
+    UdsSystem::create(lifecycleManager, TransportSystem::instance(), TASK_UDS, LOGICAL_ADDRESS);
+    lifecycleManager.addComponent("uds", UdsSystem::instance(), 6U);
 #endif
 
     /* runlevel 7 */

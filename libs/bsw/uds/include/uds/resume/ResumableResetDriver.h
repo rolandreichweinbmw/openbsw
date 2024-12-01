@@ -3,7 +3,8 @@
 #ifndef GUARD_72CA254C_1E20_49C9_B67C_E3471AF53B7E
 #define GUARD_72CA254C_1E20_49C9_B67C_E3471AF53B7E
 
-#include "estd/uncopyable.h"
+#include <etl/uncopyable.h>
+
 #include "platform/estdint.h"
 #include "transport/BufferedTransportMessage.h"
 #include "uds/lifecycle/IUdsLifecycleConnector.h"
@@ -17,10 +18,8 @@ class DiagDispatcher2;
 class IResumableResetDriverPersistence;
 
 // Note: you have to call lifecycleComplete() when lifecycle enters RUN state
-class ResumableResetDriver : private ::async::RunnableType
+class ResumableResetDriver : private ::async::RunnableType, public ::etl::uncopyable
 {
-    UNCOPYABLE(ResumableResetDriver);
-
 public:
     /**
      * Constructor.

@@ -1,6 +1,7 @@
 // Copyright 2024 Accenture.
 
-#include "estd/typed_mem.h"
+#include "etl/optional.h"
+#include "etl/singleton.h"
 #include "systems/BspSystem.h"
 #ifdef PLATFORM_SUPPORT_CAN
 #include "systems/CanSystem.h"
@@ -48,10 +49,10 @@ namespace platform
 {
 StaticBsp staticBsp;
 
-::estd::typed_mem<::systems::BspSystem> bspSystem;
+::etl::optional<::systems::BspSystem> bspSystem;
 
 #ifdef PLATFORM_SUPPORT_CAN
-::estd::typed_mem<::systems::CanSystem> canSystem;
+using CanSystem = ::etl::singleton<::systems::CanSystem>;
 #endif // PLATFORM_SUPPORT_CAN
 
 /**
@@ -67,7 +68,8 @@ void platformLifecycleAdd(::lifecycle::LifecycleManager& lifecycleManager, uint8
     if (level == 2U)
     {
 #ifdef PLATFORM_SUPPORT_CAN
-        lifecycleManager.addComponent("can", canSystem.emplace(TASK_CAN, staticBsp), level);
+        CanSystem::create(TASK_CAN, staticBsp);
+        lifecycleManager.addComponent("can", CanSystem::instance(), level);
 #endif // PLATFORM_SUPPORT_CAN
     }
 }
@@ -76,7 +78,7 @@ void platformLifecycleAdd(::lifecycle::LifecycleManager& lifecycleManager, uint8
 #ifdef PLATFORM_SUPPORT_CAN
 namespace systems
 {
-::can::ICanSystem& getCanSystem() { return *::platform::canSystem; }
+::can::ICanSystem& getCanSystem() { return CanSystem::instance(); }
 } // namespace systems
 #endif // PLATFORM_SUPPORT_CAN
 

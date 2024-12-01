@@ -4,7 +4,8 @@
 
 #include <util/format/StringWriter.h>
 
-#include <estd/chrono.h>
+#include <etl/chrono.h>
+#include <etl/span.h>
 
 #include <cstdio>
 #include <ctime>
@@ -12,7 +13,7 @@
 namespace
 {
 int64_t const NO_INIT_BOUNDARY
-    = ::estd::chrono::duration_cast<::estd::chrono::milliseconds>(::estd::chrono::hours(1)).count();
+    = ::etl::chrono::duration_cast<::etl::chrono::milliseconds>(::etl::chrono::hours(1)).count();
 
 char const TIME_UNINITIALIZED_FORMAT[] = "0000-00-00 %H:%M:%S";
 
@@ -24,7 +25,7 @@ LoggerTime::LoggerTime(char const* const timestampFormat) : _timestampFormat(tim
 
 int64_t LoggerTime::getTimestamp() const
 {
-    using namespace ::estd::chrono;
+    using namespace ::etl::chrono;
     return duration_cast<milliseconds>(high_resolution_clock::now().time_since_epoch()).count();
 }
 
@@ -59,7 +60,7 @@ void LoggerTime::formatTimestamp(
             static_cast<uint32_t>(timestampBufferSize),
             ".%03u",
             static_cast<unsigned int>(mSeconds));
-        stream.write(::estd::slice<uint8_t const>::from_pointer(
+        stream.write(::etl::span<uint8_t const>::from_pointer(
             reinterpret_cast<uint8_t const*>(timestampBuffer), timestampLength + n));
     }
 }

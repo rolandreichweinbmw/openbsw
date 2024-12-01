@@ -42,8 +42,10 @@ set(etl_SOURCE_DIR include)
 
 FetchContent_Declare(
   etl
-  GIT_REPOSITORY https://github.com/ETLCPP/etl.git
-  GIT_TAG 20.39.4
+  # GIT_REPOSITORY https://github.com/ETLCPP/etl.git
+  # GIT_TAG 20.39.4
+  GIT_REPOSITORY https://github.com/rolandreichweinbmw/etl.git
+  GIT_TAG dev-rr
   EXCLUDE_FROM_ALL
 )
 

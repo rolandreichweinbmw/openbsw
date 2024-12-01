@@ -3,18 +3,15 @@
 #ifndef GUARD_DC726F41_1EE2_4343_818F_8A2F855AB88F
 #define GUARD_DC726F41_1EE2_4343_818F_8A2F855AB88F
 
-#include "estd/array.h"
-#include "estd/slice.h"
-#include "estd/uncopyable.h"
+#include <etl/uncopyable.h>
+
 #include "platform/estdint.h"
 #include "uds/jobs/DataIdentifierJob.h"
 
 namespace uds
 {
-class ReadIdentifierPot : public DataIdentifierJob
+class ReadIdentifierPot : public DataIdentifierJob, public ::etl::uncopyable
 {
-    UNCOPYABLE(ReadIdentifierPot);
-
 public:
     ReadIdentifierPot(DiagSessionMask const sessionMask = DiagSession::ALL_SESSIONS());
 

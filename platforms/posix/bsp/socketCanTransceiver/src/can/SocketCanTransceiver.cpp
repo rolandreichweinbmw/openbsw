@@ -15,6 +15,8 @@
 #include <type_traits>
 #include <unistd.h>
 
+#include <etl/span.h>
+
 static_assert(
     std::is_standard_layout<::can::CANFrame>::value
         && std::is_trivially_destructible<::can::CANFrame>::value,
@@ -103,7 +105,7 @@ ICanTransceiver::ErrorCode SocketCanTransceiver::write(CANFrame const& frame)
         return ErrorCode::CAN_ERR_ILLEGAL_STATE;
     }
     FrameWithListener slot{frame, nullptr};
-    ::estd::slice<uint8_t> memory = _txWriter.allocate(sizeof(slot));
+    ::etl::span<uint8_t> memory = _txWriter.allocate(sizeof(slot));
     if (memory.size() == 0)
     {
         return ErrorCode::CAN_ERR_TX_HW_QUEUE_FULL;
@@ -121,7 +123,7 @@ SocketCanTransceiver::write(CANFrame const& frame, ICANFrameSentListener& listen
         return ErrorCode::CAN_ERR_ILLEGAL_STATE;
     }
     FrameWithListener slot{frame, &listener};
-    ::estd::slice<uint8_t> memory = _txWriter.allocate(sizeof(slot));
+    ::etl::span<uint8_t> memory = _txWriter.allocate(sizeof(slot));
     if (memory.size() == 0)
     {
         return ErrorCode::CAN_ERR_TX_HW_QUEUE_FULL;
@@ -236,7 +238,7 @@ void SocketCanTransceiver::guardedRun(int maxSentPerRun, int maxReceivedPerRun)
     // we shall try to deliver it.
     for (int count = 0; count < maxSentPerRun; ++count)
     {
-        ::estd::slice<uint8_t const> canFrameSlice = _txReader.peek();
+        ::etl::span<uint8_t const> canFrameSlice = _txReader.peek();
         if (canFrameSlice.size() == 0)
         {
             break;

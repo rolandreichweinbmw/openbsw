@@ -7,6 +7,8 @@
 
 #include <gtest/gtest.h>
 
+#include <etl/span.h>
+
 namespace
 {
 using namespace ::uds;
@@ -29,7 +31,7 @@ public:
     TestableReadIdentifierFromMemoryWithAuthentication(
         IDiagAuthenticator const& authenticator,
         uint16_t const id,
-        ::estd::slice<uint8_t const> const& responseData,
+        ::etl::span<uint8_t const> const& responseData,
         DiagSessionMask const sessionMask)
     : ReadIdentifierFromMemoryWithAuthentication(authenticator, id, responseData, sessionMask)
     {}

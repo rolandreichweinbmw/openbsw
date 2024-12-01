@@ -5,6 +5,7 @@
 #include "uds/connection/IncomingDiagConnection.h"
 
 #include <gmock/gmock.h>
+#include <util/estd/assert.h>
 
 using namespace ::testing;
 

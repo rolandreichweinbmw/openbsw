@@ -8,7 +8,8 @@
 #include <transport/TransportMessage.h>
 #include <transport/TransportMessageWithBuffer.h>
 
-#include <estd/memory.h>
+#include <etl/memory.h>
+#include <etl/span.h>
 
 #include <gtest/gtest.h>
 
@@ -30,7 +31,7 @@ public:
             << DiagSession::APPLICATION_DEFAULT_SESSION())
     , _cutSlice(
           TESTIDENTIFIER,
-          ::estd::slice<uint8_t const>(TESTDATA),
+          ::etl::span<uint8_t const>(TESTDATA),
           AbstractDiagJob::DiagSessionMask::getInstance()
               << DiagSession::APPLICATION_DEFAULT_SESSION())
     {}
@@ -59,7 +60,7 @@ TEST_F(ReadIdentifierFromMemoryJobTest, execute_valid_request)
         TESTIDENTIFIER & 0xFFU,
     };
 
-    ::estd::memory::set(_responseBuffer, 0);
+    ::etl::mem_set(_responseBuffer, sizeof(_responseBuffer), 0);
 
     TransportMessageWithBuffer request(
         SOURCE_ID, TARGET_ID, VALID_REQUEST, AbstractDiagJob::VARIABLE_RESPONSE_LENGTH);
@@ -80,7 +81,7 @@ TEST_F(ReadIdentifierFromMemoryJobTest, execute_valid_request)
         _cut.execute(_incomingDiagConnection, VALID_REQUEST, sizeof(VALID_REQUEST)));
 
     EXPECT_THAT(
-        ::estd::slice<uint8_t const>(TESTDATA),
+        ::etl::span<uint8_t const>(TESTDATA),
         ElementsAreArray(&_responseBuffer[2], sizeof(TESTDATA)));
 }
 
@@ -91,7 +92,7 @@ TEST_F(ReadIdentifierFromMemoryJobTest, execute_valid_request_slice_constructor)
         TESTIDENTIFIER & 0xFFU,
     };
 
-    ::estd::memory::set(_responseBuffer, 0);
+    ::etl::mem_set(_responseBuffer, sizeof(_responseBuffer), 0);
 
     TransportMessageWithBuffer request(
         SOURCE_ID, TARGET_ID, VALID_REQUEST, AbstractDiagJob::VARIABLE_RESPONSE_LENGTH);
@@ -112,7 +113,7 @@ TEST_F(ReadIdentifierFromMemoryJobTest, execute_valid_request_slice_constructor)
         _cutSlice.execute(_incomingDiagConnection, VALID_REQUEST, sizeof(VALID_REQUEST)));
 
     EXPECT_THAT(
-        ::estd::slice<uint8_t const>(TESTDATA),
+        ::etl::span<uint8_t const>(TESTDATA),
         ElementsAreArray(&_responseBuffer[2], sizeof(TESTDATA)));
 }
 

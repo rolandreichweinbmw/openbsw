@@ -10,7 +10,7 @@
 #include "docan/datalink/DoCanFrameCodecConfigPresets.h"
 #include "docan/datalink/DoCanFrameReceiverMock.h"
 
-#include <estd/memory.h>
+#include <etl/span.h>
 
 #include <gmock/gmock.h>
 
@@ -41,11 +41,12 @@ TEST_F(DoCanFrameDecoderTest, testDecodeSingleFrame)
         _codec, DataLinkAddressPairType(0x1, 0x3), DoCanTransportAddressPair(0x3, 0x4));
     {
         // valid frame
-        uint8_t const payload[] = {0x02, 0x13, 0x24};
+        ::etl::span<uint8_t const> payload{{0x02, 0x13, 0x24}};
+        auto span = payload.subspan(1U);
         EXPECT_CALL(
             _frameReceiverMock,
             firstDataFrameReceived(
-                conn, 2U, 1U, 0U, BytesAreSlice(::estd::make_slice(payload).offset(1U))));
+                conn, 2U, 1U, 0U, ElementsAreArray(span.data(), span.size())));
         EXPECT_EQ(CodecResult::OK, cut.decodeFrame(conn, payload, _frameReceiverMock));
         Mock::VerifyAndClearExpectations(&_frameReceiverMock);
     }
@@ -68,21 +69,23 @@ TEST_F(DoCanFrameDecoderTest, testDecodeFirstFrame)
         _codec, DataLinkAddressPairType(0x1, 0x3), DoCanTransportAddressPair(0x3, 0x4));
     {
         // valid frame
-        uint8_t const payload[] = {0x10, 0x12, 0x24, 0x45, 0x67, 0x89, 0x9a, 0x91};
+        ::etl::span<uint8_t const> payload{{0x10, 0x12, 0x24, 0x45, 0x67, 0x89, 0x9a, 0x91}};
+        auto span = payload.subspan(2U);
         EXPECT_CALL(
             _frameReceiverMock,
             firstDataFrameReceived(
-                conn, 0x12U, 3U, 7U, BytesAreSlice(::estd::make_slice(payload).offset(2U))));
+                conn, 0x12U, 3U, 7U, ElementsAreArray(span.data(), span.size())));
         EXPECT_EQ(CodecResult::OK, cut.decodeFrame(conn, payload, _frameReceiverMock));
         Mock::VerifyAndClearExpectations(&_frameReceiverMock);
     }
     {
         // valid frame with escape sequence
-        uint8_t const payload[] = {0x10, 0x00, 0x00, 0x00, 0xA5, 0xB4, 0x5A, 0x4B};
+        ::etl::span<uint8_t const> payload{{0x10, 0x00, 0x00, 0x00, 0xA5, 0xB4, 0x5A, 0x4B}};
+        auto span = payload.subspan(6U);
         EXPECT_CALL(
             _frameReceiverMock,
             firstDataFrameReceived(
-                conn, 0xA5B4U, 6061U, 7U, BytesAreSlice(::estd::make_slice(payload).offset(6U))));
+                conn, 0xA5B4U, 6061U, 7U, ElementsAreArray(span.data(), span.size())));
         EXPECT_EQ(CodecResult::OK, cut.decodeFrame(conn, payload, _frameReceiverMock));
         Mock::VerifyAndClearExpectations(&_frameReceiverMock);
     }
@@ -102,11 +105,12 @@ TEST_F(DoCanFrameDecoderTest, testDecodeConsecutiveFrame)
         _codec, DataLinkAddressPairType(0x1, 0x3), DoCanTransportAddressPair(0x3, 0x4));
     {
         // valid frame
-        uint8_t const payload[] = {0x21, 0x12, 0x24, 0x45, 0x67, 0x89, 0x9a, 0x91};
+        ::etl::span<uint8_t const> payload{{0x21, 0x12, 0x24, 0x45, 0x67, 0x89, 0x9a, 0x91}};
+        auto span = payload.subspan(1U);
         EXPECT_CALL(
             _frameReceiverMock,
             consecutiveDataFrameReceived(
-                0x01, 1U, BytesAreSlice(::estd::make_slice(payload).offset(1U))));
+                0x01, 1U, ElementsAreArray(span.data(), span.size())));
         EXPECT_EQ(CodecResult::OK, cut.decodeFrame(conn, payload, _frameReceiverMock));
         Mock::VerifyAndClearExpectations(&_frameReceiverMock);
     }

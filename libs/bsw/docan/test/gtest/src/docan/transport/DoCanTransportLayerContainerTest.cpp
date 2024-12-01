@@ -19,6 +19,8 @@
 #include <async/Types.h>
 #include <bsp/timer/SystemTimerMock.h>
 
+#include <etl/delegate.h>
+
 #include <gtest/esr_extensions.h>
 
 namespace
@@ -49,7 +51,7 @@ struct DoCanTransportLayerContainerTest : ::testing::Test
     StrictMock<TransportMessageProcessedListenerMock> _messageProcessedListenerMock;
     SystemTimerMock _systemTimer;
     DoCanParameters _parameters{
-        ::estd::function<uint32_t()>::
+        ::etl::delegate<uint32_t()>::
             create<DoCanTransportLayerContainerTest, &DoCanTransportLayerContainerTest::systemUs>(
                 *this),
         100U,

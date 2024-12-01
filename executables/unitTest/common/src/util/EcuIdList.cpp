@@ -2,7 +2,9 @@
 
 #include "util/EcuIdList.h"
 
-#include <estd/assert.h>
+#include <util/estd/assert.h>
+
+#include <etl/unaligned_type.h>
 
 #include <cstdlib>
 #include <cstring>
@@ -55,7 +57,7 @@ EcuIdList::init(uint8_t* const pData, uint16_t const length, bool const initiali
     fBufferLength = length;
     if (!initializeWithData)
     {
-        ::estd::write_be<uint16_t>(fpData, 0U); // set current length to 0
+        *reinterpret_cast<etl::be_uint16_t*>(fpData) = 0U; // set current length to 0
     }
     return ECU_LIST_OK;
 }
@@ -72,7 +74,7 @@ EcuId EcuIdList::pop_back()
     uint16_t const size = getSize();
     estd_assert(size > 0U);
     uint16_t const newSize = static_cast<uint16_t>(size - 1U);
-    ::estd::write_be<uint16_t>(fpData, newSize);
+    *reinterpret_cast<etl::be_uint16_t*>(fpData) = newSize;
     return fpData[static_cast<uint16_t>(2U + static_cast<uint16_t>(size - 1U))];
 }
 
@@ -88,7 +90,7 @@ EcuIdList::ErrorCode EcuIdList::getNextEcuId(EcuId& ecuId)
     --size;
 
     uint16_t const newSize = size;
-    ::estd::write_be<uint16_t>(fpData, newSize);
+    *reinterpret_cast<etl::be_uint16_t*>(fpData) = newSize;
     return ECU_LIST_OK;
 }
 
@@ -104,7 +106,7 @@ EcuIdList::ErrorCode EcuIdList::push_back(EcuId const ecuId)
         return ECU_LIST_ERROR;
     }
     ++size;
-    ::estd::write_be<uint16_t>(fpData, size);
+    *reinterpret_cast<etl::be_uint16_t*>(fpData) = size;
     fpData[static_cast<uint16_t>(1U + size)] = ecuId;
     return ECU_LIST_OK;
 }
@@ -139,7 +141,7 @@ bool EcuIdList::contains(EcuId const ecuId) const
     {
         return false;
     }
-    uint16_t const size = ::estd::read_be<uint16_t>(fpData);
+    uint16_t const size = *reinterpret_cast<etl::be_uint16_t*>(fpData);
     for (uint16_t i = 0U; i < size; ++i)
     {
         if (fpData[static_cast<uint16_t>(2U + i)] == ecuId)
@@ -156,7 +158,7 @@ void EcuIdList::remove(EcuId const ecuId)
     {
         return;
     }
-    uint16_t size = ::estd::read_be<uint16_t>(fpData);
+    uint16_t size = *reinterpret_cast<etl::be_uint16_t*>(fpData);
     bool found    = false;
     uint8_t idx   = 0U;
     for (uint16_t i = 0U; i < size; ++i)
@@ -172,7 +174,7 @@ void EcuIdList::remove(EcuId const ecuId)
     {
         fpData[static_cast<uint8_t>(2U + idx)] = fpData[static_cast<uint16_t>(2U + (size - 1U))];
         --size;
-        ::estd::write_be<uint16_t>(fpData, size);
+        *reinterpret_cast<etl::be_uint16_t*>(fpData) = size;
     }
 }
 
@@ -180,7 +182,7 @@ EcuIdList::ErrorCode EcuIdList::resetSize(uint16_t const size)
 {
     if ((fBufferLength - 2U) >= size)
     {
-        ::estd::write_be<uint16_t>(fpData, size);
+        *reinterpret_cast<etl::be_uint16_t*>(fpData) = size;
         return ECU_LIST_OK;
     }
     return ECU_LIST_ERROR;

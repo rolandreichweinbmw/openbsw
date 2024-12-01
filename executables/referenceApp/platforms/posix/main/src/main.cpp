@@ -3,7 +3,7 @@
 #include <async/AsyncBinding.h>
 #include <lifecycle/LifecycleManager.h>
 
-#include <estd/typed_mem.h>
+#include <etl/optional.h>
 
 #include <signal.h>
 #include <unistd.h>
@@ -20,7 +20,7 @@ namespace platform
 {
 
 #ifdef PLATFORM_SUPPORT_CAN
-::estd::typed_mem<::systems::CanSystem> canSystem;
+::etl::optional<::systems::CanSystem> canSystem;
 #endif // PLATFORM_SUPPORT_CAN
 
 void platformLifecycleAdd(::lifecycle::LifecycleManager& lifecycleManager, uint8_t const level)

@@ -52,9 +52,9 @@ target_link_libraries(
             udsMock
             transportMock
             utCommon
-            estdMock
             utilMock
             asyncMockImpl
-            gtest_main)
+            gtest_main
+            util)
 
 gtest_discover_tests(udsTest PROPERTIES LABELS "udsTest")

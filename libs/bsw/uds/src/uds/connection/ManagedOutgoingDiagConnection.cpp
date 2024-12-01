@@ -2,7 +2,7 @@
 
 #include "uds/connection/ManagedOutgoingDiagConnection.h"
 
-#include "estd/assert.h"
+#include "util/estd/assert.h"
 #include "transport/TransportConfiguration.h"
 #include "transport/TransportMessage.h"
 #include "uds/DiagCodes.h"
@@ -151,7 +151,7 @@ void ManagedOutgoingDiagConnection::responseReceived(
         }
         else if ((nullptr != fpPendingResponses) && (!fpPendingResponses->full()))
         {
-            TransportJob& response = fpPendingResponses->push();
+            TransportJob& response = fpPendingResponses->emplace();
             response.setTransportMessage(transportMessage);
             response.setProcessedListener(pNotificationListener);
             processResponseQueue();

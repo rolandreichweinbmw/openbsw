@@ -17,7 +17,7 @@ application code and is subject to update and expansion.
 Submodules
 ----------
 
--  :ret:`util::assert <util_assert>`- assert
+-  :ref:`util::assert <util_assert>`- assert
 -  :ref:`util::command <util_command>` - command framework
 -  :ref:`util::crc <util_crc>` - cyclic redundancy check
 -  :ref:`util::format <util_format>` - `printf`-like string formatting

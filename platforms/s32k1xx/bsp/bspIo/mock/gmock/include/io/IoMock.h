@@ -6,7 +6,6 @@
 #include "io/Io.h"
 
 #include <bsp/Bsp.h>
-
 #include <etl/singleton.h>
 
 #include <gmock/gmock.h>

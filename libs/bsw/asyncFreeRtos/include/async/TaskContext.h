@@ -12,10 +12,9 @@
 #include "async/Types.h"
 
 #include <bsp/timer/SystemTimer.h>
-#include <timer/Timer.h>
-
 #include <etl/delegate.h>
 #include <etl/span.h>
+#include <timer/Timer.h>
 
 #include <FreeRTOS.h>
 #include <task.h>

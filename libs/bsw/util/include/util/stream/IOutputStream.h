@@ -35,7 +35,7 @@ public:
      * \param data data to write to the buffer.
      */
 
-    virtual void write(uint8_t data)                               = 0;
+    virtual void write(uint8_t data) = 0;
 
     /**
      * Writes the bytes of a buffer to the stream.

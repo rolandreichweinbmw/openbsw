@@ -7,7 +7,6 @@
 #include "io/IWriter.h"
 
 #include <etl/memory.h>
-
 #include <etl/span.h>
 
 namespace io

@@ -9,11 +9,10 @@
 #include "logger/ILoggerListener.h"
 #include "logger/ILoggerTime.h"
 
-#include <util/logger/IComponentMapping.h>
-#include <util/logger/ILoggerOutput.h>
-
 #include <etl/forward_list.h>
 #include <etl/span.h>
+#include <util/logger/IComponentMapping.h>
+#include <util/logger/ILoggerOutput.h>
 
 namespace logger
 {
@@ -254,8 +253,7 @@ void BufferedLoggerOutput<Lock, MaxEntrySize, T, E, Timestamp, ReadOnlyPredicate
         Lock const lock;
         _entryBuffer.addEntry(::etl::span<uint8_t>(entryBuffer).subspan(0, size));
     }
-    for (typename decltype(_listeners)::iterator it = _listeners.begin();
-         it != _listeners.end();
+    for (typename decltype(_listeners)::iterator it = _listeners.begin(); it != _listeners.end();
          ++it)
     {
         (*it).logAvailable();

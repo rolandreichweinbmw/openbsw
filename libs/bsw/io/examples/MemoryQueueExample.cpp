@@ -6,6 +6,7 @@
 #include <etl/memory.h>
 #include <etl/span.h>
 #include <etl/unaligned_type.h>
+
 #include <platform/estdint.h>
 
 #include <gmock/gmock.h>
@@ -59,7 +60,7 @@ bool forwardCanFrame(::io::IWriter& writer)
     }
     // The big endian 32bit id comes first in the serialization.
     auto& id = *reinterpret_cast<etl::be_uint32_t*>(data.data());
-    data = data.subspan(sizeof(id));
+    data     = data.subspan(sizeof(id));
     // We pass the slice data to the frame so that readCanFrame can read the data directly from
     // the hardware to the allocated memory.
     CanFrame frame;
@@ -121,7 +122,7 @@ bool forwardCanFrame(::io::IWriter& writer)
     }
     // The big endian 32bit id comes first in the serialization.
     *reinterpret_cast<etl::be_uint32_t*>(data.data()) = rxFrame.id;
-    data = data.subspan(sizeof(etl::be_uint32_t));
+    data                                              = data.subspan(sizeof(etl::be_uint32_t));
     // Copy payload to allocated data.
     ::etl::mem_copy(rxFrame.data.begin(), rxFrame.data.end(), data.begin());
     // Commit data to channel.
@@ -149,7 +150,7 @@ bool receiveCanFrame(CanFrame& frame, ::io::IReader& reader)
     }
     // Copy data to frame. We expect a big endian 32bit id followed by the actual data.
     frame.id = *reinterpret_cast<::etl::be_uint32_t*>(data.data());
-    data = data.subspan(sizeof(etl::be_uint32_t));
+    data     = data.subspan(sizeof(etl::be_uint32_t));
     ::etl::mem_copy(data.begin(), data.end(), frame.data.begin());
     frame.data = frame.data.subspan(0, data.size());
     // Release data to channel.

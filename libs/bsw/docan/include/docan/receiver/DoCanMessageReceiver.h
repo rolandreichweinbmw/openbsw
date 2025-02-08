@@ -8,13 +8,12 @@
 #include "docan/common/DoCanTransportAddressPair.h"
 #include "docan/receiver/DoCanMessageReceiveProtocolHandler.h"
 
+#include <etl/intrusive_forward_list.h>
+#include <etl/span.h>
 #include <transport/ITransportMessageProcessedListener.h>
 #include <transport/TransportMessage.h>
 
 #include <platform/estdint.h>
-
-#include <etl/intrusive_forward_list.h>
-#include <etl/span.h>
 
 #include <limits>
 
@@ -136,9 +135,7 @@ public:
      * \return result indicating state transition
      */
     ReceiveResult consecutiveFrameReceived(
-        uint8_t sequenceNumber,
-        FrameSizeType expectedSize,
-        ::etl::span<uint8_t const> const& data);
+        uint8_t sequenceNumber, FrameSizeType expectedSize, ::etl::span<uint8_t const> const& data);
 
     /**
      * Detach a transport message. Reception address and message are kept.
@@ -421,8 +418,7 @@ inline void DoCanMessageReceiver<DataLinkLayer>::setBlocked(bool const blocked)
 template<class DataLinkLayer>
 inline ::etl::span<uint8_t const> DoCanMessageReceiver<DataLinkLayer>::getFirstFrameData() const
 {
-    return ::etl::span<uint8_t const>{
-        _firstFrameData, static_cast<size_t>(_firstFrameDataSize)};
+    return ::etl::span<uint8_t const>{_firstFrameData, static_cast<size_t>(_firstFrameDataSize)};
 }
 
 } // namespace docan

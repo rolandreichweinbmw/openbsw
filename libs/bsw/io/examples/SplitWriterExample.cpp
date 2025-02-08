@@ -3,9 +3,9 @@
 #include "io/MemoryQueue.h"
 #include "io/SplitWriter.h"
 
-#include <gmock/gmock.h>
-
 #include <etl/memory.h>
+
+#include <gmock/gmock.h>
 
 namespace splitWriterExample
 {

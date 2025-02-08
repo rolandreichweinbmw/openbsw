@@ -4,11 +4,10 @@
 
 #include "logger/PersistenceManagerMock.h"
 
+#include <etl/memory.h>
 #include <util/crc/Crc8.h>
 #include <util/logger/ILoggerOutput.h>
 #include <util/logger/Logger.h>
-
-#include <etl/memory.h>
 
 namespace util
 {
@@ -22,7 +21,10 @@ static uint8_t CONF3 = COMPONENT_NONE;
 
 namespace
 {
-ACTION_P(CopyBuffer, destBuffer) { ::etl::mem_copy(arg0.begin(), destBuffer.size(), destBuffer.begin()); }
+ACTION_P(CopyBuffer, destBuffer)
+{
+    ::etl::mem_copy(arg0.begin(), destBuffer.size(), destBuffer.begin());
+}
 
 using namespace ::testing;
 using namespace ::util::logger;
@@ -95,7 +97,8 @@ TEST_F(PersistentComponentConfigTest, testNoLevelIsSetOnInitialization)
 {
     PersistentComponentConfig<::mapping1::TestMappingType::MappingSize, ::util::crc::Crc8::Ccitt>
         cut(mapping1::testMapping, _persistenceManagerMock);
-    EXPECT_CALL(_persistenceManagerMock, readMapping(_)).WillOnce(Return(::etl::span<uint8_t const>{}));
+    EXPECT_CALL(_persistenceManagerMock, readMapping(_))
+        .WillOnce(Return(::etl::span<uint8_t const>{}));
     cut.start(*this);
     EXPECT_EQ(LEVEL_NONE, cut.getLevel(CONF1));
     EXPECT_EQ(LEVEL_NONE, cut.getLevel(CONF2));

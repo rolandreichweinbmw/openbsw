@@ -3,17 +3,17 @@
 #ifndef GUARD_CE835A95_C3C0_44D8_8289_B302E332AC75
 #define GUARD_CE835A95_C3C0_44D8_8289_B302E332AC75
 
-#include <etl/algorithm.h>
-#include <etl/intrusive_forward_list.h>
-#include <etl/pool.h>
-#include <etl/queue.h>
-#include <etl/utility.h>
-
 #include "platform/estdint.h"
 #include "transport/TransportJob.h"
 #include "uds/UdsConfig.h"
 #include "uds/connection/IncomingDiagConnection.h"
 #include "uds/connection/ManagedOutgoingDiagConnection.h"
+
+#include <etl/algorithm.h>
+#include <etl/intrusive_forward_list.h>
+#include <etl/pool.h>
+#include <etl/queue.h>
+#include <etl/utility.h>
 
 namespace uds
 {
@@ -28,9 +28,9 @@ class AbstractDiagnosisConfiguration
 {
 public:
     using ManagedIncomingDiagConnectionPool = ::etl::ipool;
-    using ManagedOutgoingDiagConnectionList = ::etl::intrusive_forward_list<ManagedOutgoingDiagConnection,
-                                                 ::etl::forward_link<0>>;
-    using TransportJobQueue                 = ::etl::iqueue<transport::TransportJob>;
+    using ManagedOutgoingDiagConnectionList
+        = ::etl::intrusive_forward_list<ManagedOutgoingDiagConnection, ::etl::forward_link<0>>;
+    using TransportJobQueue = ::etl::iqueue<transport::TransportJob>;
 
     /**
      * Constructor
@@ -112,7 +112,9 @@ public:
         {
             return nullptr;
         }
-        return IncomingDiagConnectionPool.template create<IncomingDiagConnection, ::async::ContextType const>(etl::move(Context));
+        return IncomingDiagConnectionPool
+            .template create<IncomingDiagConnection, ::async::ContextType const>(
+                etl::move(Context));
     }
 
     /**
@@ -213,8 +215,7 @@ public:
     }
 
 private:
-    ::etl::pool<IncomingDiagConnection, NUM_INCOMING_CONNECTIONS>
-        fIncomingDiagConnectionPool;
+    ::etl::pool<IncomingDiagConnection, NUM_INCOMING_CONNECTIONS> fIncomingDiagConnectionPool;
     ManagedOutgoingDiagConnection fOutgoingDiagConnections[NUM_OUTGOING_CONNECTIONS];
     ::etl::queue<transport::TransportJob, MAX_NUM_INCOMING_MESSAGES> fSendJobQueue;
     ::etl::queue<transport::TransportJob, MAX_NUM_INCOMING_MESSAGES>

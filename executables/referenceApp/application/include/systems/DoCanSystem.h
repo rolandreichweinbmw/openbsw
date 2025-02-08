@@ -3,8 +3,6 @@
 #ifndef GUARD_EB6712AB_E148_4A24_B106_2B72D43439AC
 #define GUARD_EB6712AB_E148_4A24_B106_2B72D43439AC
 
-#include <etl/vector.h>
-
 #include <async/Async.h>
 #include <async/IRunnable.h>
 #include <busid/BusId.h>
@@ -16,6 +14,7 @@
 #include <docan/datalink/DoCanFrameCodec.h>
 #include <docan/transmitter/IDoCanTickGenerator.h>
 #include <docan/transport/DoCanTransportLayerContainer.h>
+#include <etl/vector.h>
 #include <lifecycle/AsyncLifecycleComponent.h>
 
 namespace can

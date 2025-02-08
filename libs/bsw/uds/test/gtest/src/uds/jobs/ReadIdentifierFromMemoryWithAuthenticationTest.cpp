@@ -5,9 +5,9 @@
 #include "uds/authentication/DefaultDiagAuthenticator.h"
 #include "uds/session/ApplicationDefaultSession.h"
 
-#include <gtest/gtest.h>
-
 #include <etl/span.h>
+
+#include <gtest/gtest.h>
 
 namespace
 {

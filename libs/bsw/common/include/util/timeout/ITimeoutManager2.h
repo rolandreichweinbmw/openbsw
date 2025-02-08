@@ -8,6 +8,7 @@
 #define GUARD_D75B5F3B_5AAF_4821_94CB_D2C822AC36E9
 
 #include <etl/uncopyable.h>
+
 #include <platform/estdint.h>
 
 namespace common
@@ -19,7 +20,7 @@ class AbstractTimeout;
  *
  *
  */
-class ITimeoutManager2: public ::etl::uncopyable
+class ITimeoutManager2 : public ::etl::uncopyable
 {
 public:
     ITimeoutManager2() = default;

@@ -8,14 +8,13 @@
 
 #include "transport/TransportMessageSendJob.h"
 
-#include <cstdint>
-
 #include <etl/intrusive_forward_list.h>
+
+#include <cstdint>
 
 namespace transport
 {
-class FunctionalTransportMessageSendJob
-: public ::etl::forward_link<0>
+class FunctionalTransportMessageSendJob : public ::etl::forward_link<0>
 {
 public:
     FunctionalTransportMessageSendJob() = default;

@@ -3,9 +3,9 @@
 #include "io/BufferedWriter.h"
 #include "io/MemoryQueue.h"
 
-#include <gmock/gmock.h>
-
 #include <etl/memory.h>
+
+#include <gmock/gmock.h>
 
 namespace bufferedWriterExample
 {

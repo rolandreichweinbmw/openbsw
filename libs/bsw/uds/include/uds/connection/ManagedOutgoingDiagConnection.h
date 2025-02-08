@@ -3,11 +3,11 @@
 #ifndef GUARD_DD21C731_100D_4FB8_9CC2_5776381A16EB
 #define GUARD_DD21C731_100D_4FB8_9CC2_5776381A16EB
 
-#include <etl/intrusive_forward_list.h>
-#include <etl/queue.h>
-
 #include "transport/TransportJob.h"
 #include "uds/connection/OutgoingDiagConnection.h"
+
+#include <etl/intrusive_forward_list.h>
+#include <etl/queue.h>
 
 namespace transport
 {
@@ -96,7 +96,8 @@ private:
     bool fConnectionTerminationIsPending;
 };
 
-inline bool operator==(const ManagedOutgoingDiagConnection& lhs, const ManagedOutgoingDiagConnection& rhs)
+inline bool
+operator==(ManagedOutgoingDiagConnection const& lhs, ManagedOutgoingDiagConnection const& rhs)
 {
     return &lhs == &rhs;
 }

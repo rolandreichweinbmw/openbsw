@@ -12,7 +12,6 @@
 #include <etl/algorithm.h>
 #include <etl/limits.h>
 #include <etl/unaligned_type.h>
-
 #include <util/estd/assert.h>
 
 #include <limits>
@@ -182,9 +181,7 @@ public:
 
 private:
     CodecResult adjustFrame(
-        ::etl::span<uint8_t>& payload,
-        FrameSizeType payloadSize,
-        FrameSizeType minFrameSize) const;
+        ::etl::span<uint8_t>& payload, FrameSizeType payloadSize, FrameSizeType minFrameSize) const;
 
     bool checkFrameSize(
         ::etl::span<uint8_t const> const& payload,
@@ -278,8 +275,8 @@ CodecResult DoCanFrameCodec<DataLinkLayer>::decodeFirstFrame(
     if (checkFrameSize(payload, 3U, _config._firstFrameSize))
     {
         size_t const offset = _config._offset;
-        messageSize = static_cast<MessageSizeType>(
-            *reinterpret_cast<const etl::be_uint16_t*>(&payload[offset]) & 0xFFFU);
+        messageSize         = static_cast<MessageSizeType>(
+            *reinterpret_cast<etl::be_uint16_t const*>(&payload[offset]) & 0xFFFU);
         uint8_t dataStart        = 2U;
         consecutiveFrameDataSize = static_cast<FrameSizeType>(payload.size())
                                    - (static_cast<FrameSizeType>(offset) + 1U);
@@ -290,7 +287,8 @@ CodecResult DoCanFrameCodec<DataLinkLayer>::decodeFirstFrame(
                 return CodecResult::INVALID_FRAME_SIZE;
             }
             // Escape sequence, aka message size > 4095 up to uint32_t
-            uint32_t const escapedMessageSize = *reinterpret_cast<const etl::be_uint32_t*>(&payload[offset + 2U]);
+            uint32_t const escapedMessageSize
+                = *reinterpret_cast<etl::be_uint32_t const*>(&payload[offset + 2U]);
 
             if ((escapedMessageSize <= ESCAPED_SEQ_MESSAGE_SIZE)
                 || (escapedMessageSize > ::etl::numeric_limits<MessageSizeType>::max()))
@@ -331,8 +329,7 @@ CodecResult DoCanFrameCodec<DataLinkLayer>::decodeConsecutiveFrame(
     {
         size_t const offset = _config._offset;
         sequenceNumber      = (payload[offset] & 0x0fU);
-        data                = ::etl::span<uint8_t const>(
-            &payload[offset + 1U], payload.size() - (offset + 1U));
+        data = ::etl::span<uint8_t const>(&payload[offset + 1U], payload.size() - (offset + 1U));
         return CodecResult::OK;
     }
     return CodecResult::INVALID_FRAME_SIZE;
@@ -453,12 +450,13 @@ CodecResult DoCanFrameCodec<DataLinkLayer>::encodeDataFrame(
 
             if (pendingMessageSize <= ESCAPED_SEQ_MESSAGE_SIZE)
             {
-                *reinterpret_cast<etl::be_uint16_t*>(&payload[offset]) = pendingMessageSize & 0xFFFU;
+                *reinterpret_cast<etl::be_uint16_t*>(&payload[offset])
+                    = pendingMessageSize & 0xFFFU;
             }
             else
             {
-                payload[offset]      = 0U;
-                payload[offset + 1U] = 0U;
+                payload[offset]                                             = 0U;
+                payload[offset + 1U]                                        = 0U;
                 *reinterpret_cast<etl::be_uint32_t*>(&payload[offset + 2U]) = pendingMessageSize;
 
                 destOffset += 4U;
@@ -480,9 +478,9 @@ CodecResult DoCanFrameCodec<DataLinkLayer>::encodeDataFrame(
         payload[offset] |= static_cast<uint8_t>(frameIndex) & 0x0FU;
 
         destOffset       = offset + 1U;
-        consumedDataSize = static_cast<FrameSizeType>(::etl::min(
-            static_cast<MessageSizeType>(consecutiveFrameDataSize), pendingMessageSize));
-        minFrameSize     = ::etl::max(consumedDataSize, _config._consecutiveFrameSize._min);
+        consumedDataSize = static_cast<FrameSizeType>(
+            ::etl::min(static_cast<MessageSizeType>(consecutiveFrameDataSize), pendingMessageSize));
+        minFrameSize = ::etl::max(consumedDataSize, _config._consecutiveFrameSize._min);
     }
     else
     {
@@ -495,7 +493,9 @@ CodecResult DoCanFrameCodec<DataLinkLayer>::encodeDataFrame(
         return CodecResult::INVALID_FRAME_SIZE;
     }
 
-    (void)::etl::mem_copy(&data[0U], static_cast<size_t>(consumedDataSize),
+    (void)::etl::mem_copy(
+        &data[0U],
+        static_cast<size_t>(consumedDataSize),
         &payload[static_cast<size_t>(destOffset)]);
     return adjustFrame(payload, payloadSize, minFrameSize);
 }

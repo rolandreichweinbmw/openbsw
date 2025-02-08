@@ -7,11 +7,10 @@
 #include "logger/ConsoleEntryFormatter.h"
 #include "logger/DefaultLoggerTime.h"
 
+#include <etl/delegate.h>
 #include <logger/ConsoleEntryOutput.h>
 #include <util/logger/IComponentMapping.h>
 #include <util/logger/ILoggerOutput.h>
-
-#include <etl/delegate.h>
 
 namespace logger
 {

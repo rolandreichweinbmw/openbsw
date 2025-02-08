@@ -4,9 +4,9 @@
 
 #include "uds/connection/IncomingDiagConnection.h"
 
-#include <etl/unaligned_type.h>
 #include <etl/memory.h>
 #include <etl/span.h>
+#include <etl/unaligned_type.h>
 
 namespace uds
 {

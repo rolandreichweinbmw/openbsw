@@ -4,7 +4,6 @@
  * Contains a UDS integration test.
  */
 #include "common/busid/BusId.h"
-#include "util/estd/function_mock.h"
 #include "transport/AbstractTransportLayerMock.h"
 #include "transport/TransportConfiguration.h"
 #include "transport/TransportMessage.h"
@@ -29,14 +28,14 @@
 #include "uds/session/ApplicationDefaultSession.h"
 #include "uds/session/ApplicationExtendedSession.h"
 #include "uds/session/DiagSessionManagerMock.h"
+#include "util/estd/function_mock.h"
 #include "util/logger/ComponentMappingMock.h"
 #include "util/logger/Logger.h"
 #include "util/logger/LoggerOutputMock.h"
 
-#include <etl/array.h>
-
 #include <async/AsyncMock.h>
 #include <async/TestContext.h>
+#include <etl/array.h>
 
 #include <gmock/gmock.h>
 #include <gtest/esr_extensions.h>

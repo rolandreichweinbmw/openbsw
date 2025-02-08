@@ -5,6 +5,7 @@
 
 #include <etl/span.h>
 #include <etl/uncopyable.h>
+
 #include <platform/estdint.h>
 
 namespace logger

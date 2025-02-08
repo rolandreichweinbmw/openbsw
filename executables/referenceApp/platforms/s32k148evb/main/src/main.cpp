@@ -1,8 +1,9 @@
 // Copyright 2024 Accenture.
 
+#include "systems/BspSystem.h"
+
 #include <etl/alignment.h>
 #include <etl/singleton.h>
-#include "systems/BspSystem.h"
 #ifdef PLATFORM_SUPPORT_CAN
 #include "systems/CanSystem.h"
 #endif

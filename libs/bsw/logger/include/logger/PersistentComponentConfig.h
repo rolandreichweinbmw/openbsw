@@ -6,10 +6,9 @@
 #include "logger/ComponentConfig.h"
 #include "logger/IPersistenceManager.h"
 
-#include <util/string/ConstString.h>
-
 #include <etl/array.h>
 #include <etl/span.h>
+#include <util/string/ConstString.h>
 
 namespace logger
 {

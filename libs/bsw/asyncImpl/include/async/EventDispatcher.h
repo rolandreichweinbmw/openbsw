@@ -8,10 +8,10 @@
 
 #include "async/Types.h"
 
-#include <platform/config.h>
-
 #include <etl/array.h>
 #include <etl/delegate.h>
+
+#include <platform/config.h>
 
 namespace async
 {

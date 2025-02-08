@@ -8,8 +8,8 @@
 
 #include "transport/ITransportMessageProvidingListener.h"
 
-#include <etl/intrusive_forward_list.h>
 #include <etl/delegate.h>
+#include <etl/intrusive_forward_list.h>
 
 namespace transport
 {

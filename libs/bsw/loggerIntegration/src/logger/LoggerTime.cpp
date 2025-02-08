@@ -2,10 +2,9 @@
 
 #include "logger/LoggerTime.h"
 
-#include <util/format/StringWriter.h>
-
 #include <etl/chrono.h>
 #include <etl/span.h>
+#include <util/format/StringWriter.h>
 
 #include <cstdio>
 #include <ctime>

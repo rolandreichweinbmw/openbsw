@@ -32,10 +32,7 @@ public:
 
     ITransportMessageProcessedListener* getTransportMessageProcessedListener();
 
-    bool operator ==(const TransportMessageSendJob& other)
-    {
-      return this == &other;
-    }
+    bool operator==(TransportMessageSendJob const& other) { return this == &other; }
 
 private:
     TransportMessage* fpTransportMessage;
@@ -49,16 +46,12 @@ private:
  */
 
 inline TransportMessageSendJob::TransportMessageSendJob()
-: ::etl::forward_link<0>()
-, fpTransportMessage(nullptr)
-, fpListener(nullptr)
+: ::etl::forward_link<0>(), fpTransportMessage(nullptr), fpListener(nullptr)
 {}
 
 inline TransportMessageSendJob::TransportMessageSendJob(
     TransportMessage* const pTransportMessage, ITransportMessageProcessedListener* const pListener)
-: ::etl::forward_link<0>()
-, fpTransportMessage(pTransportMessage)
-, fpListener(pListener)
+: ::etl::forward_link<0>(), fpTransportMessage(pTransportMessage), fpListener(pListener)
 {}
 
 inline void TransportMessageSendJob::setTransportMessage(TransportMessage* const pTransportMessage)

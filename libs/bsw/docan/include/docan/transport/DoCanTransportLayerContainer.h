@@ -6,7 +6,6 @@
 #include "docan/transport/DoCanTransportLayer.h"
 
 #include <async/Types.h>
-
 #include <etl/delegate.h>
 #include <etl/functional.h>
 #include <etl/span.h>
@@ -40,8 +39,8 @@ public:
     /**
      * Allocate a transport layer
      */
-    template<typename ... Args>
-    TransportLayerType& emplace_back(Args&& ... args);
+    template<typename... Args>
+    TransportLayerType& emplace_back(Args&&... args);
 
     /**
      * Get access to slice of containers.
@@ -156,9 +155,9 @@ DoCanTransportLayerContainer<DataLinkLayer>::DoCanTransportLayerContainer(
 {}
 
 template<class DataLinkLayer>
-template<typename ... Args>
+template<typename... Args>
 typename DoCanTransportLayerContainer<DataLinkLayer>::TransportLayerType&
-DoCanTransportLayerContainer<DataLinkLayer>::emplace_back(Args&& ... args)
+DoCanTransportLayerContainer<DataLinkLayer>::emplace_back(Args&&... args)
 {
     return _layers.emplace_back(etl::forward<Args>(args)...);
 }

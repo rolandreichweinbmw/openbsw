@@ -2,7 +2,6 @@
 
 #include "uds/services/sessioncontrol/DiagnosticSessionControl.h"
 
-#include "util/estd/function_mock.h"
 #include "transport/TransportConfiguration.h"
 #include "uds/DiagDispatcher.h"
 #include "uds/UdsConfig.h"
@@ -17,10 +16,10 @@
 #include "uds/session/DiagSessionChangedListenerMock.h"
 #include "uds/session/DiagSessionManagerMock.h"
 #include "uds/session/ProgrammingSession.h"
+#include "util/estd/function_mock.h"
 
 #include <async/AsyncMock.h>
 #include <async/TestContext.h>
-
 #include <etl/array.h>
 #include <etl/delegate.h>
 

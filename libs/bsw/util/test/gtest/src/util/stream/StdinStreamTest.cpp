@@ -4,10 +4,10 @@
 
 #include "util/StdIoMock.h"
 
+#include <etl/string_view.h>
+
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
-
-#include <etl/string_view.h>
 
 using namespace ::testing;
 namespace stream = ::util::stream;
@@ -24,7 +24,8 @@ TEST_F(StdinStreamTest, testAllCharactersAreRead)
     bytes[7]          = 0xaf;
 
     ::etl::string_view view("abcdefg");
-    stdIo.in = ::etl::span<uint8_t const>(reinterpret_cast<uint8_t const*>(view.begin()), view.size());
+    stdIo.in
+        = ::etl::span<uint8_t const>(reinterpret_cast<uint8_t const*>(view.begin()), view.size());
 
     ::etl::span<uint8_t> buffer(bytes);
     stream::StdinStream cut;
@@ -42,7 +43,8 @@ TEST_F(StdinStreamTest, testBufferTooSmallForAllChars)
     uint8_t bytes[4] = {0};
 
     ::etl::string_view view("abcdefg");
-    stdIo.in = ::etl::span<uint8_t const>(reinterpret_cast<uint8_t const*>(view.begin()), view.size());
+    stdIo.in
+        = ::etl::span<uint8_t const>(reinterpret_cast<uint8_t const*>(view.begin()), view.size());
 
     ::etl::span<uint8_t> buffer(bytes);
     stream::StdinStream cut;

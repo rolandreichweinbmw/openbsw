@@ -6,11 +6,10 @@
 #include "async/StaticRunnable.h"
 #include "async/Types.h"
 
-#include <util/estd/assert.h>
-
 #include <etl/array.h>
 #include <etl/memory.h>
 #include <etl/span.h>
+#include <util/estd/assert.h>
 
 #include <FreeRTOS.h>
 #include <task.h>
@@ -259,7 +258,8 @@ void TaskInitializer<Adapter>::create(
     TaskFunctionType const taskFunction,
     TaskConfigType const& config)
 {
-    ::etl::span<uint8_t> bytes = ::etl::span<uint8_t>(reinterpret_cast<uint8_t*>(stack.begin()), stack.size() * sizeof(typename T::value_type));
+    ::etl::span<uint8_t> bytes = ::etl::span<uint8_t>(
+        reinterpret_cast<uint8_t*>(stack.begin()), stack.size() * sizeof(typename T::value_type));
     align(alignof(StackType_t), bytes);
     StackSliceType const stackSlice = bytes.template reinterpret_as<StackType_t>();
     estd_assert((stackSlice.size() * sizeof(StackType_t)) >= sizeof(TaskInitializer));

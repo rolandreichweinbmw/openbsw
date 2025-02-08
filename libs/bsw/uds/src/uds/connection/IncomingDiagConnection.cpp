@@ -2,7 +2,6 @@
 
 #include "uds/connection/IncomingDiagConnection.h"
 
-#include "util/estd/assert.h"
 #include "platform/config.h"
 #include "transport/AbstractTransportLayer.h"
 #include "transport/ITransportMessageProvider.h"
@@ -14,9 +13,9 @@
 #include "uds/connection/NestedDiagRequest.h"
 #include "uds/connection/PositiveResponse.h"
 #include "uds/session/IDiagSessionManager.h"
+#include "util/estd/assert.h"
 
 #include <async/Async.h>
-
 #include <etl/span.h>
 
 using ::transport::AbstractTransportLayer;
@@ -91,7 +90,7 @@ IncomingDiagConnection::sendPositiveResponseInternal(uint16_t const length, Abst
     {
         ++fNumPendingMessageProcessedCallbacks;
 
-        auto lambda = [&, length](){asyncSendPositiveResponse(length, &sender);};
+        auto lambda = [&, length]() { asyncSendPositiveResponse(length, &sender); };
         fSendPositiveResponseClosure = ::async::Function(lambda);
         ::async::execute(fContext, fSendPositiveResponseClosure);
         return ::uds::ErrorCode::OK;
@@ -264,8 +263,8 @@ IncomingDiagConnection::sendNegativeResponse(uint8_t const responseCode, Abstrac
     {
         ++fNumPendingMessageProcessedCallbacks;
 
-        fSendNegativeResponseClosure = ::async::Function(
-            [&](){asyncSendNegativeResponse(responseCode, &sender);});
+        fSendNegativeResponseClosure
+            = ::async::Function([&]() { asyncSendNegativeResponse(responseCode, &sender); });
         ::async::execute(fContext, fSendNegativeResponseClosure);
         return ::uds::ErrorCode::OK;
     }
@@ -407,8 +406,8 @@ void IncomingDiagConnection::endNestedRequest()
 void IncomingDiagConnection::transportMessageProcessed(
     transport::TransportMessage& transportMessage, ProcessingResult const result)
 {
-    fTransportMessageProcessedClosure = ::async::Function(
-        [&](){asyncTransportMessageProcessed(&transportMessage, result);});
+    fTransportMessageProcessedClosure
+        = ::async::Function([&]() { asyncTransportMessageProcessed(&transportMessage, result); });
     ::async::execute(fContext, fTransportMessageProcessedClosure);
 }
 
@@ -500,9 +499,9 @@ PositiveResponse& IncomingDiagConnection::releaseRequestGetResponse()
 {
     if (fNestedRequest != nullptr)
     {
-        fIsResponseActive                           = true;
+        fIsResponseActive                         = true;
         ::etl::span<uint8_t> const responseBuffer = fNestedRequest->getResponseBuffer();
-        uint8_t* const data                         = responseBuffer.data();
+        uint8_t* const data                       = responseBuffer.data();
         fPositiveResponse.init(data, static_cast<uint16_t>(responseBuffer.size()));
     }
     else

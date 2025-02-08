@@ -3,10 +3,10 @@
 #ifndef GUARD_A5B1C2A8_E325_48E3_BB8B_4D5E1B725CAC
 #define GUARD_A5B1C2A8_E325_48E3_BB8B_4D5E1B725CAC
 
-#include <transport/AbstractTransportLayer.h>
-
 #include <etl/delegate.h>
+#include <transport/AbstractTransportLayer.h>
 #include <util/estd/assert.h>
+
 #include <platform/estdint.h>
 
 namespace docan

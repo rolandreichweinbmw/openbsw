@@ -264,7 +264,8 @@ void MemoryQueue<CAPACITY, MAX_ELEMENT_SIZE, SIZE_TYPE>::Writer::commit()
     size_t writeIndex    = _txData.sent.load();
     size_t const index   = writeIndex % CAPACITY;
     SIZE_TYPE const size = static_cast<SIZE_TYPE>(_txData.allocated);
-    ::etl::unaligned_type<SIZE_TYPE, etl::endian::big>::at_address(&_txData.data[index]) = static_cast<SIZE_TYPE>(size);
+    ::etl::unaligned_type<SIZE_TYPE, etl::endian::big>::at_address(&_txData.data[index])
+        = static_cast<SIZE_TYPE>(size);
 
     writeIndex        = advanceIndex(writeIndex, size);
     _txData.allocated = 0U;
@@ -316,15 +317,15 @@ inline bool MemoryQueue<CAPACITY, MAX_ELEMENT_SIZE, SIZE_TYPE>::Reader::empty() 
 }
 
 template<size_t CAPACITY, size_t MAX_ELEMENT_SIZE, typename SIZE_TYPE>
-inline ::etl::span<uint8_t>
-MemoryQueue<CAPACITY, MAX_ELEMENT_SIZE, SIZE_TYPE>::Reader::peek() const
+inline ::etl::span<uint8_t> MemoryQueue<CAPACITY, MAX_ELEMENT_SIZE, SIZE_TYPE>::Reader::peek() const
 {
     if (empty())
     {
         return {};
     }
-    size_t const index   = _rxData.received.load() % CAPACITY;
-    SIZE_TYPE const size = ::etl::unaligned_type<SIZE_TYPE, ::etl::endian::big>::at_address(&_txData.data[index]);
+    size_t const index = _rxData.received.load() % CAPACITY;
+    SIZE_TYPE const size
+        = ::etl::unaligned_type<SIZE_TYPE, ::etl::endian::big>::at_address(&_txData.data[index]);
     return ::etl::span<uint8_t>(&_txData.data[index + sizeof(SIZE_TYPE)], size);
 }
 
@@ -335,10 +336,11 @@ void MemoryQueue<CAPACITY, MAX_ELEMENT_SIZE, SIZE_TYPE>::Reader::release() const
     {
         return;
     }
-    size_t readIndex     = _rxData.received.load();
-    size_t const index   = readIndex % CAPACITY;
-    SIZE_TYPE const size = ::etl::unaligned_type<SIZE_TYPE, ::etl::endian::big>::at_address(&_txData.data[index]);
-    readIndex            = advanceIndex(readIndex, size);
+    size_t readIndex   = _rxData.received.load();
+    size_t const index = readIndex % CAPACITY;
+    SIZE_TYPE const size
+        = ::etl::unaligned_type<SIZE_TYPE, ::etl::endian::big>::at_address(&_txData.data[index]);
+    readIndex = advanceIndex(readIndex, size);
     // Store readIndex last to ensure data consistency.
     _rxData.received.store(readIndex);
 }

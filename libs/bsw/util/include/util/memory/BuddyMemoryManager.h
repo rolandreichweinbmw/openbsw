@@ -146,7 +146,7 @@ class BuddyMemoryManagerStatsHelper;
  * The runtime complexity of allocate and free is log2(n), where n is the
  * number of nodes in the tree, i.e. it is based on the depth of the tree.
  */
-class BuddyMemoryManager: public ::etl::uncopyable
+class BuddyMemoryManager : public ::etl::uncopyable
 {
 public:
     static constexpr uint8_t TAG_NODE_FREE = 0x02U;

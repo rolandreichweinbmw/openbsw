@@ -43,7 +43,9 @@ class DiagConnectionManager;
  *
  * \see     transport::ITransportMessageProcessedListener
  */
-class IncomingDiagConnection : public transport::ITransportMessageProcessedListener, public etl::uncopyable
+class IncomingDiagConnection
+: public transport::ITransportMessageProcessedListener
+, public etl::uncopyable
 {
 public:
     void setDiagSessionManager(IDiagSessionManager& diagSessionManager)
@@ -60,9 +62,10 @@ public:
     IncomingDiagConnection(::async::ContextType const diagContext)
     : fResponsePendingTimeout(*this)
     , fGlobalPendingTimeout(*this)
-    , fTransportMessageProcessedClosure([&](){asyncTransportMessageProcessed(nullptr, ProcessingResult::PROCESSED_ERROR);})
-    , fSendPositiveResponseClosure([&](){asyncSendPositiveResponse(0U, nullptr);})
-    , fSendNegativeResponseClosure([&](){asyncSendNegativeResponse(0U, nullptr);})
+    , fTransportMessageProcessedClosure(
+          [&]() { asyncTransportMessageProcessed(nullptr, ProcessingResult::PROCESSED_ERROR); })
+    , fSendPositiveResponseClosure([&]() { asyncSendPositiveResponse(0U, nullptr); })
+    , fSendNegativeResponseClosure([&]() { asyncSendNegativeResponse(0U, nullptr); })
     , fTriggerNextNestedRequestDelegate(::async::Function::CallType::create<
                                         IncomingDiagConnection,
                                         &IncomingDiagConnection::triggerNextNestedRequest>(*this))

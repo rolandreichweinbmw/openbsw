@@ -3,13 +3,12 @@
 #ifndef GUARD_08CC8670_1F36_4E6F_822B_8305EE6DC856
 #define GUARD_08CC8670_1F36_4E6F_822B_8305EE6DC856
 
+#include <etl/span.h>
+#include <etl/uncopyable.h>
 #include <util/format/IPrintfArgumentReader.h>
 #include <util/format/PrintfArgumentReader.h>
 #include <util/format/PrintfFormatScanner.h>
 #include <util/logger/Logger.h>
-
-#include <etl/span.h>
-#include <etl/uncopyable.h>
 
 #include <cstring>
 
@@ -46,8 +45,7 @@ public:
         char const* formatString,
         va_list ap) const;
     static void deserialize(
-        ::etl::span<uint8_t const> const& srcBuffer,
-        IEntrySerializerCallback<Timestamp>& callback);
+        ::etl::span<uint8_t const> const& srcBuffer, IEntrySerializerCallback<Timestamp>& callback);
 
 private:
     enum

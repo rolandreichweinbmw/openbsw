@@ -7,7 +7,6 @@
 #include "uds/async/IAsyncDiagHelper.h"
 
 #include <async/util/Call.h>
-
 #include <etl/intrusive_forward_list.h>
 
 namespace uds
@@ -71,7 +70,8 @@ private:
     IAsyncDiagHelper& fAsyncHelper;
     AbstractDiagJob& fJob;
     IncomingDiagConnection* fPendingAsyncConnection;
-    ::etl::intrusive_forward_list<IAsyncDiagHelper::StoredRequest, ::etl::forward_link<0>> fPendingRequests;
+    ::etl::intrusive_forward_list<IAsyncDiagHelper::StoredRequest, ::etl::forward_link<0>>
+        fPendingRequests;
     ::async::Function fTriggerNextRequests;
     ::async::ContextType fContext;
 };

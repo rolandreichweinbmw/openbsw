@@ -3,13 +3,11 @@
 #ifndef GUARD_2A81615E_F0E2_47BD_AEAF_A8B88DA403D7
 #define GUARD_2A81615E_F0E2_47BD_AEAF_A8B88DA403D7
 
-#include <runtime/StatisticsContainer.h>
-
-#include <util/estd/assert.h>
-
 #include <etl/array.h>
 #include <etl/optional.h>
 #include <etl/string.h>
+#include <runtime/StatisticsContainer.h>
+#include <util/estd/assert.h>
 
 namespace runtime
 {

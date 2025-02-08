@@ -4,6 +4,7 @@
 #define GUARD_970268D3_A778_4F47_A514_E815E5E01B99
 
 #include <etl/delegate.h>
+
 #include <platform/estdint.h>
 
 namespace bios

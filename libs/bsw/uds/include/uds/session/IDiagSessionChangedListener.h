@@ -24,7 +24,8 @@ public:
     virtual void diagSessionResponseSent(uint8_t responseCode)  = 0;
 };
 
-inline bool operator==(const IDiagSessionChangedListener& lhs, const IDiagSessionChangedListener& rhs)
+inline bool
+operator==(IDiagSessionChangedListener const& lhs, IDiagSessionChangedListener const& rhs)
 {
     return &lhs == &rhs;
 }

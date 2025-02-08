@@ -2,10 +2,9 @@
 
 #include "uds/connection/PositiveResponse.h"
 
-#include <util/estd/assert.h>
-
-#include <etl/unaligned_type.h>
 #include <etl/memory.h>
+#include <etl/unaligned_type.h>
+#include <util/estd/assert.h>
 
 #include <cstring>
 

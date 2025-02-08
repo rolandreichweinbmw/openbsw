@@ -4,13 +4,12 @@
 
 #include "transport/DataProgressListenerMock.h"
 
+#include <etl/span.h>
+#include <util/estd/assert.h>
+
 #include <gmock/gmock.h>
 
 #include <cstdlib>
-
-#include <etl/span.h>
-
-#include <util/estd/assert.h>
 
 using namespace ::transport;
 using namespace ::testing;

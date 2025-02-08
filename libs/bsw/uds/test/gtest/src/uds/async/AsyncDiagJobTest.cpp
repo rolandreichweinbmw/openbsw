@@ -35,10 +35,7 @@ public:
         fParams[4] = static_cast<uint8_t>(p5);
     }
 
-    ::etl::span<uint8_t const> getParams()
-    {
-        return ::etl::span<uint8_t const>(fParams, 5);
-    }
+    ::etl::span<uint8_t const> getParams() { return ::etl::span<uint8_t const>(fParams, 5); }
 
     MOCK_METHOD2(verify, DiagReturnCode::Type(uint8_t const request[], uint16_t requestLength));
 

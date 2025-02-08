@@ -4,6 +4,7 @@
 #define GUARD_0AA82C77_8DC8_4A1D_9C80_E8BDD1C7A950
 
 #include <etl/uncopyable.h>
+
 #include <platform/estdint.h>
 
 namespace util

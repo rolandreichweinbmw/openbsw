@@ -25,7 +25,7 @@ class AbstractDiagnosisConfiguration;
 class OutgoingDiagConnection;
 class DiagDispatcher2;
 
-class DiagConnectionManager: public etl::uncopyable
+class DiagConnectionManager : public etl::uncopyable
 {
 public:
     static uint32_t const INCOMING_REQUEST_TIMEOUT    = 60000U;
@@ -79,7 +79,8 @@ public:
 private:
     friend class DiagDispatcher2;
 
-    using ManagedOutgoingDiagConnectionList = ::etl::intrusive_forward_list<ManagedOutgoingDiagConnection, etl::forward_link<0>>;
+    using ManagedOutgoingDiagConnectionList
+        = ::etl::intrusive_forward_list<ManagedOutgoingDiagConnection, etl::forward_link<0>>;
 
     void checkShutdownProgress();
 
@@ -94,8 +95,10 @@ private:
     transport::ITransportMessageProvider& fOutgoingTransportMessageProvider;
     ::async::ContextType fContext;
     DiagDispatcher2& fDiagDispatcher;
-    ::etl::intrusive_forward_list<ManagedOutgoingDiagConnection, ::etl::forward_link<0>>& fOutgoingDiagConnections;
-    ::etl::intrusive_forward_list<ManagedOutgoingDiagConnection, ::etl::forward_link<0>> fReleasedOutgoingDiagConnections;
+    ::etl::intrusive_forward_list<ManagedOutgoingDiagConnection, ::etl::forward_link<0>>&
+        fOutgoingDiagConnections;
+    ::etl::intrusive_forward_list<ManagedOutgoingDiagConnection, ::etl::forward_link<0>>
+        fReleasedOutgoingDiagConnections;
     bool fShutdownRequested;
 };
 

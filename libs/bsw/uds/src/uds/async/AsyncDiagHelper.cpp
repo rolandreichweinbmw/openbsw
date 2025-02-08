@@ -1,7 +1,7 @@
 // Copyright 2024 Accenture.
 
-
 #include "uds/async/AsyncDiagHelper.h"
+
 #include "uds/connection/IncomingDiagConnection.h"
 
 #include <transport/TransportMessage.h>
@@ -23,7 +23,11 @@ AsyncDiagHelper::StoredRequest* AsyncDiagHelper::allocateRequest(
 {
     if (!fStoredRequestPool.full())
     {
-        return fStoredRequestPool.template create<AsyncDiagHelper::StoredRequest, IncomingDiagConnection&, uint8_t const*, uint16_t>(connection, etl::move(request), etl::move(requestLength));
+        return fStoredRequestPool.template create<
+            AsyncDiagHelper::StoredRequest,
+            IncomingDiagConnection&,
+            uint8_t const*,
+            uint16_t>(connection, etl::move(request), etl::move(requestLength));
     }
 
     return nullptr;

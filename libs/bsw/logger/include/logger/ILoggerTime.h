@@ -3,9 +3,9 @@
 #ifndef GUARD_2B64B466_7D26_4054_BFAC_3176DAC1D207
 #define GUARD_2B64B466_7D26_4054_BFAC_3176DAC1D207
 
+#include <etl/uncopyable.h>
 #include <util/stream/IOutputStream.h>
 
-#include <etl/uncopyable.h>
 #include <platform/estdint.h>
 
 namespace logger

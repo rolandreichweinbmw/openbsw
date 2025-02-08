@@ -3,15 +3,15 @@
 #ifndef GUARD_CF7B03E0_39CD_48FA_AEF0_45E4BC276713
 #define GUARD_CF7B03E0_39CD_48FA_AEF0_45E4BC276713
 
-#include <etl/uncopyable.h>
-
 #include "io/DynamicClientCfg.h"
 #include "io/Io.h"
 #include "platform/estdint.h"
 
+#include <etl/uncopyable.h>
+
 namespace bios
 {
-class DigitalInput: public ::etl::uncopyable
+class DigitalInput : public ::etl::uncopyable
 {
 public:
 #ifdef BSP_INPUT_PIN_CONFIGURATION

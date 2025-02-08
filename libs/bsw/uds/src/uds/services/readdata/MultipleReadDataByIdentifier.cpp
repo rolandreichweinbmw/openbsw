@@ -6,9 +6,8 @@
 #include "uds/connection/IncomingDiagConnection.h"
 #include "uds/session/DiagSession.h"
 
-#include <transport/TransportMessage.h>
-
 #include <etl/memory.h>
+#include <transport/TransportMessage.h>
 
 namespace uds
 {
@@ -123,8 +122,8 @@ void MultipleReadDataByIdentifier::responseSent(
     fAsyncJobHelper.endAsyncRequest();
 }
 
-::etl::span<uint8_t const> MultipleReadDataByIdentifier::prepareNestedRequest(
-    ::etl::span<uint8_t const> const& storedRequest)
+::etl::span<uint8_t const>
+MultipleReadDataByIdentifier::prepareNestedRequest(::etl::span<uint8_t const> const& storedRequest)
 {
     if (storedRequest.size() >= 2U)
     {

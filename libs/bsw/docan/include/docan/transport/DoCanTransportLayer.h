@@ -13,7 +13,6 @@
 #include <async/Async.h>
 #include <async/Types.h>
 #include <async/util/MemberCall.h>
-
 #include <etl/span.h>
 
 namespace docan

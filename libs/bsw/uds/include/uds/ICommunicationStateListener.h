@@ -8,7 +8,9 @@
 
 namespace uds
 {
-class ICommunicationStateListener : public ::etl::forward_link<0>, public ::etl::uncopyable
+class ICommunicationStateListener
+: public ::etl::forward_link<0>
+, public ::etl::uncopyable
 {
 public:
     enum CommunicationState
@@ -32,7 +34,8 @@ public:
     virtual void communicationStateChanged(CommunicationState newState) = 0;
 };
 
-inline bool operator==(const ICommunicationStateListener& lhs, const ICommunicationStateListener& rhs)
+inline bool
+operator==(ICommunicationStateListener const& lhs, ICommunicationStateListener const& rhs)
 {
     return &lhs == &rhs;
 }

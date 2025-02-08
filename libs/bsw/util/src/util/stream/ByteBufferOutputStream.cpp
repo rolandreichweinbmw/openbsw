@@ -2,8 +2,8 @@
 
 #include "util/stream/ByteBufferOutputStream.h"
 
-#include <etl/span.h>
 #include <etl/memory.h>
+#include <etl/span.h>
 
 namespace util
 {

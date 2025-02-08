@@ -6,9 +6,9 @@
 #include <can/CanLogger.h>
 #include <can/framemgmt/IFilteredCANFrameSentListener.h>
 #include <common/busid/BusId.h>
-
-#include <util/estd/assert.h>
 #include <etl/delegate.h>
+#include <util/estd/assert.h>
+
 #include <platform/config.h>
 #include <platform/estdint.h>
 

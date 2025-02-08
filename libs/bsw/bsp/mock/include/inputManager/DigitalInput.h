@@ -4,8 +4,8 @@
 #define GUARD_80365AF8_A2E2_4BCD_BD26_B6E827555C36
 
 #include <bsp/Bsp.h>
-
 #include <etl/singleton_base.h>
+
 #include <platform/estdint.h>
 
 #include <gmock/gmock.h>

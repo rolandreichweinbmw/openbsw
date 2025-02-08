@@ -18,7 +18,6 @@
 
 #include <async/AsyncMock.h>
 #include <async/TestContext.h>
-
 #include <etl/span.h>
 
 #include <gmock/gmock.h>

@@ -16,13 +16,12 @@
 #include <async/Types.h>
 #include <async/util/MemberCall.h>
 #include <common/busid/BusId.h>
+#include <etl/intrusive_forward_list.h>
+#include <etl/ipool.h>
+#include <etl/span.h>
 #include <interrupts/SuspendResumeAllInterruptsScopedLock.h>
 #include <transport/AbstractTransportLayer.h>
 #include <util/logger/Logger.h>
-
-#include <etl/ipool.h>
-#include <etl/intrusive_forward_list.h>
-#include <etl/span.h>
 
 #include <algorithm>
 #include <limits>
@@ -37,19 +36,20 @@ template<class DataLinkLayer>
 class DoCanTransmitter : private IDoCanDataFrameTransmitterCallback<DataLinkLayer>
 {
 public:
-    using DataLinkLayerType          = DataLinkLayer;
-    using DataLinkAddressType        = typename DataLinkLayerType::AddressType;
-    using DataLinkAddressPairType    = typename DataLinkLayerType::AddressPairType;
-    using MessageSizeType            = typename DataLinkLayerType::MessageSizeType;
-    using FrameIndexType             = typename DataLinkLayerType::FrameIndexType;
-    using FrameSizeType              = typename DataLinkLayerType::FrameSizeType;
-    using JobHandleType              = typename DataLinkLayerType::JobHandleType;
-    using FrameCodecType             = DoCanFrameCodec<DataLinkLayer>;
-    using DataFrameTransmitterType   = IDoCanDataFrameTransmitter<DataLinkLayerType>;
-    using MessageTransmitterType     = DoCanMessageTransmitter<DataLinkLayerType>;
-    using MessageTransmitterListType = ::etl::intrusive_forward_list<MessageTransmitterType, etl::forward_link<0>>;
-    using MessageTransmitterListIterator =
-        typename ::etl::intrusive_forward_list<MessageTransmitterType, etl::forward_link<0>>::iterator;
+    using DataLinkLayerType        = DataLinkLayer;
+    using DataLinkAddressType      = typename DataLinkLayerType::AddressType;
+    using DataLinkAddressPairType  = typename DataLinkLayerType::AddressPairType;
+    using MessageSizeType          = typename DataLinkLayerType::MessageSizeType;
+    using FrameIndexType           = typename DataLinkLayerType::FrameIndexType;
+    using FrameSizeType            = typename DataLinkLayerType::FrameSizeType;
+    using JobHandleType            = typename DataLinkLayerType::JobHandleType;
+    using FrameCodecType           = DoCanFrameCodec<DataLinkLayer>;
+    using DataFrameTransmitterType = IDoCanDataFrameTransmitter<DataLinkLayerType>;
+    using MessageTransmitterType   = DoCanMessageTransmitter<DataLinkLayerType>;
+    using MessageTransmitterListType
+        = ::etl::intrusive_forward_list<MessageTransmitterType, etl::forward_link<0>>;
+    using MessageTransmitterListIterator = typename ::etl::
+        intrusive_forward_list<MessageTransmitterType, etl::forward_link<0>>::iterator;
 
     /** Constructor.
      *
@@ -297,8 +297,10 @@ template<class DataLinkLayer>
                 dataLinkAddressPair.getReceptionAddress(), formatBuffer));
         return ::transport::AbstractTransportLayer::ErrorCode::TP_QUEUE_FULL;
     }
-    uint8_t* transmitter = reinterpret_cast<uint8_t*>(_messageTransmitterPool.template allocate<MessageTransmitterType>());
-    auto const poolIndex = static_cast<typename JobHandleType::UserDataType>(reinterpret_cast<uintptr_t>(transmitter));
+    uint8_t* transmitter = reinterpret_cast<uint8_t*>(
+        _messageTransmitterPool.template allocate<MessageTransmitterType>());
+    auto const poolIndex = static_cast<typename JobHandleType::UserDataType>(
+        reinterpret_cast<uintptr_t>(transmitter));
     JobHandleType const jobHandle(++_jobCounter, poolIndex);
     MessageTransmitterType& messageTransmitter = *::new (transmitter) MessageTransmitterType(
         jobHandle,

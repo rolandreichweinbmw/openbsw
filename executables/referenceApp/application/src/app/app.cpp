@@ -3,8 +3,6 @@
 #include "app/app.h"
 
 #include "console/console.h"
-#include <etl/alignment.h>
-#include <etl/singleton.h>
 #include "logger/logger.h"
 #include "reset/softwareSystemReset.h"
 #include "systems/DemoSystem.h"
@@ -12,6 +10,8 @@
 #include "systems/SysAdminSystem.h"
 
 #include <app/appConfig.h>
+#include <etl/alignment.h>
+#include <etl/singleton.h>
 
 #ifdef PLATFORM_SUPPORT_UDS
 #include "busid/BusId.h"

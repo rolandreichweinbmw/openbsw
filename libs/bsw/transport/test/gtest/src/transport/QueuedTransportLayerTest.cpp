@@ -23,9 +23,8 @@ namespace
 class QueuedTransportLayerTest : public ::testing::Test
 {
 public:
-    using JobPool = ::etl::pool<
-        TransportMessageSendJob,
-        TransportConfiguration::MAXIMUM_NUMBER_OF_TRANSPORT_MESSAGES>;
+    using JobPool = ::etl::
+        pool<TransportMessageSendJob, TransportConfiguration::MAXIMUM_NUMBER_OF_TRANSPORT_MESSAGES>;
 
     static uint8_t const BUFFER_LENGTH = 16U; // Max. payload length == 8
 

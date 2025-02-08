@@ -29,7 +29,7 @@ public:
      * - true if the end of the stream has been reached
      * - false otherwise
      */
-    virtual bool isEof() const                                        = 0;
+    virtual bool isEof() const                                      = 0;
     /**
      * Reads a maximum number of bytes from the stream into a buffer.
      * \param buffer buffer that receives the bytes

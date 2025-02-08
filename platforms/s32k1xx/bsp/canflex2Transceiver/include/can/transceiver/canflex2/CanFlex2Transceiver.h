@@ -18,11 +18,11 @@
 #include <can/canframes/ICANFrameSentListener.h>
 #include <can/framemgmt/IFilteredCANFrameSentListener.h>
 #include <can/transceiver/AbstractCANTransceiver.h>
+#include <etl/deque.h>
+#include <etl/uncopyable.h>
 #include <io/Io.h>
 #include <lifecycle/AsyncLifecycleComponent.h>
 
-#include <etl/deque.h>
-#include <etl/uncopyable.h>
 #include <platform/estdint.h>
 
 namespace bios
@@ -33,7 +33,9 @@ namespace bios
  * \see FlexCANDevice
  * \see common::AbstractTimeout
  */
-class CanFlex2Transceiver : public ::can::AbstractCANTransceiver, public ::etl::uncopyable
+class CanFlex2Transceiver
+: public ::can::AbstractCANTransceiver
+, public ::etl::uncopyable
 {
 public:
     CanFlex2Transceiver(

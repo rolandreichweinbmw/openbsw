@@ -14,9 +14,8 @@
 #include "uds/connection/ManagedOutgoingDiagConnection.h"
 #include "uds/connection/OutgoingDiagConnection.h"
 
-#include <etl/pool.h>
-
 #include <async/Async.h>
+#include <etl/pool.h>
 
 using ::transport::AbstractTransportLayer;
 using ::transport::ITransportMessageProcessedListener;
@@ -292,8 +291,7 @@ void DiagConnectionManager::checkShutdownProgress()
 {
     if (fShutdownRequested)
     {
-        ::etl::ipool const& incomingDiagConnections
-            = fConfiguration.incomingDiagConnectionPool();
+        ::etl::ipool const& incomingDiagConnections = fConfiguration.incomingDiagConnectionPool();
 
         if ((!incomingDiagConnections.full()) || (!fReleasedOutgoingDiagConnections.empty()))
         {

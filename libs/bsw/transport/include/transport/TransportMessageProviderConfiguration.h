@@ -69,8 +69,7 @@ public:
     void release(TransportMessage& msg) override;
 
 private:
-    using TransportMessagePool
-        = ::etl::pool<BufferedTransportMessage<PAYLOAD_SIZE>, NUM_BUFFERS>;
+    using TransportMessagePool = ::etl::pool<BufferedTransportMessage<PAYLOAD_SIZE>, NUM_BUFFERS>;
     TransportMessagePool fTransportMessagesPool;
 };
 } // namespace declare

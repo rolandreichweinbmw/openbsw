@@ -46,7 +46,9 @@ public:
     virtual void resetToDefaultSession()
     {
         this->testSwitchSession(DiagSession::DEFAULT);
-        for (::etl::intrusive_forward_list<IDiagSessionChangedListener, ::etl::forward_link<0>>::iterator itr = fListeners.begin();
+        for (::etl::intrusive_forward_list<IDiagSessionChangedListener, ::etl::forward_link<0>>::
+                 iterator itr
+             = fListeners.begin();
              itr != fListeners.end();
              ++itr)
         {

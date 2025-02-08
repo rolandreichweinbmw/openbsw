@@ -7,6 +7,7 @@
 #define GUARD_1AEB0254_E40A_4F9F_AC79_0D1029F21D63
 
 #include <etl/uncopyable.h>
+
 #include <platform/estdint.h>
 
 namespace transport
@@ -23,7 +24,7 @@ class TransportMessage;
  * \see TransportMessage
  * \see TransportMessage::isComplete()
  */
-class IDataProgressListener: public etl::uncopyable
+class IDataProgressListener : public etl::uncopyable
 {
 protected:
     IDataProgressListener() = default;

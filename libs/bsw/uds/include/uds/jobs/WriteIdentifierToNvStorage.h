@@ -3,12 +3,12 @@
 #ifndef GUARD_CD9C12CE_E7C5_4661_B006_A18B75B892E8
 #define GUARD_CD9C12CE_E7C5_4661_B006_A18B75B892E8
 
-#include <etl/uncopyable.h>
-
 #include "platform/estdint.h"
 #include "uds/async/AsyncDiagJobHelper.h"
 #include "uds/base/AbstractDiagJob.h"
 #include "util/eeprom/IEepromHelper.h"
+
+#include <etl/uncopyable.h>
 
 namespace uds
 {
@@ -16,7 +16,9 @@ namespace uds
  * Generic implementation of a WriteDataByIdentifier which can write the
  * received data to NvStorage
  */
-class WriteIdentifierToNvStorage : public AbstractDiagJob, public ::etl::uncopyable
+class WriteIdentifierToNvStorage
+: public AbstractDiagJob
+, public ::etl::uncopyable
 {
 public:
     /**

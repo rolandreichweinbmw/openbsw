@@ -4,6 +4,7 @@
 
 #include <can/CanLogger.h>
 #include <can/canframes/ICANFrameSentListener.h>
+#include <etl/span.h>
 #include <linux/can.h>
 #include <linux/can/raw.h>
 #include <net/if.h>
@@ -14,8 +15,6 @@
 #include <signal.h>
 #include <type_traits>
 #include <unistd.h>
-
-#include <etl/span.h>
 
 static_assert(
     std::is_standard_layout<::can::CANFrame>::value

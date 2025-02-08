@@ -2,7 +2,6 @@
 
 #include "uds/connection/ManagedOutgoingDiagConnection.h"
 
-#include "util/estd/assert.h"
 #include "transport/TransportConfiguration.h"
 #include "transport/TransportMessage.h"
 #include "uds/DiagCodes.h"
@@ -10,6 +9,7 @@
 #include "uds/UdsLogger.h"
 #include "uds/application/AbstractDiagApplication.h"
 #include "uds/connection/DiagConnectionManager.h"
+#include "util/estd/assert.h"
 
 #include <async/Async.h>
 

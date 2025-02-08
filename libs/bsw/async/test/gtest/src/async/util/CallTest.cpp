@@ -33,7 +33,7 @@ TEST_F(AsyncCallTest, testFunction)
 TEST_F(AsyncCallTest, testClosure)
 {
     using TestClosure = ::etl::delegate<void()>;
-    auto l = [&](){closureCall(1234U, 3247834U);};
+    auto l            = [&]() { closureCall(1234U, 3247834U); };
     Call<TestClosure> cut{TestClosure(l)};
     EXPECT_CALL(*this, closureCall(1234U, 3247834U));
     EXPECT_CALL(_asyncMock, execute(0, _))

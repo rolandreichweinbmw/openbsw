@@ -206,8 +206,8 @@ TransportMessageSendJob* QueuedTransportLayer::getSendJob(
     {
         if (!sfpSendJobPool->full())
         {
-            TransportMessageSendJob* job
-                = sfpSendJobPool->create<TransportMessageSendJob>(&transportMessage, pNotificationListener);
+            TransportMessageSendJob* job = sfpSendJobPool->create<TransportMessageSendJob>(
+                &transportMessage, pNotificationListener);
             return job;
         }
     }

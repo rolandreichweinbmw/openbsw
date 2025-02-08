@@ -2,12 +2,12 @@
 
 #include "example.h"
 
-#include <cstdio>
-
 #include "async/Types.h"
 #include "async/util/Call.h"
 
 #include <etl/delegate.h>
+
+#include <cstdio>
 
 namespace asyncNewPlatform
 {

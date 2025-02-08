@@ -8,7 +8,6 @@
 
 #include <bsp/timer/SystemTimer.h>
 #include <bsp/timer/isEqualAfterTimeout.h>
-
 #include <etl/byte_stream.h>
 #include <etl/span.h>
 #include <etl/unaligned_type.h>
@@ -281,12 +280,13 @@ uint8_t FlexCANDevice::enqueueRxFrame(
         }
         if (acceptRxFrame)
         {
-            can::CANFrame& frame {fRxQueue.emplace(CanId::id(id, extended))};
+            can::CANFrame& frame{fRxQueue.emplace(CanId::id(id, extended))};
             frame.setTimestamp(getSystemTimeUs32Bit());
             frame.setPayloadLength(length);
-            etl::span<etl::be_uint32_t, 2> data{reinterpret_cast<etl::be_uint32_t*>(frame.getPayload()), 2};
-            data[0]        = payload[0];
-            data[1]        = payload[1];
+            etl::span<etl::be_uint32_t, 2> data{
+                reinterpret_cast<etl::be_uint32_t*>(frame.getPayload()), 2};
+            data[0] = payload[0];
+            data[1] = payload[1];
             return 1;
         }
     }

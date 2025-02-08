@@ -3,8 +3,6 @@
 #ifndef GUARD_88D66BA5_75C5_4F3D_BBCA_102D4305AA3F
 #define GUARD_88D66BA5_75C5_4F3D_BBCA_102D4305AA3F
 
-#include <etl/uncopyable.h>
-
 #include "adc/adcPhysicalName.h"
 #include "adc/adcResolution.h"
 #include "assert.h"
@@ -12,6 +10,8 @@
 #include "bsp/SystemTime.h"
 #include "mcu/mcu.h"
 #include "platform/estdint.h"
+
+#include <etl/uncopyable.h>
 
 namespace bios
 {
@@ -23,7 +23,9 @@ time adder (5 ADC cycles + 5 bus clock cycles)
 */
 
 template<typename AdcResolution, typename AdcConfiguration, uint8_t maxChannels = 16>
-class Adc : private AdcConfiguration, public ::etl::uncopyable
+class Adc
+: private AdcConfiguration
+, public ::etl::uncopyable
 {
 public:
     Adc(ADC_Type& ADC) : fAdcInResolution(), fAdc(ADC), fIsStarted(false), fIsInitialized(false) {}

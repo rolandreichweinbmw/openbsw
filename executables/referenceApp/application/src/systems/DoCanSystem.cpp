@@ -2,9 +2,6 @@
 
 #include "systems/DoCanSystem.h"
 
-#include <etl/delegate.h>
-#include <etl/span.h>
-
 #include "systems/ICanSystem.h"
 #include "transport/ITransportSystem.h"
 
@@ -12,6 +9,8 @@
 #include <bsp/timer/SystemTimer.h>
 #include <docan/common/DoCanLogger.h>
 #include <docan/datalink/DoCanFrameCodecConfigPresets.h>
+#include <etl/delegate.h>
+#include <etl/span.h>
 
 namespace
 {
@@ -91,7 +90,9 @@ void DoCanSystem::initLayer()
 
 void DoCanSystem::init()
 {
-    _classicAddressingFilter.init(::etl::span<DoCanSystem::AddressingFilterType::AddressEntryType>(_addresses), ::etl::span<FrameCodecType const*>(_codecs));
+    _classicAddressingFilter.init(
+        ::etl::span<DoCanSystem::AddressingFilterType::AddressEntryType>(_addresses),
+        ::etl::span<FrameCodecType const*>(_codecs));
 
     initLayer();
 

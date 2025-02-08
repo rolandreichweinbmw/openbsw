@@ -6,9 +6,8 @@
 #include "can/transceiver/canflex2/CanFlex2Transceiver.h"
 #include "lifecycle/SingleContextLifecycleComponent.h"
 
-#include <systems/ICanSystem.h>
-
 #include <etl/singleton_base.h>
+#include <systems/ICanSystem.h>
 
 namespace bios
 {

@@ -15,7 +15,6 @@
 #include <async/AsyncMock.h>
 #include <async/RunnableMock.h>
 #include <async/TestContext.h>
-
 #include <etl/span.h>
 
 #include <gtest/gtest.h>

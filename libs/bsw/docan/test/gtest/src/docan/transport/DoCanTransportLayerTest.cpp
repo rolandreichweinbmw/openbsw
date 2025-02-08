@@ -16,15 +16,14 @@
 #include <async/AsyncMock.h>
 #include <async/TestContext.h>
 #include <bsp/timer/SystemTimerMock.h>
+#include <etl/delegate.h>
+#include <etl/memory.h>
+#include <etl/span.h>
 #include <transport/BufferedTransportMessage.h>
 #include <transport/TransportMessageProcessedListenerMock.h>
 #include <transport/TransportMessageProvidingListenerMock.h>
 #include <util/logger/ComponentMappingMock.h>
 #include <util/logger/LoggerOutputMock.h>
-
-#include <etl/delegate.h>
-#include <etl/memory.h>
-#include <etl/span.h>
 
 #include <gtest/esr_extensions.h>
 
@@ -145,8 +144,12 @@ TEST_F(DoCanTransportLayerTest, testTransportMessageReceptionLifecycle)
         // check message
         EXPECT_EQ(0x35U, transportMessage.getSourceId());
         EXPECT_EQ(0x69U, transportMessage.getTargetId());
-        EXPECT_TRUE(0 == ::etl::mem_compare(
-            &data[0], static_cast<size_t>(transportMessage.getPayloadLength()), transportMessage.getPayload()));
+        EXPECT_TRUE(
+            0
+            == ::etl::mem_compare(
+                &data[0],
+                static_cast<size_t>(transportMessage.getPayloadLength()),
+                transportMessage.getPayload()));
         // release
         EXPECT_CALL(_messageProvidingListenerMock, releaseTransportMessage(Ref(transportMessage)));
         _context.handleExecute();
@@ -194,8 +197,12 @@ TEST_F(DoCanTransportLayerTest, testTransportMessageReceptionLifecycle)
         ASSERT_TRUE(notificationListener != nullptr);
         EXPECT_EQ(0x37U, transportMessage.getSourceId());
         EXPECT_EQ(0x96U, transportMessage.getTargetId());
-        EXPECT_TRUE(0 == ::etl::mem_compare(
-            &data[0], static_cast<size_t>(transportMessage.getPayloadLength()), transportMessage.getPayload()));
+        EXPECT_TRUE(
+            0
+            == ::etl::mem_compare(
+                &data[0],
+                static_cast<size_t>(transportMessage.getPayloadLength()),
+                transportMessage.getPayload()));
         // release
         EXPECT_CALL(_messageProvidingListenerMock, releaseTransportMessage(Ref(transportMessage)));
         _context.handleExecute();

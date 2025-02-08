@@ -6,8 +6,9 @@
 #ifndef GUARD_F14C8DE7_1246_465B_8833_4BA3F0E99CD0
 #define GUARD_F14C8DE7_1246_465B_8833_4BA3F0E99CD0
 
-#include <etl/singleton_base.h>
 #include "interrupts/suspendResumeAllInterrupts.h"
+
+#include <etl/singleton_base.h>
 
 #include <gmock/gmock.h>
 

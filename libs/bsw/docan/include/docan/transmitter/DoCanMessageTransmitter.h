@@ -7,11 +7,10 @@
 #include "docan/common/DoCanTimerManagement.h"
 #include "docan/transmitter/DoCanMessageTransmitProtocolHandler.h"
 
-#include <transport/ITransportMessageProcessedListener.h>
-#include <transport/TransportMessage.h>
-
 #include <etl/intrusive_forward_list.h>
 #include <etl/span.h>
+#include <transport/ITransportMessageProcessedListener.h>
+#include <transport/TransportMessage.h>
 
 #include <platform/estdint.h>
 

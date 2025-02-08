@@ -87,15 +87,13 @@ inline DoCanTransportLayerConfig<DataLinkLayer>::DoCanTransportLayerConfig(
 {}
 
 template<class DataLinkLayer>
-inline ::etl::ipool&
-DoCanTransportLayerConfig<DataLinkLayer>::getMessageReceiverPool() const
+inline ::etl::ipool& DoCanTransportLayerConfig<DataLinkLayer>::getMessageReceiverPool() const
 {
     return _messageReceiverPool;
 }
 
 template<class DataLinkLayer>
-inline ::etl::ipool&
-DoCanTransportLayerConfig<DataLinkLayer>::getMessageTransmitterPool() const
+inline ::etl::ipool& DoCanTransportLayerConfig<DataLinkLayer>::getMessageTransmitterPool() const
 {
     return _messageTransmitterPool;
 }

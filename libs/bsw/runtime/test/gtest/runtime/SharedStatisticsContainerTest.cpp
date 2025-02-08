@@ -4,10 +4,9 @@
 
 #include "runtime/StatisticsContainer.h"
 
-#include <util/estd/gtest_extensions.h>
-
 #include <etl/span.h>
 #include <etl/string.h>
+#include <util/estd/gtest_extensions.h>
 
 #include <gmock/gmock.h>
 

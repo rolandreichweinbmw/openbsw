@@ -16,6 +16,7 @@
 #include "can/transceiver/ICanTransceiver.h"
 
 #include <etl/intrusive_forward_list.h>
+
 #include <platform/estdint.h>
 
 namespace can
@@ -187,7 +188,8 @@ protected:
     BitFieldFilter _filter;
     ::etl::intrusive_forward_list<ICANFrameListener, ::etl::forward_link<0>> _listeners;
     IFilteredCANFrameSentListener* _sentListener;
-    ::etl::intrusive_forward_list<IFilteredCANFrameSentListener, ::etl::forward_link<0>> _sentListeners;
+    ::etl::intrusive_forward_list<IFilteredCANFrameSentListener, ::etl::forward_link<0>>
+        _sentListeners;
     /** baudrate of transceiver */
     uint32_t _baudrate;
     /** internal State */

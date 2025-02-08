@@ -5,12 +5,11 @@
 #include "console/SyncCommandWrapper.h"
 #include "logger/ConsoleLogger.h"
 
+#include <etl/singleton_base.h>
+#include <etl/string.h>
 #include <util/command/HelpCommand.h>
 #include <util/command/ParentCommand.h>
 #include <util/format/SharedStringWriter.h>
-
-#include <etl/singleton_base.h>
-#include <etl/string.h>
 
 namespace
 {

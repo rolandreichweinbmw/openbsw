@@ -11,11 +11,10 @@
 
 #include <async/Async.h>
 #include <async/util/Call.h>
+#include <etl/uncopyable.h>
 #include <transport/AbstractTransportLayer.h>
 #include <transport/ITransportMessageProcessedListener.h>
 #include <transport/TransportMessage.h>
-
-#include <etl/uncopyable.h>
 
 #ifdef IS_VARIANT_HANDLING_NEEDED
 #include "uds/DiagnosisConfiguration.h"

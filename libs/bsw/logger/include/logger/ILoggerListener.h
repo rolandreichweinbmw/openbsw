@@ -18,11 +18,9 @@ public:
     virtual void logAvailable() = 0;
 };
 
-inline ILoggerListener::ILoggerListener()
-: ::etl::forward_link<0>(), ::etl::uncopyable()
-{}
+inline ILoggerListener::ILoggerListener() : ::etl::forward_link<0>(), ::etl::uncopyable() {}
 
-inline bool operator==(const ILoggerListener& lhs, const ILoggerListener& rhs)
+inline bool operator==(ILoggerListener const& lhs, ILoggerListener const& rhs)
 {
     return &lhs == &rhs;
 }

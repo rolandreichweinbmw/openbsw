@@ -12,9 +12,7 @@ constexpr TransportConfiguration::InternalTesters const
 constexpr TransportConfiguration::ExternalTesters const
     TransportConfiguration::EXTERNAL_ADDRESS_RANGE;
 template<>
-etl::array<
-    ::etl::span<LogicalAddress const>,
-    TransportConfiguration::NUMBER_OF_ADDRESS_LISTS> const
+etl::array<::etl::span<LogicalAddress const>, TransportConfiguration::NUMBER_OF_ADDRESS_LISTS> const
     TransportConfiguration::LogicalAddressConverterUT::TESTER_ADDRESS_LISTS
     = {TransportConfiguration::INTERNAL_ADDRESS_RANGE,
        TransportConfiguration::EXTERNAL_ADDRESS_RANGE};

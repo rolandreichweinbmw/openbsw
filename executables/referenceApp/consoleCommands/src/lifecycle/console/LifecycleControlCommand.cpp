@@ -4,7 +4,6 @@
 
 #include <async/Async.h>
 #include <lifecycle/ILifecycleManager.h>
-
 #include <util/estd/assert.h>
 
 namespace

@@ -6,6 +6,7 @@
 #include "docan/common/DoCanConstants.h"
 
 #include <etl/bitset.h>
+
 #include <platform/estdint.h>
 
 namespace docan

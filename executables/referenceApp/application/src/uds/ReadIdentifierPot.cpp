@@ -43,7 +43,9 @@ DiagReturnCode::Type ReadIdentifierPot::process(
 #endif
 
     ::etl::be_int32_t responseData22Cf02(adcValue);
-    (void)response.appendData(static_cast<uint8_t*>(responseData22Cf02.data()), static_cast<uint16_t>(responseData22Cf02.size()));
+    (void)response.appendData(
+        static_cast<uint8_t*>(responseData22Cf02.data()),
+        static_cast<uint16_t>(responseData22Cf02.size()));
     (void)connection.sendPositiveResponseInternal(response.getLength(), *this);
 
     return DiagReturnCode::OK;

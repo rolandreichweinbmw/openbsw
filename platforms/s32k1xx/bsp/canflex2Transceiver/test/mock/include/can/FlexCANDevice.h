@@ -8,9 +8,8 @@
 #include <bsp/can/canTransceiver/CanPhy.h>
 #include <bsp/power/IEcuPowerStateController.h>
 #include <can/transceiver/AbstractCANTransceiver.h>
-
-#include <etl/uncopyable.h>
 #include <etl/delegate.h>
+#include <etl/uncopyable.h>
 
 #include <gmock/gmock.h>
 
@@ -18,7 +17,7 @@ namespace bios
 {
 class CanPhyMock;
 
-class FlexCANDevice: public ::etl::uncopyable
+class FlexCANDevice : public ::etl::uncopyable
 {
 public:
     struct Config

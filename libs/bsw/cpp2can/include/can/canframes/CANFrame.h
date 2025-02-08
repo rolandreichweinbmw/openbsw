@@ -11,6 +11,7 @@
 #include "can/canframes/CanId.h"
 
 #include <util/estd/assert.h>
+
 #include <platform/estdint.h>
 
 #include <cstring>

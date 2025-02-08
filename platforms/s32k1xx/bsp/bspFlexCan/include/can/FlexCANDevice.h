@@ -14,12 +14,13 @@
 #include <etl/delegate.h>
 #include <etl/queue.h>
 #include <etl/uncopyable.h>
+
 #include <platform/estdint.h>
 
 namespace bios
 {
 
-class FlexCANDevice: public etl::uncopyable
+class FlexCANDevice : public etl::uncopyable
 {
 public:
     enum CTRLTimingValues

@@ -38,7 +38,8 @@ bool areInterruptsDisabled(void)
 {
     if (::interrupts::DisableEnableAllInterruptsMockSingleton::is_valid())
     {
-        return ::interrupts::DisableEnableAllInterruptsMockSingleton::instance().areInterruptsDisabled();
+        return ::interrupts::DisableEnableAllInterruptsMockSingleton::instance()
+            .areInterruptsDisabled();
     }
     return (
         interrupts::DisableEnableAllInterruptsMock::disableAllInterruptsCount
@@ -49,7 +50,8 @@ bool areInterruptsEnabled(void)
 {
     if (::interrupts::DisableEnableAllInterruptsMockSingleton::is_valid())
     {
-        return ::interrupts::DisableEnableAllInterruptsMockSingleton::instance().areInterruptsEnabled();
+        return ::interrupts::DisableEnableAllInterruptsMockSingleton::instance()
+            .areInterruptsEnabled();
     }
     return (
         interrupts::DisableEnableAllInterruptsMock::disableAllInterruptsCount

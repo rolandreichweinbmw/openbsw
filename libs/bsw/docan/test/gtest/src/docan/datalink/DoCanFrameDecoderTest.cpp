@@ -42,11 +42,10 @@ TEST_F(DoCanFrameDecoderTest, testDecodeSingleFrame)
     {
         // valid frame
         uint8_t const payload[] = {0x02, 0x13, 0x24};
-        auto span = ::etl::span<uint8_t const>(payload).subspan(1U);
+        auto span               = ::etl::span<uint8_t const>(payload).subspan(1U);
         EXPECT_CALL(
             _frameReceiverMock,
-            firstDataFrameReceived(
-                conn, 2U, 1U, 0U, ElementsAreArray(span.data(), span.size())));
+            firstDataFrameReceived(conn, 2U, 1U, 0U, ElementsAreArray(span.data(), span.size())));
         EXPECT_EQ(CodecResult::OK, cut.decodeFrame(conn, payload, _frameReceiverMock));
         Mock::VerifyAndClearExpectations(&_frameReceiverMock);
     }
@@ -70,7 +69,7 @@ TEST_F(DoCanFrameDecoderTest, testDecodeFirstFrame)
     {
         // valid frame
         uint8_t const payload[] = {0x10, 0x12, 0x24, 0x45, 0x67, 0x89, 0x9a, 0x91};
-        auto span = ::etl::span<uint8_t const>(payload).subspan(2U);
+        auto span               = ::etl::span<uint8_t const>(payload).subspan(2U);
         EXPECT_CALL(
             _frameReceiverMock,
             firstDataFrameReceived(
@@ -81,7 +80,7 @@ TEST_F(DoCanFrameDecoderTest, testDecodeFirstFrame)
     {
         // valid frame with escape sequence
         uint8_t const payload[] = {0x10, 0x00, 0x00, 0x00, 0xA5, 0xB4, 0x5A, 0x4B};
-        auto span = ::etl::span<uint8_t const>(payload).subspan(6U);
+        auto span               = ::etl::span<uint8_t const>(payload).subspan(6U);
         EXPECT_CALL(
             _frameReceiverMock,
             firstDataFrameReceived(
@@ -106,11 +105,10 @@ TEST_F(DoCanFrameDecoderTest, testDecodeConsecutiveFrame)
     {
         // valid frame
         uint8_t const payload[] = {0x21, 0x12, 0x24, 0x45, 0x67, 0x89, 0x9a, 0x91};
-        auto span = ::etl::span<uint8_t const>(payload).subspan(1U);
+        auto span               = ::etl::span<uint8_t const>(payload).subspan(1U);
         EXPECT_CALL(
             _frameReceiverMock,
-            consecutiveDataFrameReceived(
-                0x01, 1U, ElementsAreArray(span.data(), span.size())));
+            consecutiveDataFrameReceived(0x01, 1U, ElementsAreArray(span.data(), span.size())));
         EXPECT_EQ(CodecResult::OK, cut.decodeFrame(conn, payload, _frameReceiverMock));
         Mock::VerifyAndClearExpectations(&_frameReceiverMock);
     }

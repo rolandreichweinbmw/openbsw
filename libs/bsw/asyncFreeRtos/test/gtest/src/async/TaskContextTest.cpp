@@ -6,9 +6,8 @@
 #include "async/TimeoutMock.h"
 
 #include <bsp/timer/SystemTimerMock.h>
-#include <os/FreeRtosMock.h>
-
 #include <etl/singleton_base.h>
+#include <os/FreeRtosMock.h>
 
 namespace
 {

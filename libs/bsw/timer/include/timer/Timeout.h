@@ -31,10 +31,7 @@ struct Timeout : public ::etl::forward_link<0>
     uint32_t _cycleTime = 0U;
 };
 
-inline bool operator==(const Timeout& lhs, const Timeout& rhs)
-{
-    return &lhs == &rhs;
-}
+inline bool operator==(Timeout const& lhs, Timeout const& rhs) { return &lhs == &rhs; }
 
 } // namespace timer
 

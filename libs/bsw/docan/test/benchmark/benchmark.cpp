@@ -19,12 +19,11 @@
 #include <can/canframes/CanId.h>
 #include <can/transceiver/AbstractCANTransceiver.h>
 #include <can/transceiver/ICanTransceiver.h>
+#include <etl/delegate.h>
+#include <etl/vector.h>
 #include <transport/BufferedTransportMessage.h>
 #include <transport/ITransportMessageProcessedListener.h>
 #include <transport/TransportMessage.h>
-
-#include <etl/delegate.h>
-#include <etl/vector.h>
 
 #include <gtest/gtest.h>
 
@@ -190,7 +189,8 @@ struct TransmissionBenchmark : public ::benchmark::Fixture
     CanTransceiver canTransceiver{id};
 
     ::etl::vector<DoCanIsoLayer, NUM_CAN_TRANSPORT_ISO_LAYER> _doCanIsoLayers;
-    ::etl::vector<::docan::DoCanPhysicalCanTransceiver<AddressingCodec>, NUM_CAN_TRANSPORT_ISO_LAYER>
+    ::etl::
+        vector<::docan::DoCanPhysicalCanTransceiver<AddressingCodec>, NUM_CAN_TRANSPORT_ISO_LAYER>
             _doCanPhysicalTransceivers;
     ::can::ICANFrameSentListener* canFrameSentListener{nullptr};
 
@@ -370,7 +370,8 @@ void TransmissionFullSegmentedMessage(benchmark::State& state)
     ::etl::vector<DoCanIsoLayer, NUM_CAN_TRANSPORT_ISO_LAYER> _doCanIsoLayers;
     ::docan::DoCanTransportLayerContainer<DataLinkLayerType> _doCanIsoLayerContainer(
         _doCanIsoLayers);
-    ::etl::vector<::docan::DoCanPhysicalCanTransceiver<AddressingCodec>, NUM_CAN_TRANSPORT_ISO_LAYER>
+    ::etl::
+        vector<::docan::DoCanPhysicalCanTransceiver<AddressingCodec>, NUM_CAN_TRANSPORT_ISO_LAYER>
             _doCanPhysicalTransceivers;
 
     ::common::busid::internal::Id<uint8_t, 0U> id;
@@ -472,7 +473,7 @@ void TransmissionMultipleTransportLayersFullSegmentedMessages(benchmark::State& 
     FrameCodecType const* codecEntries[2] = {&codecClassic, &codecFd};
 
     ::etl::vector<::docan::DoCanNormalAddressingFilterAddressEntry<DataLinkLayerType>, NoOfMessages>
-            doCanMappingEntries;
+        doCanMappingEntries;
     for (uint16_t messageIndex = 0; messageIndex < NoOfMessages; ++messageIndex)
     {
         doCanMappingEntries.emplace_back().construct(
@@ -527,8 +528,7 @@ void TransmissionMultipleTransportLayersFullSegmentedMessages(benchmark::State& 
     ::transport::BufferedTransportMessage<MessageSize> transportMessage[NoOfMessages];
     uint8_t data[NoOfMessages][MessageSize];
     bool sending[NoOfMessages];
-    ::etl::vector<TransportMessageProcessedListener, NoOfMessages>
-        tpMessageProcessedListeners;
+    ::etl::vector<TransportMessageProcessedListener, NoOfMessages> tpMessageProcessedListeners;
     for (size_t messageIndex = 0; messageIndex < NoOfMessages; ++messageIndex)
     {
         for (size_t byteIndex = 0; byteIndex < sizeof(data[messageIndex]); ++byteIndex)
@@ -614,7 +614,7 @@ void TransmissionMultipleFullSegmentedMessages(benchmark::State& state)
     FrameCodecType const* codecEntries[2] = {&codecClassic, &codecFd};
 
     ::etl::vector<::docan::DoCanNormalAddressingFilterAddressEntry<DataLinkLayerType>, NoOfMessages>
-            doCanMappingEntries;
+        doCanMappingEntries;
     for (uint16_t messageIndex = 0; messageIndex < NoOfMessages; ++messageIndex)
     {
         doCanMappingEntries.emplace_back().construct(
@@ -659,8 +659,7 @@ void TransmissionMultipleFullSegmentedMessages(benchmark::State& state)
     ::transport::BufferedTransportMessage<MessageSize> transportMessage[NoOfMessages];
     uint8_t data[NoOfMessages][MessageSize];
     bool sending[NoOfMessages];
-    ::etl::vector<TransportMessageProcessedListener, NoOfMessages>
-        tpMessageProcessedListeners;
+    ::etl::vector<TransportMessageProcessedListener, NoOfMessages> tpMessageProcessedListeners;
     for (size_t messageIndex = 0; messageIndex < NoOfMessages; ++messageIndex)
     {
         for (size_t byteIndex = 0; byteIndex < sizeof(data[messageIndex]); ++byteIndex)

@@ -11,7 +11,6 @@
 #include "app/DemoLogger.h"
 
 #include <bsp/SystemTime.h>
-
 #include <etl/unaligned_type.h>
 #ifdef PLATFORM_SUPPORT_CAN
 #include <can/transceiver/AbstractCANTransceiver.h>

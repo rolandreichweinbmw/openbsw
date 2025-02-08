@@ -5,11 +5,10 @@
 #include "uds/session/ApplicationDefaultSession.h"
 #include "uds/session/DiagSessionManagerMock.h"
 
-#include <transport/TransportMessage.h>
-#include <transport/TransportMessageWithBuffer.h>
-
 #include <etl/memory.h>
 #include <etl/span.h>
+#include <transport/TransportMessage.h>
+#include <transport/TransportMessageWithBuffer.h>
 
 #include <gtest/gtest.h>
 

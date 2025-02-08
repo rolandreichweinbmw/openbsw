@@ -3,10 +3,10 @@
 #ifndef GUARD_D7330E9B_CEEC_44BC_9674_E6FB0830137F
 #define GUARD_D7330E9B_CEEC_44BC_9674_E6FB0830137F
 
-#include <etl/span.h>
-
 #include "platform/estdint.h"
 #include "uds/jobs/DataIdentifierJob.h"
+
+#include <etl/span.h>
 
 namespace uds
 {

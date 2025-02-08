@@ -3,8 +3,6 @@
 #ifndef GUARD_C512CEED_E256_4221_B8CB_BB6E8451A7C7
 #define GUARD_C512CEED_E256_4221_B8CB_BB6E8451A7C7
 
-#include <io/MemoryQueue.h>
-
 #include <etl/byte_stream.h>
 #include <etl/largest.h>
 #include <etl/memory.h>
@@ -12,6 +10,7 @@
 #include <etl/span.h>
 #include <etl/type_traits.h>
 #include <etl/variant.h>
+#include <io/MemoryQueue.h>
 
 #include <cassert>
 #include <type_traits>
@@ -72,8 +71,8 @@ struct make_variant_queue
 
     enum
     {
-      max_align = ::etl::largest<typename ElementTypes::type...>::alignment,
-      size = type_list::size
+        max_align = ::etl::largest<typename ElementTypes::type...>::alignment,
+        size      = type_list::size
     };
 };
 
@@ -95,7 +94,7 @@ private:
     template<size_t ID = 0>
     struct variant_do
     {
-        using T = typename TypeList::type_list::type_from_index<ID>::type;
+        using T       = typename TypeList::type_list::type_from_index<ID>::type;
         using recurse = variant_do<ID + 1 == TypeList::size ? ID : ID + 1>;
 
         template<typename Visitor, typename R>
@@ -115,7 +114,8 @@ private:
         }
 
         template<typename Visitor, typename R>
-        static void call_with_payload(size_t const t, ::etl::span<uint8_t const> const mem, Visitor& visitor)
+        static void
+        call_with_payload(size_t const t, ::etl::span<uint8_t const> const mem, Visitor& visitor)
         {
             if (t < TypeList::size)
             {
@@ -140,7 +140,7 @@ private:
 
         buffer[0] = static_cast<uint8_t>(TypeList::type_list::template index_of_type<T>::value);
         *(reinterpret_cast<T*>(&buffer[1])) = t;
-        buffer = buffer.subspan(1 + sizeof(t));
+        buffer                              = buffer.subspan(1 + sizeof(t));
     }
 
 public:
@@ -156,7 +156,8 @@ public:
     static void read_with_payload(Visitor& visitor, ::etl::span<uint8_t const> const data)
     {
         assert(data.size() != 0);
-        return variant_do<>::template call_with_payload<Visitor, void>(data[0], data.subspan(1), visitor);
+        return variant_do<>::template call_with_payload<Visitor, void>(
+            data[0], data.subspan(1), visitor);
     }
 
     template<typename T, typename Writer>

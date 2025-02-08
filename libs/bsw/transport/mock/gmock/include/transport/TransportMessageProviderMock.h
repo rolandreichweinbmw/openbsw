@@ -11,9 +11,9 @@
 
 #include "transport/ITransportMessageProvider.h"
 
-#include <gmock/gmock.h>
-
 #include <etl/span.h>
+
+#include <gmock/gmock.h>
 
 namespace transport
 {

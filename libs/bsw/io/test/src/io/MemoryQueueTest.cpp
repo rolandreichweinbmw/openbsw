@@ -73,9 +73,9 @@ allocate(typename Queue::Writer& s, uint8_t const bus, uint32_t const id, size_t
     ::etl::span<uint8_t> memory = s.allocate(sizeof(uint8_t) + sizeof(uint32_t) + size);
     if (memory.size() >= 5)
     {
-        memory[0] = bus;
+        memory[0]                                        = bus;
         *reinterpret_cast<etl::be_uint32_t*>(&memory[1]) = id;
-        memory = memory.subspan(sizeof(bus) + sizeof(id));
+        memory                                           = memory.subspan(sizeof(bus) + sizeof(id));
     }
     return memory;
 }
@@ -181,7 +181,7 @@ TYPED_TEST(MemoryQueueTypedTest, allocate_returns_empty_slice_if_available_is_ze
     size_t const available = this->_w.available();
     if (available > 0)
     {
-        size_t const allocate    = available - sizeof(typename TypeParam::size_type);
+        size_t const allocate  = available - sizeof(typename TypeParam::size_type);
         ::etl::span<uint8_t> s = this->_w.allocate(allocate);
         this->_w.commit();
         EXPECT_EQ(allocate, s.size());
@@ -795,9 +795,9 @@ TEST_F(MemoryQueueTest, PduType)
 
     // 1) allocate() allocates a slice of payload data and writes bus and PDU Id to the queue
     ::etl::span<uint8_t> pld = allocate<MQ>(w, 1, 0x1234U, 10);
-    pld[0]                     = 0x11U;
-    pld[1]                     = 0x22U;
-    pld[2]                     = 0x33U;
+    pld[0]                   = 0x11U;
+    pld[1]                   = 0x22U;
+    pld[2]                   = 0x33U;
     w.commit();
 
     // 2) poll() retrieves an elements of type Pdu

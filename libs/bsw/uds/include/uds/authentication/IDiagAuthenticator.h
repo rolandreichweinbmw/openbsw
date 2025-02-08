@@ -6,11 +6,12 @@
 #include "uds/DiagReturnCode.h"
 
 #include <etl/uncopyable.h>
+
 #include <platform/estdint.h>
 
 namespace uds
 {
-class IDiagAuthenticator: public ::etl::uncopyable
+class IDiagAuthenticator : public ::etl::uncopyable
 {
 protected:
     IDiagAuthenticator() {}

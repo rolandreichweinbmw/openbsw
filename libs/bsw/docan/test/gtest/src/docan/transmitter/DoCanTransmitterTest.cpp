@@ -15,15 +15,14 @@
 #include <async/AsyncMock.h>
 #include <async/TestContext.h>
 #include <bsp/timer/SystemTimerMock.h>
+#include <etl/delegate.h>
+#include <etl/generic_pool.h>
+#include <etl/memory.h>
+#include <etl/span.h>
 #include <transport/BufferedTransportMessage.h>
 #include <transport/TransportMessageProcessedListenerMock.h>
 #include <util/logger/ComponentMappingMock.h>
 #include <util/logger/LoggerOutputMock.h>
-
-#include <etl/delegate.h>
-#include <etl/memory.h>
-#include <etl/span.h>
-#include <etl/generic_pool.h>
 
 #include <gtest/esr_extensions.h>
 
@@ -144,8 +143,7 @@ using ItemT = ::docan::DoCanMessageTransmitter<DataLinkLayer>;
  */
 TEST_F(DoCanTransmitterTest, testTransmitSingleFrameMessageAndShutdown)
 {
-    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U>
-        messageTransmitterBlockPool;
+    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U> messageTransmitterBlockPool;
     DoCanTransmitter<DataLinkLayer> cut(
         _busId,
         _context,
@@ -197,8 +195,7 @@ TEST_F(DoCanTransmitterTest, testTransmitSingleFrameMessageAndShutdown)
 TEST_F(DoCanTransmitterTest, testTransmitMultipleSingleFrameMessageExpectDifferentJobHandles)
 {
     constexpr size_t NUMBER_OF_SLOTS = 3;
-    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), NUMBER_OF_SLOTS>
-            messageTransmitterBlockPool;
+    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), NUMBER_OF_SLOTS> messageTransmitterBlockPool;
     DoCanTransmitter<DataLinkLayer> cut(
         _busId,
         _context,
@@ -257,8 +254,7 @@ TEST_F(DoCanTransmitterTest, testTransmitMultipleSingleFrameMessageExpectDiffere
 
 TEST_F(DoCanTransmitterTest, testTransmitSingleFrameMessageWithoutNotificationListenerAndShutdown)
 {
-    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U>
-        messageTransmitterBlockPool;
+    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U> messageTransmitterBlockPool;
     DoCanTransmitter<DataLinkLayer> cut(
         _busId,
         _context,
@@ -304,8 +300,7 @@ TEST_F(DoCanTransmitterTest, testTransmitSingleFrameMessageWithoutNotificationLi
  */
 TEST_F(DoCanTransmitterTest, testTransmitSegmentedMessageAndShutdown)
 {
-    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U>
-        messageTransmitterBlockPool;
+    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U> messageTransmitterBlockPool;
     DoCanTransmitter<DataLinkLayer> cut(
         _busId,
         _context,
@@ -389,8 +384,7 @@ TEST_F(DoCanTransmitterTest, testTransmitSegmentedMessageAndShutdown)
 
 TEST_F(DoCanTransmitterTest, testTransmitSegmentedMessageWithFlowControlOverflowAndShutdown)
 {
-    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U>
-        messageTransmitterBlockPool;
+    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U> messageTransmitterBlockPool;
     DoCanTransmitter<DataLinkLayer> cut(
         _busId,
         _context,
@@ -443,8 +437,7 @@ TEST_F(DoCanTransmitterTest, testTransmitSegmentedMessageWithFlowControlOverflow
 
 TEST_F(DoCanTransmitterTest, testTransmitSegmentedMessageWithInvalidFlowControlAndShutdown)
 {
-    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U>
-        messageTransmitterBlockPool;
+    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U> messageTransmitterBlockPool;
     DoCanTransmitter<DataLinkLayer> cut(
         _busId,
         _context,
@@ -498,8 +491,7 @@ TEST_F(DoCanTransmitterTest, testTransmitSegmentedMessageWithInvalidFlowControlA
 
 TEST_F(DoCanTransmitterTest, testTransmitSegmentedMessageWithFlowControlWaitOverflowAndShutdown)
 {
-    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U>
-        messageTransmitterBlockPool;
+    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U> messageTransmitterBlockPool;
     DoCanTransmitter<DataLinkLayer> cut(
         _busId,
         _context,
@@ -561,8 +553,7 @@ TEST_F(DoCanTransmitterTest, testTransmitSegmentedMessageWithFlowControlWaitOver
  */
 TEST_F(DoCanTransmitterTest, testTransmitSegmentedMessageWithSeparationTimeAndShutdown)
 {
-    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U>
-        messageTransmitterBlockPool;
+    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U> messageTransmitterBlockPool;
     DoCanTransmitter<DataLinkLayer> cut(
         _busId,
         _context,
@@ -656,8 +647,7 @@ TEST_F(DoCanTransmitterTest, sequentialFramesSentCorrectlyWithNowUsWraparound)
     nowUs = std::numeric_limits<uint32_t>::max() - 999;
     DoCanDefaultFrameSizeMapper<uint8_t> const mapper;
     CodecType codec(DoCanFrameCodecConfigPresets::OPTIMIZED_CLASSIC, mapper);
-    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U>
-        messageTransmitterBlockPool;
+    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U> messageTransmitterBlockPool;
     DoCanTransmitter<DataLinkLayer> cut(
         _busId,
         _context,
@@ -756,8 +746,7 @@ TEST_F(
     DoCanTransmitterTest,
     testTransmitSegmentedMessageWithMultipleConsecutiveFramesAtOnceAndShutdown)
 {
-    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U>
-        messageTransmitterBlockPool;
+    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U> messageTransmitterBlockPool;
     DoCanTransmitter<DataLinkLayer> cut(
         _busId,
         _context,
@@ -832,8 +821,7 @@ TEST_F(
     DoCanTransmitterTest,
     testTransmitSegmentedMessageWithMultipleConsecutiveFramesAtOnceAndEscapeSequenceAndShutdown)
 {
-    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 105U>
-        messageTransmitterBlockPool;
+    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 105U> messageTransmitterBlockPool;
     DoCanTransmitter<DataLinkLayer> cut(
         _busId,
         _context,
@@ -913,8 +901,7 @@ TEST_F(
  */
 TEST_F(DoCanTransmitterTest, testSendTwoSegmentedMessagesRoundRobin)
 {
-    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U>
-        messageTransmitterBlockPool;
+    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U> messageTransmitterBlockPool;
     DoCanTransmitter<DataLinkLayer> cut(
         _busId,
         _context,
@@ -1081,8 +1068,7 @@ TEST_F(DoCanTransmitterTest, testSendTwoSegmentedMessagesRoundRobin)
  */
 TEST_F(DoCanTransmitterTest, testSendThreeSegmentedMessagesRoundRobinWithTwoSendSlots)
 {
-    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U>
-        messageTransmitterBlockPool;
+    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U> messageTransmitterBlockPool;
     DoCanTransmitter<DataLinkLayer> cut(
         _busId,
         _context,
@@ -1333,8 +1319,7 @@ TEST_F(DoCanTransmitterTest, testMultipleDifferentTimeoutsWithDifferentExpiry)
 {
     nowUs                          = 0;
     constexpr uint8_t MESSAGE_SIZE = 15;
-    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), MESSAGE_SIZE>
-            messageTransmitterBlockPool;
+    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), MESSAGE_SIZE> messageTransmitterBlockPool;
     DoCanTransmitter<DataLinkLayer> cut(
         _busId,
         _context,
@@ -1536,8 +1521,7 @@ TEST_F(DoCanTransmitterTest, testMultipleDifferentTimeoutsWithDifferentExpiry)
 
 TEST_F(DoCanTransmitterTest, testSendMessageFailsOnSendError)
 {
-    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U>
-        messageTransmitterBlockPool;
+    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U> messageTransmitterBlockPool;
     DoCanTransmitter<DataLinkLayer> cut(
         _busId,
         _context,
@@ -1579,8 +1563,7 @@ TEST_F(DoCanTransmitterTest, testSendMessageFailsOnSendError)
 
 TEST_F(DoCanTransmitterTest, testSendEmptyMessage)
 {
-    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U>
-        messageTransmitterBlockPool;
+    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U> messageTransmitterBlockPool;
     DoCanTransmitter<DataLinkLayer> cut(
         _busId,
         _context,
@@ -1620,8 +1603,7 @@ TEST_F(DoCanTransmitterTest, testSendTooBigMessage)
         DoCanFrameCodecConfigPresets::OPTIMIZED_CLASSIC, _mapper);
 
     using T = ::docan::DoCanMessageTransmitter<SmallFrameIndexDataLinkLayer>;
-    ::etl::generic_pool<sizeof(T), alignof(T), 5U>
-            messageTransmitterBlockPool;
+    ::etl::generic_pool<sizeof(T), alignof(T), 5U> messageTransmitterBlockPool;
     DoCanTransmitter<SmallFrameIndexDataLinkLayer> cut(
         _busId,
         _context,
@@ -1657,8 +1639,7 @@ TEST_F(DoCanTransmitterTest, testSendTooBigMessage)
 
 TEST_F(DoCanTransmitterTest, testSendIncompleteMessage)
 {
-    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U>
-        messageTransmitterBlockPool;
+    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U> messageTransmitterBlockPool;
     DoCanTransmitter<DataLinkLayer> cut(
         _busId,
         _context,
@@ -1690,8 +1671,7 @@ TEST_F(DoCanTransmitterTest, testSendIncompleteMessage)
 
 TEST_F(DoCanTransmitterTest, testSendSecondSegmentedMessageForSameTransportAddressPair)
 {
-    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U>
-        messageTransmitterBlockPool;
+    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U> messageTransmitterBlockPool;
     DoCanTransmitter<DataLinkLayer> cut(
         _busId,
         _context,
@@ -1735,8 +1715,7 @@ TEST_F(DoCanTransmitterTest, testSendSecondSegmentedMessageForSameTransportAddre
 
 TEST_F(DoCanTransmitterTest, testFillUpSendQueue)
 {
-    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 2U>
-        messageTransmitterBlockPool;
+    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 2U> messageTransmitterBlockPool;
     DoCanTransmitter<DataLinkLayer> cut(
         _busId,
         _context,
@@ -1793,8 +1772,7 @@ TEST_F(DoCanTransmitterTest, testFillUpSendQueue)
 
 TEST_F(DoCanTransmitterTest, testDataLinkQueueFull)
 {
-    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U>
-        messageTransmitterBlockPool;
+    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U> messageTransmitterBlockPool;
     DoCanTransmitter<DataLinkLayer> cut(
         _busId,
         _context,
@@ -1856,8 +1834,7 @@ TEST_F(DoCanTransmitterTest, flowControlFrameTimeout)
 {
     DoCanDefaultFrameSizeMapper<uint8_t> const mapper;
     CodecType codec(DoCanFrameCodecConfigPresets::OPTIMIZED_CLASSIC, mapper);
-    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U>
-        messageTransmitterBlockPool;
+    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U> messageTransmitterBlockPool;
     DoCanTransmitter<DataLinkLayer> cut(
         _busId,
         _context,
@@ -1912,8 +1889,7 @@ TEST_F(DoCanTransmitterTest, flowControlFrameTimeout)
 
 TEST_F(DoCanTransmitterTest, testSendSecondMessageAfterFirstMessageTransmissionTimeout)
 {
-    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U>
-        messageTransmitterBlockPool;
+    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U> messageTransmitterBlockPool;
     DoCanTransmitter<DataLinkLayer> cut(
         _busId,
         _context,
@@ -1969,8 +1945,7 @@ TEST_F(DoCanTransmitterTest, testSendSecondMessageAfterFirstMessageTransmissionT
 
 TEST_F(DoCanTransmitterTest, testCanFrameSentIgnoredIfNoPendingSender)
 {
-    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U>
-        messageTransmitterBlockPool;
+    ::etl::generic_pool<sizeof(ItemT), alignof(ItemT), 5U> messageTransmitterBlockPool;
     DoCanTransmitter<DataLinkLayer> cut(
         _busId,
         _context,

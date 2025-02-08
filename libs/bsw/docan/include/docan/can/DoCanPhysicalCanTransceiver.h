@@ -215,8 +215,7 @@ void DoCanPhysicalCanTransceiver<Addressing>::frameReceived(::can::CANFrame cons
         return;
     }
 
-    ::etl::span<uint8_t const> const payload(
-        canFrame.getPayload(), canFrame.getPayloadLength());
+    ::etl::span<uint8_t const> const payload(canFrame.getPayload(), canFrame.getPayloadLength());
     DataLinkAddressType const receptionAddress
         = _addressing.decodeReceptionAddress(canFrame.getId(), payload);
 

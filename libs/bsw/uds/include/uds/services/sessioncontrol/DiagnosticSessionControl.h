@@ -11,7 +11,6 @@
 #include "uds/session/IDiagSessionManager.h"
 
 #include <async/Async.h>
-
 #include <etl/delegate.h>
 #include <etl/intrusive_forward_list.h>
 

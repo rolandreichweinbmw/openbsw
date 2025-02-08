@@ -4,9 +4,9 @@
 
 #include "util/stream/StringBufferOutputStream.h"
 
-#include <gtest/gtest.h>
-
 #include <etl/string_view.h>
+
+#include <gtest/gtest.h>
 
 using namespace ::util::stream;
 

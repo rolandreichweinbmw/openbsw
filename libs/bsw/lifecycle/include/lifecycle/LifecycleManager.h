@@ -13,7 +13,6 @@
 #include "lifecycle/ILifecycleManager.h"
 
 #include <async/Async.h>
-
 #include <etl/array.h>
 #include <etl/delegate.h>
 #include <etl/intrusive_forward_list.h>
@@ -118,7 +117,8 @@ protected:
     ~LifecycleManager() override = default;
 
 private:
-    using LifecycleListenerListType = ::etl::intrusive_forward_list<ILifecycleListener, ::etl::forward_link<0>>;
+    using LifecycleListenerListType
+        = ::etl::intrusive_forward_list<ILifecycleListener, ::etl::forward_link<0>>;
 
     void transitionDone(ILifecycleComponent& component) override;
 

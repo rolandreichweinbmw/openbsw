@@ -43,12 +43,13 @@ void StringBufferOutputStream::write(::etl::span<uint8_t const> const& buffer)
     size_t size        = buffer.size();
     if ((_currentIndex + size) > _buffer.size())
     {
-        size      = _buffer.size() - _currentIndex;
-        _overflow = true;
+        size          = _buffer.size() - _currentIndex;
+        _overflow     = true;
         trimmedBuffer = trimmedBuffer.subspan(0, size);
     }
     (void)::etl::mem_copy(
-        trimmedBuffer.begin(), trimmedBuffer.size(),
+        trimmedBuffer.begin(),
+        trimmedBuffer.size(),
         reinterpret_cast<uint8_t*>(_buffer.begin() + _currentIndex));
     _currentIndex += size;
 }
@@ -68,17 +69,21 @@ void StringBufferOutputStream::reset()
 
 char const* StringBufferOutputStream::getString()
 {
-    auto const dataBuffer = ::etl::span<uint8_t>(reinterpret_cast<uint8_t*>(_buffer.begin()), _buffer.size());
-    size_t const eolLen   = ::etl::strlen(_endOfString, _buffer.size()) + 1U;
+    auto const dataBuffer
+        = ::etl::span<uint8_t>(reinterpret_cast<uint8_t*>(_buffer.begin()), _buffer.size());
+    size_t const eolLen = ::etl::strlen(_endOfString, _buffer.size()) + 1U;
     if (_overflow || ((eolLen + _currentIndex) > _buffer.size()))
     {
         size_t const ellipsisLen = ::etl::strlen(_ellipsis, _buffer.size());
         _currentIndex            = _buffer.size() - (eolLen + ellipsisLen);
-        (void)::etl::mem_copy(reinterpret_cast<uint8_t const*>(_ellipsis), ellipsisLen,
+        (void)::etl::mem_copy(
+            reinterpret_cast<uint8_t const*>(_ellipsis),
+            ellipsisLen,
             dataBuffer.begin() + _currentIndex);
         _currentIndex += ellipsisLen;
     }
-    (void)::etl::mem_copy(reinterpret_cast<uint8_t const*>(_endOfString), eolLen, dataBuffer.begin() + _currentIndex);
+    (void)::etl::mem_copy(
+        reinterpret_cast<uint8_t const*>(_endOfString), eolLen, dataBuffer.begin() + _currentIndex);
     return _buffer.data();
 }
 

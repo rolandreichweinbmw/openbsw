@@ -5,9 +5,8 @@
 
 #include "async/Types.h"
 
-#include <util/string/ConstString.h>
-
 #include <etl/intrusive_forward_list.h>
+#include <util/string/ConstString.h>
 
 #define FUNCTION_EXECUTION_MONITOR_CONCAT_INTERNAL(x, y) x##y
 #define FUNCTION_EXECUTION_MONITOR_CONCAT(x, y)          FUNCTION_EXECUTION_MONITOR_CONCAT_INTERNAL(x, y)
@@ -35,10 +34,7 @@ public:
         typename RuntimeMonitor::FunctionEntryType _entry;
         typename RuntimeMonitor::FunctionStatisticsType _snapshot;
 
-        bool operator==(const Point& other)
-        {
-            return this == &other;
-        }
+        bool operator==(Point const& other) { return this == &other; }
     };
 
     using PointListType = ::etl::intrusive_forward_list<Point, ::etl::forward_link<0>>;

@@ -46,10 +46,9 @@ public:
 #define STATIC_CONCAT(X, Y)  X##Y
 #define STATIC_CONCAT2(X, Y) STATIC_CONCAT(X, Y)
 
-#define DIAG_JOB(NAME, REQ, PRE)                        \
+#define DIAG_JOB(NAME, REQ, PRE)                   \
     uint8_t STATIC_CONCAT2(req, __LINE__)[] = REQ; \
-    DiagJobMock NAME(                                   \
-        STATIC_CONCAT2(req, __LINE__), sizeof(STATIC_CONCAT2(req, __LINE__)), PRE);
+    DiagJobMock NAME(STATIC_CONCAT2(req, __LINE__), sizeof(STATIC_CONCAT2(req, __LINE__)), PRE);
 
 } // namespace uds
 

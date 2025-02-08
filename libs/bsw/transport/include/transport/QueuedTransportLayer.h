@@ -78,7 +78,8 @@ public:
     static void initializeJobPool();
 
 private:
-    using TransportMessageSendJobList = ::etl::intrusive_forward_list<TransportMessageSendJob, etl::forward_link<0>>;
+    using TransportMessageSendJobList
+        = ::etl::intrusive_forward_list<TransportMessageSendJob, etl::forward_link<0>>;
 
     static SendJobPool* sfpSendJobPool;
 

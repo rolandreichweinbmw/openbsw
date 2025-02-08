@@ -10,7 +10,6 @@
 
 #include <etl/memory.h>
 #include <etl/span.h>
-
 #include <util/estd/assert.h>
 
 #include <gmock/gmock.h>
@@ -61,7 +60,7 @@ TEST(DoCanFrameCodecTest, testDecodeFirstFramesWithEscapeSeqAndShortMinFrame)
     {
         // too short first frame due to escapeSequence
         uint8_t const escapeSeqPayload[] = {0xab, 0x10, 0x00, 0x12, 0x34, 0x56};
-        uint8_t const normalPayload   [] = {0xab, 0x11, 0x23, 0xAB, 0xCD, 0xEF};
+        uint8_t const normalPayload[]    = {0xab, 0x11, 0x23, 0xAB, 0xCD, 0xEF};
         EXPECT_EQ(
             CodecResult::INVALID_FRAME_SIZE,
             cut.decodeFirstFrame(
@@ -686,7 +685,7 @@ TEST(DoCanFrameCodecTest, testEncodeDataFrame)
     uint8_t consumedDataSize;
     {
         // write a short single frame
-        uint8_t const data    [] = {0x12, 0x34, 0x78};
+        uint8_t const data[]     = {0x12, 0x34, 0x78};
         uint8_t const expected[] = {0xdc, 0x03, 0x12, 0x34, 0x78};
         ::etl::span<uint8_t> payload(frame);
         EXPECT_EQ(CodecResult::OK, cut.encodeDataFrame(payload, data, 0U, 0U, consumedDataSize));
@@ -839,7 +838,7 @@ TEST(DoCanFrameCodecTest, testEncodeDataFrame)
                    data[4],
                    data[5]};
             ::etl::span<uint8_t> payload(frame);
-            auto result  = cut.encodeDataFrame(
+            auto result = cut.encodeDataFrame(
                 payload, data, i + 1, CONSECUTIVE_FRAME_DATA_SIZE, consumedDataSize);
             ASSERT_EQ(CodecResult::OK, result);
             EXPECT_THAT(payload, ::testing::ElementsAreArray(expected));
@@ -951,9 +950,9 @@ TEST(DoCanFrameCodecTest, testEncodeFramesWithEnforcedPadding)
     uint8_t consumedDataSize;
     {
         // write a short single frame
-        uint8_t const data    [] = {0x12, 0x34, 0x78};
+        uint8_t const data[]     = {0x12, 0x34, 0x78};
         uint8_t const expected[] = {0xdc, 0x03, 0x12, 0x34, 0x78, 0x91, 0x91, 0x91};
-        ::etl::span<uint8_t>payload (frame);
+        ::etl::span<uint8_t> payload(frame);
         EXPECT_EQ(CodecResult::OK, cut.encodeDataFrame(payload, data, 0U, 0U, consumedDataSize));
         EXPECT_TRUE(::etl::equal(::etl::span<uint8_t const>(expected), payload));
         EXPECT_EQ(sizeof(data), consumedDataSize);
@@ -988,8 +987,8 @@ TEST(DoCanFrameCodecTest, testEncodeFramesWithEnforcedPadding)
         ::etl::span<uint8_t const> data(message);
         uint8_t longerFrame[12];
         longerFrame[0] = 0xdcU;
-        uint8_t const expected[] = {
-            0xdc, 0x10, 0x07, 0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0x91, 0x91, 0x91};
+        uint8_t const expected[]
+            = {0xdc, 0x10, 0x07, 0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0x91, 0x91, 0x91};
         ::etl::span<uint8_t> payload(longerFrame);
         EXPECT_EQ(CodecResult::OK, cut.encodeDataFrame(payload, data, 0U, 7U, consumedDataSize));
         EXPECT_TRUE(::etl::equal(::etl::span<uint8_t const>(expected), payload));
@@ -1026,21 +1025,21 @@ TEST(DoCanFrameCodecTest, testEncodeShortAndLongFramesWithEnforcedPadding)
     uint8_t consumedDataSize;
     {
         // write a short single frame
-        uint8_t const data[]           = {0x12, 0x34, 0x78};
-        uint8_t const expected[]       = {0xdc, 0x03, 0x12, 0x34, 0x78, 0x91, 0x91, 0x91};
-        ::etl::span<uint8_t> payload   = frame;
-        payload                        = payload.first(20U);
+        uint8_t const data[]         = {0x12, 0x34, 0x78};
+        uint8_t const expected[]     = {0xdc, 0x03, 0x12, 0x34, 0x78, 0x91, 0x91, 0x91};
+        ::etl::span<uint8_t> payload = frame;
+        payload                      = payload.first(20U);
         EXPECT_EQ(CodecResult::OK, cut.encodeDataFrame(payload, data, 0U, 0U, consumedDataSize));
         EXPECT_THAT(expected, ::testing::ElementsAreArray(payload));
         EXPECT_EQ(sizeof(data), consumedDataSize);
     }
     {
         // write a minimum long single frame
-        uint8_t const data    [] = {0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde};
-        uint8_t const expected[] = {
-            0xdc, 0x00, 0x07, 0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0x91, 0x91};
+        uint8_t const data[] = {0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde};
+        uint8_t const expected[]
+            = {0xdc, 0x00, 0x07, 0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0x91, 0x91};
         ::etl::span<uint8_t> payload = frame;
-        payload = payload.first(12U);
+        payload                      = payload.first(12U);
         EXPECT_EQ(CodecResult::OK, cut.encodeDataFrame(payload, data, 0U, 0U, consumedDataSize));
         EXPECT_TRUE(::etl::equal(::etl::span<uint8_t const>(expected), payload));
         EXPECT_EQ(sizeof(data), consumedDataSize);
@@ -1069,11 +1068,10 @@ TEST(DoCanFrameCodecTest, testEncodeShortAndLongFramesWithEnforcedPadding)
         ::etl::span<uint8_t const> data(message);
         {
             // first frame
-            uint8_t const expected[] = {
-                 0xdc, 0x10, 18,   0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde,
-                 0xf0, 0x13, 0x24, 0x35, 0x46, 0x57, 0x68, 0x79, 0x91, 0x91};
+            uint8_t const expected[] = {0xdc, 0x10, 18,   0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde,
+                                        0xf0, 0x13, 0x24, 0x35, 0x46, 0x57, 0x68, 0x79, 0x91, 0x91};
             ::etl::span<uint8_t> payload = frame;
-            payload = payload.first(20U);
+            payload                      = payload.first(20U);
             EXPECT_EQ(
                 CodecResult::OK, cut.encodeDataFrame(payload, data, 0U, 16U, consumedDataSize));
             EXPECT_TRUE(::etl::equal(::etl::span<uint8_t const>(expected), payload));
@@ -1082,9 +1080,9 @@ TEST(DoCanFrameCodecTest, testEncodeShortAndLongFramesWithEnforcedPadding)
         }
         {
             // consecutive frame
-            uint8_t const expected[] = {0xdc, 0x21, 0x8a, 0xac, 0x11, 0x91, 0x91, 0x91};
+            uint8_t const expected[]     = {0xdc, 0x21, 0x8a, 0xac, 0x11, 0x91, 0x91, 0x91};
             ::etl::span<uint8_t> payload = frame;
-            payload = payload.first(8U);
+            payload                      = payload.first(8U);
             EXPECT_EQ(
                 CodecResult::OK, cut.encodeDataFrame(payload, data, 1U, 16U, consumedDataSize));
             EXPECT_TRUE(::etl::equal(::etl::span<uint8_t const>(expected), payload));
@@ -1093,9 +1091,9 @@ TEST(DoCanFrameCodecTest, testEncodeShortAndLongFramesWithEnforcedPadding)
     }
     {
         // write a simple flow control frame
-        uint8_t const expected[] = {0xdc, 0x30, 0x13, 0x25, 0x91, 0x91, 0x91, 0x91};
+        uint8_t const expected[]     = {0xdc, 0x30, 0x13, 0x25, 0x91, 0x91, 0x91, 0x91};
         ::etl::span<uint8_t> payload = frame;
-        payload = payload.first(20U);
+        payload                      = payload.first(20U);
         EXPECT_EQ(
             CodecResult::OK, cut.encodeFlowControlFrame(payload, FlowStatus::CTS, 0x13, 0x25));
         EXPECT_TRUE(::etl::equal(::etl::span<uint8_t const>(expected), payload));
@@ -1103,7 +1101,7 @@ TEST(DoCanFrameCodecTest, testEncodeShortAndLongFramesWithEnforcedPadding)
     {
         // write a short single frame with too short payload
         uint8_t const data[] = {0x12, 0x34, 0x78};
-        auto payload = ::etl::span<uint8_t>(frame).first(7U);
+        auto payload         = ::etl::span<uint8_t>(frame).first(7U);
         EXPECT_EQ(
             CodecResult::INVALID_FRAME_SIZE,
             cut.encodeDataFrame(payload, data, 0U, 0U, consumedDataSize));

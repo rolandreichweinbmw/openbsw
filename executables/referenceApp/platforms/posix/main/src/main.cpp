@@ -1,9 +1,8 @@
 // Copyright 2024 Accenture.
 
 #include <async/AsyncBinding.h>
-#include <lifecycle/LifecycleManager.h>
-
 #include <etl/alignment.h>
+#include <lifecycle/LifecycleManager.h>
 
 #include <signal.h>
 #include <unistd.h>

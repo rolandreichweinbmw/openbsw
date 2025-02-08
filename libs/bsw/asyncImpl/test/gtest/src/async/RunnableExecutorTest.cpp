@@ -6,9 +6,9 @@
 #include "async/QueueNode.h"
 #include "async/RunnableMock.h"
 
-#include <gmock/gmock.h>
-
 #include <etl/delegate.h>
+
+#include <gmock/gmock.h>
 
 namespace
 {

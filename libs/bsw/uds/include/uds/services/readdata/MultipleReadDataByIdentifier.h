@@ -7,11 +7,10 @@
 #include "uds/base/AbstractDiagJob.h"
 #include "uds/connection/NestedDiagRequest.h"
 
-#include <transport/TransportMessage.h>
-
 #include <etl/array.h>
 #include <etl/delegate.h>
 #include <etl/span.h>
+#include <transport/TransportMessage.h>
 
 #include <cstdint>
 

@@ -19,8 +19,7 @@ class IFilter;
  * Interface for a filtered listener for sent CANFrames.
  *
  */
-class IFilteredCANFrameSentListener
-: public ::etl::forward_link<0>
+class IFilteredCANFrameSentListener : public ::etl::forward_link<0>
 {
 protected:
     IFilteredCANFrameSentListener();
@@ -40,9 +39,7 @@ public:
     virtual IFilter& getFilter() = 0;
 };
 
-inline IFilteredCANFrameSentListener::IFilteredCANFrameSentListener()
-: ::etl::forward_link<0>()
-{}
+inline IFilteredCANFrameSentListener::IFilteredCANFrameSentListener() : ::etl::forward_link<0>() {}
 
 } // namespace can
 

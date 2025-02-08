@@ -177,9 +177,7 @@ TEST(DoCanMessageTransmitterTest, testMultipleFramesAreEmitted)
         cut.handleFlowControl(FlowStatus::CTS, 0, 0, 2));
     EXPECT_EQ(
         true,
-        ::etl::equal(
-            ::etl::span<uint8_t const>(data + 6U, sizeof(data) - 6U),
-            cut.getSendData()));
+        ::etl::equal(::etl::span<uint8_t const>(data + 6U, sizeof(data) - 6U), cut.getSendData()));
     EXPECT_EQ(TransmitState::SEND, cut.getState());
     EXPECT_EQ(TransmitTimeout::TX_CALLBACK, cut.getTimeout());
     EXPECT_EQ(TransmitResult(true), cut.frameSending());
@@ -191,8 +189,7 @@ TEST(DoCanMessageTransmitterTest, testMultipleFramesAreEmitted)
     EXPECT_EQ(
         true,
         ::etl::equal(
-            ::etl::span<uint8_t const>(data + 13U, sizeof(data) - 13U),
-            cut.getSendData()));
+            ::etl::span<uint8_t const>(data + 13U, sizeof(data) - 13U), cut.getSendData()));
     // ignore unexpected flow control
     EXPECT_EQ(TransmitResult(false), cut.handleFlowControl(FlowStatus::CTS, 0, 0, 2));
     // send on

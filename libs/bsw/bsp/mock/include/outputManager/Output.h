@@ -4,7 +4,6 @@
 #define GUARD_2248D13B_185E_4DFC_86C6_C354310E3921
 
 #include <bsp/Bsp.h>
-
 #include <etl/singleton_base.h>
 
 #include <platform/estdint.h>

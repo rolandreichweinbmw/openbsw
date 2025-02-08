@@ -13,7 +13,9 @@
 
 namespace transport
 {
-class SimpleTransportMessageProvider : public ITransportMessageProvider, public etl::uncopyable
+class SimpleTransportMessageProvider
+: public ITransportMessageProvider
+, public etl::uncopyable
 {
 public:
     explicit SimpleTransportMessageProvider(ITransportMessageProviderConfiguration& configuration);

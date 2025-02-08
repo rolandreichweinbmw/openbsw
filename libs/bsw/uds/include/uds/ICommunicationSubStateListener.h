@@ -13,8 +13,7 @@ namespace uds
  * control is aimed for sub-bus segment to diagnostic-only
  * scheduling mode. see the iso 14229-1 for more information.
  */
-class ICommunicationSubStateListener
-: public ::etl::forward_link<0>
+class ICommunicationSubStateListener : public ::etl::forward_link<0>
 {
 public:
     enum CommunicationEnhancedState
@@ -37,9 +36,10 @@ public:
         = 0;
 };
 
-inline bool operator==(const ICommunicationSubStateListener& lhs, const ICommunicationSubStateListener& rhs)
+inline bool
+operator==(ICommunicationSubStateListener const& lhs, ICommunicationSubStateListener const& rhs)
 {
-  return &lhs == &rhs;
+    return &lhs == &rhs;
 }
 
 } // namespace uds

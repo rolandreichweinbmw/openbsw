@@ -65,10 +65,9 @@ AsyncDiagJob<T>::AsyncDiagJob(
     IAsyncDiagHelper& asyncHelper, ::async::ContextType context, Args&&... args)
 : T(::etl::forward<Args>(args)...)
 , fAsyncJobHelper(asyncHelper, *this, context)
-, fProcess([=](){asyncProcess(nullptr, nullptr, 0U);})
+, fProcess([=]() { asyncProcess(nullptr, nullptr, 0U); })
 , fContext(context)
-{
-}
+{}
 
 template<class T>
 void AsyncDiagJob<T>::responseSent(
@@ -87,8 +86,8 @@ DiagReturnCode::Type AsyncDiagJob<T>::process(
         return fAsyncJobHelper.enqueueRequest(connection, request, requestLength);
     }
     fAsyncJobHelper.startAsyncRequest(connection);
-    auto lambda = [=, &connection](){asyncProcess(&connection, request, requestLength);};
-    fProcess = ::async::Function(lambda);
+    auto lambda = [=, &connection]() { asyncProcess(&connection, request, requestLength); };
+    fProcess    = ::async::Function(lambda);
     ::async::execute(fContext, fProcess);
 
     return DiagReturnCode::OK;

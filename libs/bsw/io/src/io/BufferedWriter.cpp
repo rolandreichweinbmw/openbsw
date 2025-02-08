@@ -31,7 +31,7 @@ namespace io
 void BufferedWriter::commit()
 {
     _current = _current.subspan(_size);
-    _size = 0;
+    _size    = 0;
 }
 
 void BufferedWriter::flush()

@@ -67,7 +67,8 @@ void LifecycleManager::addLifecycleListener(ILifecycleListener& listener)
 void LifecycleManager::removeLifecycleListener(ILifecycleListener& listener)
 {
     ::async::LockType const lock;
-    _listeners.remove_if([&](const ILifecycleListener& _listener){return &_listener == &listener;});
+    _listeners.remove_if([&](ILifecycleListener const& _listener)
+                         { return &_listener == &listener; });
 }
 
 void LifecycleManager::transitionDone(ILifecycleComponent& component)

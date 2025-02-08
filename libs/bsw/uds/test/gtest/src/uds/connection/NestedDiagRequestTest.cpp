@@ -33,8 +33,7 @@ public:
     }
 
     MOCK_CONST_METHOD1(getStoredRequestLength, uint16_t(::etl::span<uint8_t const> const&));
-    MOCK_CONST_METHOD2(
-        storeRequest, void(::etl::span<uint8_t const> const&, ::etl::span<uint8_t>));
+    MOCK_CONST_METHOD2(storeRequest, void(::etl::span<uint8_t const> const&, ::etl::span<uint8_t>));
     MOCK_METHOD1(
         prepareNestedRequest, ::etl::span<uint8_t const>(::etl::span<uint8_t const> const&));
     MOCK_METHOD3(
@@ -169,11 +168,9 @@ TEST_F(NestedDiagRequestTest, InitStoringDataTwice)
     cut.init(fJob, fMessageBuffer, ::etl::span<uint8_t const>(request));
     EXPECT_EQ(4U, cut.getMaxNestedResponseLength());
     EXPECT_THAT(
-        ::etl::span<uint8_t const>(fMessageBuffer.data() + 4U, 3),
-        ElementsAreArray(requestBuffer));
+        ::etl::span<uint8_t const>(fMessageBuffer.data() + 4U, 3), ElementsAreArray(requestBuffer));
     EXPECT_THAT(
-        ::etl::span<uint8_t const>(fMessageBuffer.data() + 7U, 3),
-        ElementsAreArray(requestBuffer));
+        ::etl::span<uint8_t const>(fMessageBuffer.data() + 7U, 3), ElementsAreArray(requestBuffer));
     EXPECT_EQ(&fJob, cut.getSender());
 }
 
@@ -211,8 +208,7 @@ TEST_F(NestedDiagRequestTest, PrepareNonEmptyNextRequestReturnsTrue)
         .Times(1)
         .WillOnce(Return(::etl::span<uint8_t const>(nestedRequest)));
     EXPECT_TRUE(cut.prepareNextRequest());
-    EXPECT_THAT(
-        ::etl::span<uint8_t const>(nestedRequest), ElementsAreArray(cut.getNextRequest()));
+    EXPECT_THAT(::etl::span<uint8_t const>(nestedRequest), ElementsAreArray(cut.getNextRequest()));
 }
 
 /**
@@ -382,8 +378,7 @@ TEST_F(NestedDiagRequestTest, ConsumingStoredRequestClipsRequest)
     EXPECT_CALL(cut, storeRequest(ElementsAreArray(requestBuffer), _)).Times(1);
     cut.init(fJob, fMessageBuffer, ::etl::span<uint8_t const>(request));
     EXPECT_THAT(requestBuffer.subspan(0U, 2U), ElementsAreArray(cut.consumeStoredRequest(2U)));
-    EXPECT_THAT(
-        requestBuffer.subspan(2U, 1U), ElementsAreArray(cut.consumeStoredRequest(1U)));
+    EXPECT_THAT(requestBuffer.subspan(2U, 1U), ElementsAreArray(cut.consumeStoredRequest(1U)));
     EXPECT_THAT(::etl::span<uint8_t const>(), ElementsAreArray(cut.consumeStoredRequest(3U)));
 }
 

@@ -3,11 +3,10 @@
 #ifndef GUARD_011E43CB_A312_42D1_BC33_EA7712BFCB2F
 #define GUARD_011E43CB_A312_42D1_BC33_EA7712BFCB2F
 
+#include <etl/span.h>
 #include <util/stream/IOutputStream.h>
 
 #include <gmock/gmock.h>
-
-#include <etl/span.h>
 
 namespace util
 {

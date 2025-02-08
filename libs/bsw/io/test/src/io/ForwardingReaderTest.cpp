@@ -91,8 +91,7 @@ TEST_F(ForwardingReaderTest, allocate_called_with_size_of_source_data)
     InSequence seq;
     EXPECT_CALL(_reader, peek()).WillOnce(Return(sourceData));
     EXPECT_CALL(_writer, allocate(sourceData.size()))
-        .WillOnce(Return(::etl::span<uint8_t>(
-            &destinationBuffer[0], sizeof(destinationBuffer))));
+        .WillOnce(Return(::etl::span<uint8_t>(&destinationBuffer[0], sizeof(destinationBuffer))));
     auto data = _forward.peek();
     EXPECT_EQ(sourceData.size(), data.size());
     // make sure failedAllocations is still zero
@@ -135,8 +134,7 @@ TEST_F(ForwardingReaderTest, data_is_forwarded_on_release)
     InSequence seq;
     EXPECT_CALL(_reader, peek()).WillOnce(Return(sourceData));
     EXPECT_CALL(_writer, allocate(sourceData.size()))
-        .WillOnce(Return(::etl::span<uint8_t>(
-            &destinationBuffer[0], sizeof(destinationBuffer))));
+        .WillOnce(Return(::etl::span<uint8_t>(&destinationBuffer[0], sizeof(destinationBuffer))));
     auto data = _forward.peek();
     EXPECT_EQ(sourceData.size(), data.size());
 

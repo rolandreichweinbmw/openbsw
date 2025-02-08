@@ -3,12 +3,11 @@
 #ifndef GUARD_F7ED78E6_29F6_4D5B_89DE_C8EB8DCC3F1E
 #define GUARD_F7ED78E6_29F6_4D5B_89DE_C8EB8DCC3F1E
 
-#include <util/estd/assert.h>
-
 #include "io/IWriter.h"
 
 #include <etl/memory.h>
 #include <etl/span.h>
+#include <util/estd/assert.h>
 
 #include <array>
 #include <limits>

@@ -6,13 +6,12 @@
 #ifndef GUARD_388D33C0_7224_4D1F_B182_87A067C31A86
 #define GUARD_388D33C0_7224_4D1F_B182_87A067C31A86
 
+#include "runtime/StatisticsIterator.h"
+
 #include <etl/array.h>
 #include <etl/delegate.h>
 #include <etl/span.h>
-
 #include <util/estd/assert.h>
-
-#include "runtime/StatisticsIterator.h"
 
 namespace runtime
 {

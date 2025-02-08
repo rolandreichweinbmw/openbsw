@@ -4,10 +4,10 @@
 
 #include "util/StdIoMock.h"
 
+#include <etl/string_view.h>
+
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
-
-#include <etl/string_view.h>
 
 using namespace ::testing;
 using namespace ::util::stream;

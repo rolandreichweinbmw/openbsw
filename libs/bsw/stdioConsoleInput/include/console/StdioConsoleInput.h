@@ -3,12 +3,11 @@
 #ifndef GUARD_5E5D97C6_78AD_4943_B76D_F51AEA0FE906
 #define GUARD_5E5D97C6_78AD_4943_B76D_F51AEA0FE906
 
+#include <etl/delegate.h>
+#include <etl/string.h>
 #include <util/stream/SharedOutputStream.h>
 #include <util/stream/StdoutStream.h>
 #include <util/stream/TaggedSharedOutputStream.h>
-
-#include <etl/delegate.h>
-#include <etl/string.h>
 
 namespace console
 {

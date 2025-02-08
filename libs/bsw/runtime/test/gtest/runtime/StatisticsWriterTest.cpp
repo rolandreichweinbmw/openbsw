@@ -7,10 +7,10 @@
 #include "runtime/StatisticsIterator.h"
 #include "util/stream/StringBufferOutputStream.h"
 
-#include <gtest/gtest.h>
-
 #include <etl/delegate.h>
 #include <etl/span.h>
+
+#include <gtest/gtest.h>
 
 namespace
 {

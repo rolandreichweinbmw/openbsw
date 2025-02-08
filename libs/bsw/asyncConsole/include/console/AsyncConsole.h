@@ -3,13 +3,12 @@
 #ifndef GUARD_8034BC31_4878_4B5E_AA75_D5EAD1784A53
 #define GUARD_8034BC31_4878_4B5E_AA75_D5EAD1784A53
 
-#include <util/command/ICommand.h>
-#include <util/stream/ISharedOutputStream.h>
-
 #include <etl/delegate.h>
 #include <etl/singleton_base.h>
 #include <etl/string.h>
 #include <etl/uncopyable.h>
+#include <util/command/ICommand.h>
+#include <util/stream/ISharedOutputStream.h>
 
 namespace console
 {

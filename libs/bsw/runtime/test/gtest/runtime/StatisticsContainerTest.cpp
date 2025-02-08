@@ -2,11 +2,10 @@
 
 #include "runtime/StatisticsContainer.h"
 
+#include <etl/span.h>
 #include <util/estd/gtest_extensions.h>
 
 #include <gmock/gmock.h>
-
-#include <etl/span.h>
 
 namespace
 {

@@ -24,7 +24,7 @@ public:
     using TransceiverSliceType  = ::etl::span<TransceiverType>;
     using TransceiverVectorType = ::etl::ivector<TransceiverType>;
 
-    using ShutdownCallbackType  = ::etl::delegate<void()>;
+    using ShutdownCallbackType = ::etl::delegate<void()>;
 
     /**
      * Constructor.
@@ -32,7 +32,7 @@ public:
      */
     explicit DoCanPhysicalCanTransceiverContainer(TransceiverVectorType& transceivers);
 
-    template<typename ...Args>
+    template<typename... Args>
     TransceiverType& emplace_back(Args&&... args)
     {
         return _transceivers.emplace_back(etl::forward<Args>(args)...);
@@ -150,8 +150,7 @@ DoCanPhysicalCanTransceiver<Addressing>&
 DoCanPhysicalCanTransceiverContainerBuilder<Addressing>::addTransceiver(
     ::can::ICanTransceiver& transceiver)
 {
-    return _container.emplace_back(
-        transceiver, _filter, _addressConverter, _addressing);
+    return _container.emplace_back(transceiver, _filter, _addressConverter, _addressing);
 }
 
 } // namespace declare

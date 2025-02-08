@@ -14,13 +14,12 @@
 #include <async/Types.h>
 #include <async/util/MemberCall.h>
 #include <common/busid/BusId.h>
-#include <interrupts/SuspendResumeAllInterruptsScopedLock.h>
-#include <transport/ITransportMessageProvidingListener.h>
-#include <util/logger/Logger.h>
-
 #include <etl/intrusive_forward_list.h>
 #include <etl/ipool.h>
 #include <etl/span.h>
+#include <interrupts/SuspendResumeAllInterruptsScopedLock.h>
+#include <transport/ITransportMessageProvidingListener.h>
+#include <util/logger/Logger.h>
 
 #include <limits>
 
@@ -43,7 +42,8 @@ public:
     using ConnectionType                  = DoCanConnection<DataLinkLayerType>;
     using FlowControlFrameTransmitterType = IDoCanFlowControlFrameTransmitter<DataLinkLayerType>;
     using MessageReceiverType             = DoCanMessageReceiver<DataLinkLayerType>;
-    using MessageReceiverListType         = ::etl::intrusive_forward_list<MessageReceiverType, etl::forward_link<0>>;
+    using MessageReceiverListType
+        = ::etl::intrusive_forward_list<MessageReceiverType, etl::forward_link<0>>;
 
     /** Constructor.
      *
@@ -148,8 +148,8 @@ private:
 
     char const* getName() const;
 
-    static ::etl::span<uint8_t const> copyFirstFrameData(
-        uint8_t* receiverAddress, ::etl::span<uint8_t const> const& firstFrameData);
+    static ::etl::span<uint8_t const>
+    copyFirstFrameData(uint8_t* receiverAddress, ::etl::span<uint8_t const> const& firstFrameData);
 
     IDoCanAddressConverter<DataLinkLayerType>& _addressConverter;
     ::transport::ITransportMessageProvidingListener& _messageProvidingListener;

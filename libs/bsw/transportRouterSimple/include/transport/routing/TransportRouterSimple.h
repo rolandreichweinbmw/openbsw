@@ -4,13 +4,12 @@
 #define GUARD_BA53826C_0AE9_4314_8EBF_A0AB6E759753
 
 #include <common/busid/BusId.h>
+#include <etl/intrusive_forward_list.h>
+#include <etl/uncopyable.h>
 #include <transport/AbstractTransportLayer.h>
 #include <transport/ITransportMessageProvidingListener.h>
 #include <transport/TransportConfiguration.h>
 #include <transport/TransportMessage.h>
-
-#include <etl/intrusive_forward_list.h>
-#include <etl/uncopyable.h>
 
 #include <platform/estdint.h>
 
@@ -24,7 +23,9 @@ class AbstractTransportLayer;
  *
  * \see ITransportMessageProvidingListener
  */
-class TransportRouterSimple : public ITransportMessageProvidingListener, public etl::uncopyable
+class TransportRouterSimple
+: public ITransportMessageProvidingListener
+, public etl::uncopyable
 {
 public:
     static uint8_t const NUM_BUFFERS             = 3U;
@@ -63,7 +64,8 @@ private:
         ITransportMessageProcessedListener* pNotificationListener,
         AbstractTransportLayer::ErrorCode& result);
 
-    typedef ::etl::intrusive_forward_list<AbstractTransportLayer, etl::forward_link<0>> TransportLayerList;
+    typedef ::etl::intrusive_forward_list<AbstractTransportLayer, etl::forward_link<0>>
+        TransportLayerList;
 
     bool _locked[NUM_BUFFERS];
     bool _functionalLocked[NUM_FUNCTIONAL_BUFFERS];

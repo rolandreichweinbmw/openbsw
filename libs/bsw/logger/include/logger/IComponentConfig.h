@@ -3,11 +3,10 @@
 #ifndef GUARD_7E95B9DC_1C82_458B_8B2B_68FDE14EA324
 #define GUARD_7E95B9DC_1C82_458B_8B2B_68FDE14EA324
 
+#include <etl/uncopyable.h>
 #include <util/logger/ComponentInfo.h>
 #include <util/logger/LevelInfo.h>
 #include <util/string/ConstString.h>
-
-#include <etl/uncopyable.h>
 
 namespace logger
 {

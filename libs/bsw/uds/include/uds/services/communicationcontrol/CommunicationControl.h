@@ -94,10 +94,12 @@ protected:
     uint16_t fSubNodeIdDisabledTx;
     bool fNeverNotified;
 
-    using ListenerList = ::etl::intrusive_forward_list<ICommunicationStateListener, ::etl::forward_link<0>>;
+    using ListenerList
+        = ::etl::intrusive_forward_list<ICommunicationStateListener, ::etl::forward_link<0>>;
     ListenerList fListeners;
 
-    using SubListenerList = ::etl::intrusive_forward_list<ICommunicationSubStateListener, ::etl::forward_link<0>>;
+    using SubListenerList
+        = ::etl::intrusive_forward_list<ICommunicationSubStateListener, ::etl::forward_link<0>>;
     SubListenerList fSubListeners;
 };
 

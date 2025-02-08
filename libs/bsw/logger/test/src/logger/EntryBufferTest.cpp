@@ -2,9 +2,9 @@
 
 #include "logger/EntryBuffer.h"
 
-#include <gtest/gtest.h>
-
 #include <etl/span.h>
+
+#include <gtest/gtest.h>
 
 #include <vector>
 
@@ -27,8 +27,7 @@ struct EntryBufferTest : ::testing::Test
         memset(pReadBuffer, 0xaf, bufferSize + 2);
         ASSERT_EQ(
             bufferSize,
-            buffer.getNextEntry(
-                ::etl::span<uint8_t>(pReadBuffer + 1, bufferSize), entryRef));
+            buffer.getNextEntry(::etl::span<uint8_t>(pReadBuffer + 1, bufferSize), entryRef));
         EXPECT_EQ(0xafU, pReadBuffer[0]);
         EXPECT_EQ(0xafU, pReadBuffer[bufferSize + 1]);
         if (pEntry)

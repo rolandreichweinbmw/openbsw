@@ -11,7 +11,6 @@
 #include "uds/session/DiagSessionManagerMock.h"
 
 #include <async/Async.h>
-
 #include <etl/array.h>
 
 #include <gtest/gtest.h>

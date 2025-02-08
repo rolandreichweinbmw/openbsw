@@ -5,9 +5,8 @@
 
 #include "logger/ILoggerTime.h"
 
-#include <util/format/StringWriter.h>
-
 #include <etl/chrono.h>
+#include <util/format/StringWriter.h>
 
 namespace logger
 {

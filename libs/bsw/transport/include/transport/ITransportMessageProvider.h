@@ -7,6 +7,7 @@
 #define GUARD_BD2C14D5_1EC8_47D9_8191_B9C115559C83
 
 #include <etl/span.h>
+
 #include <platform/estdint.h>
 
 namespace transport

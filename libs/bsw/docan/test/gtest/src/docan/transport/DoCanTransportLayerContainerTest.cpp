@@ -18,7 +18,6 @@
 #include <async/TestContext.h>
 #include <async/Types.h>
 #include <bsp/timer/SystemTimerMock.h>
-
 #include <etl/delegate.h>
 
 #include <gtest/esr_extensions.h>

@@ -39,7 +39,8 @@ DiagReturnCode::Type WriteIdentifierToMemory::process(
     IncomingDiagConnection& connection, uint8_t const* const request, uint16_t const requestLength)
 {
     (void)connection.releaseRequestGetResponse();
-    (void)::etl::copy(etl::span<uint8_t const>(request, static_cast<size_t>(requestLength)), _memory);
+    (void)::etl::copy(
+        etl::span<uint8_t const>(request, static_cast<size_t>(requestLength)), _memory);
 
     (void)connection.sendPositiveResponse(*this);
 

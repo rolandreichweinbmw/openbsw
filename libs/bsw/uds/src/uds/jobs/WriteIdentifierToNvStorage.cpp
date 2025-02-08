@@ -122,8 +122,8 @@ DiagReturnCode::Type WriteIdentifierToNvStorage::process(
 
     if (_variableLength)
     {
-        _length       = requestLength;
-        _pRequestData = request;
+        _length                                     = requestLength;
+        _pRequestData                               = request;
         ::etl::be_uint32_t::at_address(_lengthBuff) = requestLength;
         if (!_ieepromHelper.write(
                 _nvLengthItem, &_lengthBuff[0U], sizeof(_lengthBuff), _nvLengthWriteJobfinished))

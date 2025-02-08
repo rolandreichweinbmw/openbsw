@@ -2,9 +2,9 @@
 
 #include "runtime/StatisticsIterator.h"
 
-#include <gmock/gmock.h>
-
 #include <etl/span.h>
+
+#include <gmock/gmock.h>
 
 namespace
 {

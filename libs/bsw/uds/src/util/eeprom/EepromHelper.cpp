@@ -50,8 +50,7 @@ bool EepromHelper::write(
     EepromJobFinishedNotification callback)
 {
     _eepromJobFinishedCallback = callback;
-    auto const writeData
-        = ::etl::span<uint8_t>(const_cast<uint8_t*>(buffer), length);
+    auto const writeData       = ::etl::span<uint8_t>(const_cast<uint8_t*>(buffer), length);
 
     auto const jobfinished = EepromJobFinishedNotification::
         create<EepromHelper, &EepromHelper::nvStorageFinishedCallback>(*this);

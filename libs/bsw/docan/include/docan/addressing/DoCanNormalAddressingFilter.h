@@ -6,10 +6,10 @@
 #include "docan/addressing/IDoCanAddressConverter.h"
 
 #include <can/filter/BitFieldFilter.h>
+#include <etl/span.h>
 #include <util/format/StringWriter.h>
 #include <util/stream/StringBufferOutputStream.h>
 
-#include <etl/span.h>
 #include <platform/estdint.h>
 
 #include <algorithm>

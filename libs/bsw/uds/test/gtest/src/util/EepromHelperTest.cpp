@@ -7,7 +7,6 @@
 
 #include <async/AsyncMock.h>
 #include <async/TestContext.h>
-
 #include <etl/delegate.h>
 
 #include <gmock/gmock.h>

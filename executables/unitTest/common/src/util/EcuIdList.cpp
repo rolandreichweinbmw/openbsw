@@ -2,9 +2,8 @@
 
 #include "util/EcuIdList.h"
 
-#include <util/estd/assert.h>
-
 #include <etl/unaligned_type.h>
+#include <util/estd/assert.h>
 
 #include <cstdlib>
 #include <cstring>
@@ -73,7 +72,7 @@ EcuId EcuIdList::pop_back()
 {
     uint16_t const size = getSize();
     estd_assert(size > 0U);
-    uint16_t const newSize = static_cast<uint16_t>(size - 1U);
+    uint16_t const newSize                       = static_cast<uint16_t>(size - 1U);
     *reinterpret_cast<etl::be_uint16_t*>(fpData) = newSize;
     return fpData[static_cast<uint16_t>(2U + static_cast<uint16_t>(size - 1U))];
 }
@@ -89,7 +88,7 @@ EcuIdList::ErrorCode EcuIdList::getNextEcuId(EcuId& ecuId)
 
     --size;
 
-    uint16_t const newSize = size;
+    uint16_t const newSize                       = size;
     *reinterpret_cast<etl::be_uint16_t*>(fpData) = newSize;
     return ECU_LIST_OK;
 }
@@ -107,7 +106,7 @@ EcuIdList::ErrorCode EcuIdList::push_back(EcuId const ecuId)
     }
     ++size;
     *reinterpret_cast<etl::be_uint16_t*>(fpData) = size;
-    fpData[static_cast<uint16_t>(1U + size)] = ecuId;
+    fpData[static_cast<uint16_t>(1U + size)]     = ecuId;
     return ECU_LIST_OK;
 }
 

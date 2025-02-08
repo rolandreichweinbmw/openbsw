@@ -5,11 +5,11 @@
 
 #include "transport/ITransportMessageProvidingListener.h"
 
+#include <etl/span.h>
+
 #include <gmock/gmock.h>
 
 #include <set>
-
-#include <etl/span.h>
 
 namespace transport
 {

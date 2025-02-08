@@ -3,11 +3,11 @@
 #ifndef GUARD_DC669291_D69E_43F0_A2DA_D14A670D654B
 #define GUARD_DC669291_D69E_43F0_A2DA_D14A670D654B
 
-#include <etl/span.h>
-#include <etl/uncopyable.h>
-
 #include "platform/estdint.h"
 #include "uds/connection/ErrorCode.h"
+
+#include <etl/span.h>
+#include <etl/uncopyable.h>
 
 namespace uds
 {
@@ -15,7 +15,7 @@ namespace uds
 /**
  * Class representing a UDS positive response.
  */
-class PositiveResponse: public ::etl::uncopyable
+class PositiveResponse : public ::etl::uncopyable
 {
 public:
     PositiveResponse() {}

@@ -173,7 +173,7 @@ void Timer<LockGuard>::cancel(Timeout& timeout)
     if (timeout.is_linked())
     {
         LockGuard const scopedLock;
-        _timeoutList.remove(timeout);
+        _timeoutList.remove(&timeout);
     }
 }
 

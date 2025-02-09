@@ -36,12 +36,6 @@ public:
         = 0;
 };
 
-inline bool
-operator==(ICommunicationSubStateListener const& lhs, ICommunicationSubStateListener const& rhs)
-{
-    return &lhs == &rhs;
-}
-
 } // namespace uds
 
 #endif // GUARD_DEDB6DC7_3B13_4ECC_84D1_D6EC188F58E4

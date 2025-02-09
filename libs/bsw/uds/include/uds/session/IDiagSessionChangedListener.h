@@ -24,12 +24,6 @@ public:
     virtual void diagSessionResponseSent(uint8_t responseCode)  = 0;
 };
 
-inline bool
-operator==(IDiagSessionChangedListener const& lhs, IDiagSessionChangedListener const& rhs)
-{
-    return &lhs == &rhs;
-}
-
 } // namespace uds
 
 #endif // GUARD_1D16CA52_0D50_482A_A390_EEAA69ECB2CF

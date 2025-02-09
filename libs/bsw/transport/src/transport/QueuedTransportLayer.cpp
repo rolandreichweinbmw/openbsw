@@ -67,7 +67,7 @@ AbstractTransportLayer::ErrorCode QueuedTransportLayer::send(
             if (status == ErrorCode::TP_QUEUE_FULL)
             {
                 // job has NOT been sent --> remove from pending send jobs
-                fJobsSent.remove(*pJob);
+                fJobsSent.remove(pJob);
                 fJobsToBeSent.push_front(*pJob);
                 status = ErrorCode::TP_OK;
             }
@@ -81,7 +81,7 @@ AbstractTransportLayer::ErrorCode QueuedTransportLayer::send(
                     transportMessage.getTargetId(),
                     status);
                 // job has NOT been sent --> remove from pending send jobs
-                fJobsSent.remove(*pJob);
+                fJobsSent.remove(pJob);
                 releaseSendJob(*pJob);
             }
             else
@@ -137,7 +137,7 @@ void QueuedTransportLayer::transportMessageProcessed(
                 mutex.lock();
             }
             isMessageInSentList = true;
-            fJobsSent.remove(job);
+            fJobsSent.remove(&job);
             releaseSendJob(job);
             break;
         }
@@ -166,7 +166,7 @@ void QueuedTransportLayer::transportMessageProcessed(
 
         if (status != ErrorCode::TP_OK)
         { // job has NOT been sent --> remove from pending send jobs
-            fJobsSent.remove(job);
+            fJobsSent.remove(&job);
             if (status == ErrorCode::TP_QUEUE_FULL)
             {
                 fJobsToBeSent.push_front(job);

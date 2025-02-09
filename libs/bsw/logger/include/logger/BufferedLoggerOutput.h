@@ -204,7 +204,7 @@ template<
 void BufferedLoggerOutput<Lock, MaxEntrySize, T, E, Timestamp, ReadOnlyPredicate>::removeListener(
     ILoggerListener& listener)
 {
-    _listeners.remove(listener);
+    _listeners.remove(&listener);
 }
 
 template<

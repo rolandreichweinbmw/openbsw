@@ -33,8 +33,6 @@ public:
         char const* _name;
         typename RuntimeMonitor::FunctionEntryType _entry;
         typename RuntimeMonitor::FunctionStatisticsType _snapshot;
-
-        bool operator==(Point const& other) { return this == &other; }
     };
 
     using PointListType = ::etl::intrusive_forward_list<Point, ::etl::forward_link<0>>;
@@ -162,7 +160,7 @@ template<class RuntimeMonitor>
 FunctionExecutionMonitor<RuntimeMonitor>::Point::~Point()
 {
     ::async::LockType const lock;
-    _points.remove(*this);
+    _points.remove(this);
 }
 
 template<class RuntimeMonitor>

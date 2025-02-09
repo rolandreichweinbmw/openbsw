@@ -32,8 +32,6 @@ public:
 
     ITransportMessageProcessedListener* getTransportMessageProcessedListener();
 
-    bool operator==(TransportMessageSendJob const& other) { return this == &other; }
-
 private:
     TransportMessage* fpTransportMessage;
     ITransportMessageProcessedListener* fpListener;

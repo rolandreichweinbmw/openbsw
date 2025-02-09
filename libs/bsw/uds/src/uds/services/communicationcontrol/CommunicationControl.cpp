@@ -40,7 +40,7 @@ CommunicationControl::addCommunicationStateListener_local(ICommunicationStateLis
 ESR_NO_INLINE void
 CommunicationControl::removeCommunicationStateListener_local(ICommunicationStateListener& listener)
 {
-    fListeners.remove(listener);
+    fListeners.remove(&listener);
 }
 
 ESR_NO_INLINE void CommunicationControl::addCommunicationSubStateListener_local(
@@ -52,7 +52,7 @@ ESR_NO_INLINE void CommunicationControl::addCommunicationSubStateListener_local(
 ESR_NO_INLINE void CommunicationControl::removeCommunicationSubStateListener_local(
     ICommunicationSubStateListener& listener)
 {
-    fSubListeners.remove(listener);
+    fSubListeners.remove(&listener);
 }
 
 void CommunicationControl::addCommunicationStateListener(ICommunicationStateListener& listener)

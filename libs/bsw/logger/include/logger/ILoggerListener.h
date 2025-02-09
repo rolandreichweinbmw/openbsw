@@ -20,11 +20,6 @@ public:
 
 inline ILoggerListener::ILoggerListener() : ::etl::forward_link<0>(), ::etl::uncopyable() {}
 
-inline bool operator==(ILoggerListener const& lhs, ILoggerListener const& rhs)
-{
-    return &lhs == &rhs;
-}
-
 } // namespace logger
 
 #endif // GUARD_88C26625_9E67_4D69_A325_283FE20FA7BE

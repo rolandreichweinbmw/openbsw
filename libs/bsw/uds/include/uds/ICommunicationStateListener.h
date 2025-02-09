@@ -34,12 +34,6 @@ public:
     virtual void communicationStateChanged(CommunicationState newState) = 0;
 };
 
-inline bool
-operator==(ICommunicationStateListener const& lhs, ICommunicationStateListener const& rhs)
-{
-    return &lhs == &rhs;
-}
-
 } // namespace uds
 
 #endif // GUARD_899F066E_9209_43DF_B727_D4C75179C021

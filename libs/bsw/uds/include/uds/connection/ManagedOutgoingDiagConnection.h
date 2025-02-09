@@ -96,12 +96,6 @@ private:
     bool fConnectionTerminationIsPending;
 };
 
-inline bool
-operator==(ManagedOutgoingDiagConnection const& lhs, ManagedOutgoingDiagConnection const& rhs)
-{
-    return &lhs == &rhs;
-}
-
 } // namespace uds
 
 #endif // GUARD_DD21C731_100D_4FB8_9CC2_5776381A16EB

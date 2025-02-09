@@ -31,8 +31,6 @@ struct Timeout : public ::etl::forward_link<0>
     uint32_t _cycleTime = 0U;
 };
 
-inline bool operator==(Timeout const& lhs, Timeout const& rhs) { return &lhs == &rhs; }
-
 } // namespace timer
 
 #endif /* GUARD_C2A4CB49_29FE_4F33_B998_55F6D425BB00 */

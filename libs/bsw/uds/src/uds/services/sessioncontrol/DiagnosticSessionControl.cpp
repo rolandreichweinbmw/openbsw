@@ -233,7 +233,7 @@ ESR_NO_INLINE void
 DiagnosticSessionControl::removeDiagSessionListener_local(IDiagSessionChangedListener& listener)
 {
     ::async::LockType const lock;
-    fListeners.remove(listener);
+    fListeners.remove(&listener);
 }
 
 void DiagnosticSessionControl::removeDiagSessionListener(IDiagSessionChangedListener& listener)

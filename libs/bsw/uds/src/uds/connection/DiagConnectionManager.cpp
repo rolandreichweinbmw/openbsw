@@ -82,7 +82,7 @@ void DiagConnectionManager::diagConnectionTerminated(ManagedOutgoingDiagConnecti
 
     {
         ::async::LockType const lock;
-        fReleasedOutgoingDiagConnections.remove(diagConnection);
+        fReleasedOutgoingDiagConnections.remove(&diagConnection);
         fOutgoingDiagConnections.push_back(diagConnection);
     }
     checkShutdownProgress();

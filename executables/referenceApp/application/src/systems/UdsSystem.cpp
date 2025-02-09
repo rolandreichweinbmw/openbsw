@@ -24,6 +24,7 @@ UdsSystem::UdsSystem(
     ::async::ContextType context,
     uint16_t udsAddress)
 : AsyncLifecycleComponent()
+, ::etl::singleton_base<UdsSystem>(*this)
 , _udsLifecycleConnector(lManager)
 , _transportSystem(transportSystem)
 , _jobRoot()

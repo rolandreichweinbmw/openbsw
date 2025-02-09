@@ -5,6 +5,7 @@
 
 #include <async/Async.h>
 #include <async/IRunnable.h>
+#include <etl/singleton_base.h>
 #include <lifecycle/AsyncLifecycleComponent.h>
 #include <uds/DiagDispatcher.h>
 #include <uds/DummySessionPersistence.h>
@@ -22,8 +23,6 @@
 #include <uds/services/sessioncontrol/DiagnosticSessionControl.h>
 #include <uds/services/testerpresent/TesterPresent.h>
 #include <uds/services/writedata/WriteDataByIdentifier.h>
-
-#include <etl/singleton_base.h>
 
 namespace lifecycle
 {

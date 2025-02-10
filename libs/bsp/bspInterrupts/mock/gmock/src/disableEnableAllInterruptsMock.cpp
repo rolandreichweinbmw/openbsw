@@ -38,8 +38,7 @@ bool areInterruptsDisabled(void)
 {
     if (::interrupts::DisableEnableAllInterruptsMock::is_valid())
     {
-        return ::interrupts::DisableEnableAllInterruptsMock::instance()
-            .areInterruptsDisabled();
+        return ::interrupts::DisableEnableAllInterruptsMock::instance().areInterruptsDisabled();
     }
     return (
         interrupts::DisableEnableAllInterruptsMock::disableAllInterruptsCount
@@ -50,8 +49,7 @@ bool areInterruptsEnabled(void)
 {
     if (::interrupts::DisableEnableAllInterruptsMock::is_valid())
     {
-        return ::interrupts::DisableEnableAllInterruptsMock::instance()
-            .areInterruptsEnabled();
+        return ::interrupts::DisableEnableAllInterruptsMock::instance().areInterruptsEnabled();
     }
     return (
         interrupts::DisableEnableAllInterruptsMock::disableAllInterruptsCount

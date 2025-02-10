@@ -5,16 +5,16 @@
 
 #include "interrupts/disableEnableAllInterrupts.h"
 
-#include <etl/singleton.h>
+#include <etl/singleton_base.h>
 
 #include <gmock/gmock.h>
 
 namespace interrupts
 {
-class DisableEnableAllInterruptsMock
+class DisableEnableAllInterruptsMock : public ::etl::singleton_base<DisableEnableAllInterruptsMock>
 {
 public:
-    DisableEnableAllInterruptsMock()
+    DisableEnableAllInterruptsMock() : ::etl::singleton_base<DisableEnableAllInterruptsMock>(*this)
     {
         EXPECT_EQ(disableAllInterruptsCount, enableAllInterruptsCount);
         disableAllInterruptsCount = 0U;
@@ -35,8 +35,6 @@ public:
     static uint32_t disableAllInterruptsCount;
     static uint32_t enableAllInterruptsCount;
 };
-
-using DisableEnableAllInterruptsMockSingleton = etl::singleton<DisableEnableAllInterruptsMock>;
 
 } /* namespace interrupts */
 

@@ -85,7 +85,7 @@ inline ::etl::span<uint8_t> ForwardingReader::peek() const
 inline void ForwardingReader::release()
 {
     // If _destinationData is an empty slice, copy will not copy any data.
-    (void)::etl::mem_copy(_sourceData.begin(), _sourceData.end(), _destinationData.begin());
+    (void)::etl::copy(_sourceData, _destinationData);
     // Calling commit() will only have an effect if allocate was called before, this is why
     // we don't need more checks here and can just call commit().
     _destination.commit();

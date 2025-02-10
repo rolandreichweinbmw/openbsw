@@ -24,19 +24,19 @@ bool PositiveResponse::appendUint8(uint8_t const data) { return appendData(&data
 bool PositiveResponse::appendUint16(uint16_t const data)
 {
     auto const v = ::etl::be_uint16_t(data);
-    return appendData(static_cast<uint8_t const*>(v.data()), 2) == 2;
+    return appendData(v.data(), 2) == 2;
 }
 
 bool PositiveResponse::appendUint24(uint32_t const data)
 {
     auto const v = ::etl::be_uint32_t(data);
-    return appendData(static_cast<uint8_t const*>(v.data() + 1), 3) == 3;
+    return appendData(v.data() + 1, 3) == 3;
 }
 
 bool PositiveResponse::appendUint32(uint32_t const data)
 {
     auto const v = ::etl::be_uint32_t(data);
-    return appendData(static_cast<uint8_t const*>(v.data()), 4) == 4;
+    return appendData(v.data(), 4) == 4;
 }
 
 uint8_t* PositiveResponse::getData()

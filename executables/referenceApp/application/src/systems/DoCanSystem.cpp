@@ -90,9 +90,7 @@ void DoCanSystem::initLayer()
 
 void DoCanSystem::init()
 {
-    _classicAddressingFilter.init(
-        ::etl::span<DoCanSystem::AddressingFilterType::AddressEntryType>(_addresses),
-        ::etl::span<FrameCodecType const*>(_codecs));
+    _classicAddressingFilter.init(::etl::make_span(_addresses), ::etl::make_span(_codecs));
 
     initLayer();
 

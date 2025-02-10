@@ -36,9 +36,9 @@ TEST(DoCanNormalAddressingTest, testEncodeSingleFrameWithAddress)
     EXPECT_EQ(0x1238934U, canId);
     // expect valid encoded single frame
     uint8_t const expectedPayload[] = {0x33};
-    ::etl::span<uint8_t> payload    = payloadBuffer;
-    EXPECT_TRUE(
-        0 == ::etl::mem_compare(&expectedPayload[0], sizeof(expectedPayload), payload.begin()));
+    ::etl::span<uint8_t const> expectedPayloadSpan(expectedPayload);
+    ::etl::span<uint8_t> payload = payloadBuffer;
+    EXPECT_TRUE(::etl::equal(expectedPayloadSpan, payload));
 }
 
 } // anonymous namespace

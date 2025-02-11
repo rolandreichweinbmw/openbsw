@@ -203,7 +203,7 @@ public:
     , fResponseQueues()
     {
         // Because we must not use fResponseQueues polymorphical, i.e. passing
-        // it as an array of ::etl::queue to AbstractDiagnosisConfiguration
+        // it as an array of ::etl::iqueue to AbstractDiagnosisConfiguration
         // we need to convert it first
         ::etl::iqueue<transport::TransportJob>* baseQueues[NUM_OUTGOING_CONNECTIONS];
         for (uint8_t i = 0U; i < NUM_OUTGOING_CONNECTIONS; ++i)

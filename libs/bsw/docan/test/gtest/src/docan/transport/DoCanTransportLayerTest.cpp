@@ -144,12 +144,10 @@ TEST_F(DoCanTransportLayerTest, testTransportMessageReceptionLifecycle)
         // check message
         EXPECT_EQ(0x35U, transportMessage.getSourceId());
         EXPECT_EQ(0x69U, transportMessage.getTargetId());
-        EXPECT_TRUE(
-            0
-            == ::etl::mem_compare(
-                &data[0],
-                static_cast<size_t>(transportMessage.getPayloadLength()),
-                transportMessage.getPayload()));
+        EXPECT_TRUE(::etl::equal(
+            etl::span<uint8_t const>(data),
+            etl::span<uint8_t const>(
+                transportMessage.getPayload(), transportMessage.getPayloadLength())));
         // release
         EXPECT_CALL(_messageProvidingListenerMock, releaseTransportMessage(Ref(transportMessage)));
         _context.handleExecute();
@@ -197,12 +195,10 @@ TEST_F(DoCanTransportLayerTest, testTransportMessageReceptionLifecycle)
         ASSERT_TRUE(notificationListener != nullptr);
         EXPECT_EQ(0x37U, transportMessage.getSourceId());
         EXPECT_EQ(0x96U, transportMessage.getTargetId());
-        EXPECT_TRUE(
-            0
-            == ::etl::mem_compare(
-                &data[0],
-                static_cast<size_t>(transportMessage.getPayloadLength()),
-                transportMessage.getPayload()));
+        EXPECT_TRUE(::etl::equal(
+            etl::span<uint8_t const>(data),
+            etl::span<uint8_t const>(
+                transportMessage.getPayload(), transportMessage.getPayloadLength())));
         // release
         EXPECT_CALL(_messageProvidingListenerMock, releaseTransportMessage(Ref(transportMessage)));
         _context.handleExecute();
@@ -243,7 +239,7 @@ TEST_F(DoCanTransportLayerTest, testTransportMessageReceptionLifecycle)
             .WillOnce(Return(true));
         frameReceiver->firstDataFrameReceived(
             connection, MESSAGE_SIZE, FRAMES, FRAME_SIZE, slice.subspan(0, FRAME_SIZE));
-        slice = slice.subspan(FRAME_SIZE);
+        slice.advance(FRAME_SIZE);
         Mock::VerifyAndClearExpectations(&_addressConverterMock);
         Mock::VerifyAndClearExpectations(&_messageProvidingListenerMock);
 
@@ -257,13 +253,13 @@ TEST_F(DoCanTransportLayerTest, testTransportMessageReceptionLifecycle)
         {
             frameReceiver->consecutiveDataFrameReceived(
                 0x13348447U, i & 0x0F, slice.subspan(0, FRAME_SIZE));
-            slice = slice.subspan(FRAME_SIZE);
+            slice.advance(FRAME_SIZE);
         }
         // Last frame.
         EXPECT_LT(slice.size(), FRAME_SIZE);
         frameReceiver->consecutiveDataFrameReceived(
             0x13348447U, (FRAMES - 1) & 0x0F, slice.subspan(0, slice.size()));
-        slice.subspan(slice.size());
+        slice.advance(slice.size());
 
         // check message
         EXPECT_EQ(0x37U, transportMessage.getSourceId());

@@ -37,7 +37,7 @@ struct EntrySerializerTest
         _entry.clear();
         EXPECT_EQ(0xaf, _buffer[0]);
         EXPECT_EQ(0xaf, _buffer[bufferSize + 1]);
-        serializer.deserialize(entryBuffer.subspan(0, _usedBufferSize), *this);
+        serializer.deserialize(entryBuffer.first(_usedBufferSize), *this);
         return _entry;
     }
 

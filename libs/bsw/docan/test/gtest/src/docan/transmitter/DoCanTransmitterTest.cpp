@@ -866,7 +866,7 @@ TEST_F(
     Mock::VerifyAndClearExpectations(&_dataFrameTransmitterMock);
     // frames sent
     callback->dataFramesSent(jobHandle, 1U, 2U);
-    span = span.subspan(2U);
+    span.advance(2U);
 
     // Expect immediate send after flow control
     EXPECT_CALL(

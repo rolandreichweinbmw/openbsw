@@ -251,7 +251,7 @@ void BufferedLoggerOutput<Lock, MaxEntrySize, T, E, Timestamp, ReadOnlyPredicate
         entryBuffer, timestamp, componentInfo.getIndex(), levelInfo.getLevel(), str, ap);
     {
         Lock const lock;
-        _entryBuffer.addEntry(::etl::span<uint8_t>(entryBuffer).subspan(0, size));
+        _entryBuffer.addEntry(::etl::span<uint8_t>(entryBuffer).first(size));
     }
     for (typename decltype(_listeners)::iterator it = _listeners.begin(); it != _listeners.end();
          ++it)

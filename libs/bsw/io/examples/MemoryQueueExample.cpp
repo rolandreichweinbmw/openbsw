@@ -59,8 +59,8 @@ bool forwardCanFrame(::io::IWriter& writer)
         return false;
     }
     // The big endian 32bit id comes first in the serialization.
-    auto& id = *reinterpret_cast<etl::be_uint32_t*>(data.data());
-    data     = data.subspan(sizeof(id));
+    auto& id = etl::be_uint32_t::at_address(data.data());
+    data.advance(sizeof(id));
     // We pass the slice data to the frame so that readCanFrame can read the data directly from
     // the hardware to the allocated memory.
     CanFrame frame;
@@ -121,10 +121,10 @@ bool forwardCanFrame(::io::IWriter& writer)
         return false;
     }
     // The big endian 32bit id comes first in the serialization.
-    *reinterpret_cast<etl::be_uint32_t*>(data.data()) = rxFrame.id;
-    data                                              = data.subspan(sizeof(etl::be_uint32_t));
+    etl::be_uint32_t::at_address(data.data()) = rxFrame.id;
+    data.advance(sizeof(etl::be_uint32_t));
     // Copy payload to allocated data.
-    ::etl::mem_copy(rxFrame.data.begin(), rxFrame.data.end(), data.begin());
+    ::etl::copy(rxFrame.data, data);
     // Commit data to channel.
     writer.commit();
     return true;
@@ -149,10 +149,10 @@ bool receiveCanFrame(CanFrame& frame, ::io::IReader& reader)
         return false;
     }
     // Copy data to frame. We expect a big endian 32bit id followed by the actual data.
-    frame.id = *reinterpret_cast<::etl::be_uint32_t*>(data.data());
-    data     = data.subspan(sizeof(etl::be_uint32_t));
-    ::etl::mem_copy(data.begin(), data.end(), frame.data.begin());
-    frame.data = frame.data.subspan(0, data.size());
+    frame.id = etl::be_uint32_t::at_address(data.data());
+    data.advance(sizeof(etl::be_uint32_t));
+    ::etl::copy(data, frame.data);
+    frame.data = frame.data.first(data.size());
     // Release data to channel.
     reader.release();
     return true;
@@ -263,7 +263,7 @@ TEST(MemoryQueueExample, non_virtual_interface)
     {
         auto d = srcWriter.allocate(4);
         ASSERT_EQ(4, d.size());
-        *reinterpret_cast<::etl::be_uint32_t*>(d.data()) = 0x1234;
+        ::etl::be_uint32_t::at_address(d.data()) = 0x1234;
         srcWriter.commit();
     }
 
@@ -272,7 +272,7 @@ TEST(MemoryQueueExample, non_virtual_interface)
     {
         auto d = dstReader.peek();
         ASSERT_EQ(4, d.size());
-        ASSERT_EQ(0x1234, *reinterpret_cast<::etl::be_uint32_t*>(d.data()));
+        ASSERT_EQ(0x1234, ::etl::be_uint32_t::at_address(d.data()));
     }
     // EXAMPLE_END WriterReader2
 }
@@ -301,7 +301,7 @@ bool forwardData(::io::IReader& source, ::io::IWriter& destination)
         // Destination is full.
         return false;
     }
-    (void)::etl::mem_copy(srcData.begin(), srcData.end(), dstData.begin());
+    (void)::etl::copy(srcData, dstData);
     destination.commit();
     source.release();
     return true;
@@ -327,7 +327,7 @@ TEST(MemoryQueueExample, virtual_interface)
     {
         auto d = srcWriter.allocate(4);
         ASSERT_EQ(4, d.size());
-        *reinterpret_cast<::etl::be_uint32_t*>(d.data()) = 0x1234;
+        ::etl::be_uint32_t::at_address(d.data()) = 0x1234;
         srcWriter.commit();
     }
 
@@ -336,7 +336,7 @@ TEST(MemoryQueueExample, virtual_interface)
     {
         auto d = dstReader.peek();
         ASSERT_EQ(4, d.size());
-        ASSERT_EQ(0x1234, *reinterpret_cast<::etl::be_uint32_t*>(d.data()));
+        ASSERT_EQ(0x1234, ::etl::be_uint32_t::at_address(d.data()));
     }
     // EXAMPLE_END IWriterIReader2
 }
@@ -352,7 +352,7 @@ bool readCanFrame(CanFrame& frame)
 {
     etl::array<uint8_t, 4> txData{1, 2, 3, 4};
     frame.id = 123;
-    ::etl::mem_copy(txData.begin(), txData.end(), frame.data.begin());
+    ::etl::copy(::etl::make_span(txData), frame.data);
     frame.data = frame.data.subspan(0, sizeof(txData));
     return true;
 }

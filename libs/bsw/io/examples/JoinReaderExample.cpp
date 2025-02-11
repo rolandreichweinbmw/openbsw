@@ -28,7 +28,7 @@ void forwardData(::io::IReader& source, ::io::IWriter& destination)
         auto dstData = destination.allocate(srcData.size());
         if (dstData.size() >= srcData.size())
         {
-            ::etl::mem_copy(srcData.begin(), srcData.end(), dstData.begin());
+            ::etl::copy(srcData, dstData);
             destination.commit();
             // Only release data after successful forwarding.
             source.release();

@@ -36,7 +36,7 @@ public:
             }
             // Format: uint8_t payload length, uint32_t id, payload
             dst[0] = frame.size();
-            ::etl::mem_copy(frame.begin(), frame.end(), dst.begin() + 1);
+            ::etl::copy(frame, dst.subspan(1));
             _udpOutput.commit();
             _canFrameInput.release();
             frame = _canFrameInput.peek();

@@ -91,7 +91,7 @@ TransportMessage::append(uint8_t const* const data, uint16_t const length)
     }
 
     ::etl::span<uint8_t const> source(data, length);
-    (void)::etl::copy(source.begin(), source.end(), fBuffer.subspan(fValidBytes).begin());
+    (void)::etl::copy(source, fBuffer.subspan(fValidBytes));
     (void)increaseValidBytes(length);
     return ErrorCode::TP_MSG_OK;
 }

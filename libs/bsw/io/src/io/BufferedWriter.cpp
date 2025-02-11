@@ -25,13 +25,13 @@ namespace io
         }
     }
     _size = size;
-    return _current.subspan(0, _size);
+    return _current.first(_size);
 }
 
 void BufferedWriter::commit()
 {
-    _current = _current.subspan(_size);
-    _size    = 0;
+    _current.advance(_size);
+    _size = 0;
 }
 
 void BufferedWriter::flush()

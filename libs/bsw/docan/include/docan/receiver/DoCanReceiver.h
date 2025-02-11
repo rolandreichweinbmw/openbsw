@@ -800,7 +800,7 @@ inline ::etl::span<uint8_t const> DoCanReceiver<DataLinkLayer>::copyFirstFrameDa
 {
     ::etl::span<uint8_t> firstFrameDataCopy = ::etl::span<uint8_t>(
         receiverAddress + sizeof(MessageReceiverType), firstFrameData.size());
-    (void)::etl::copy(firstFrameData.begin(), firstFrameData.end(), firstFrameDataCopy.begin());
+    (void)::etl::copy(firstFrameData, firstFrameDataCopy);
     return firstFrameDataCopy;
 }
 

@@ -73,9 +73,9 @@ allocate(typename Queue::Writer& s, uint8_t const bus, uint32_t const id, size_t
     ::etl::span<uint8_t> memory = s.allocate(sizeof(uint8_t) + sizeof(uint32_t) + size);
     if (memory.size() >= 5)
     {
-        memory[0]                                        = bus;
-        *reinterpret_cast<etl::be_uint32_t*>(&memory[1]) = id;
-        memory                                           = memory.subspan(sizeof(bus) + sizeof(id));
+        memory[0]                                = bus;
+        etl::be_uint32_t::at_address(&memory[1]) = id;
+        memory.advance(sizeof(bus) + sizeof(id));
     }
     return memory;
 }
@@ -87,7 +87,7 @@ Pdu poll(typename Queue::Reader& r)
     if (s.size() >= 5)
     {
         uint8_t const bus = s[0];
-        uint32_t const id = *reinterpret_cast<::etl::be_uint32_t*>(&s[1]);
+        uint32_t const id = ::etl::be_uint32_t::at_address(&s[1]);
         return Pdu(bus, id, s.subspan(sizeof(bus) + sizeof(id)));
     }
     return Pdu(0xFFU, 0xFFFFFFFFU, {});

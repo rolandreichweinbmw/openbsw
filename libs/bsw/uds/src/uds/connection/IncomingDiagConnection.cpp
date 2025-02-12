@@ -263,8 +263,8 @@ IncomingDiagConnection::sendNegativeResponse(uint8_t const responseCode, Abstrac
     {
         ++fNumPendingMessageProcessedCallbacks;
 
-        fSendNegativeResponseClosure
-            = ::async::Function([&]() { asyncSendNegativeResponse(responseCode, &sender); });
+        fSendNegativeResponseClosure = ::async::Function(
+            [&, responseCode]() { asyncSendNegativeResponse(responseCode, &sender); });
         ::async::execute(fContext, fSendNegativeResponseClosure);
         return ::uds::ErrorCode::OK;
     }
@@ -406,8 +406,8 @@ void IncomingDiagConnection::endNestedRequest()
 void IncomingDiagConnection::transportMessageProcessed(
     transport::TransportMessage& transportMessage, ProcessingResult const result)
 {
-    fTransportMessageProcessedClosure
-        = ::async::Function([&]() { asyncTransportMessageProcessed(&transportMessage, result); });
+    fTransportMessageProcessedClosure = ::async::Function(
+        [&, result]() { asyncTransportMessageProcessed(&transportMessage, result); });
     ::async::execute(fContext, fTransportMessageProcessedClosure);
 }
 

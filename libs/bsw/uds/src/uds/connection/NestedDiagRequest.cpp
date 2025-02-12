@@ -75,10 +75,10 @@ void NestedDiagRequest::handleResponseOverflow() { handleOverflow(); }
     if (fNumIdentifiers >= fPrefixLength)
     {
         fNumPrefixIdentifiers = fNumIdentifiers - fPrefixLength;
-        (void)::etl::mem_copy(
-            fNestedRequest.begin() + fPrefixLength,
-            static_cast<size_t>(fNumPrefixIdentifiers),
-            fMessageBuffer.begin());
+        (void)::etl::copy(
+            fNestedRequest.subspan(fPrefixLength,
+            static_cast<size_t>(fNumPrefixIdentifiers)),
+            fMessageBuffer);
     }
     return fMessageBuffer.subspan(
         static_cast<size_t>(fNumPrefixIdentifiers),
@@ -121,7 +121,7 @@ uint16_t NestedDiagRequest::getStoredRequestLength(::etl::span<uint8_t const> co
 void NestedDiagRequest::storeRequest(
     ::etl::span<uint8_t const> const& request, ::etl::span<uint8_t> dest) const
 {
-    (void)::etl::mem_copy(request.begin(), request.size(), dest.begin());
+    (void)::etl::copy(request, dest);
 }
 
 void NestedDiagRequest::handleOverflow() { setResponseCode(DiagReturnCode::ISO_RESPONSE_TOO_LONG); }

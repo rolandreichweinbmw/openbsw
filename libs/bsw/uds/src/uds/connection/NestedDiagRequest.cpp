@@ -76,8 +76,7 @@ void NestedDiagRequest::handleResponseOverflow() { handleOverflow(); }
     {
         fNumPrefixIdentifiers = fNumIdentifiers - fPrefixLength;
         (void)::etl::copy(
-            fNestedRequest.subspan(fPrefixLength,
-            static_cast<size_t>(fNumPrefixIdentifiers)),
+            fNestedRequest.subspan(fPrefixLength, static_cast<size_t>(fNumPrefixIdentifiers)),
             fMessageBuffer);
     }
     return fMessageBuffer.subspan(

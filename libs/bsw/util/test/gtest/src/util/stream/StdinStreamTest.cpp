@@ -33,7 +33,7 @@ TEST_F(StdinStreamTest, testAllCharactersAreRead)
     EXPECT_FALSE(cut.isEof());
 
     ASSERT_EQ(7U, cut.readBuffer(buffer));
-    EXPECT_THAT(buffer.subspan(0, 7), ElementsAre('a', 'b', 'c', 'd', 'e', 'f', 'g'));
+    EXPECT_THAT(buffer.first(7), ElementsAre('a', 'b', 'c', 'd', 'e', 'f', 'g'));
     EXPECT_EQ(0xaf, bytes[7]);
     EXPECT_FALSE(cut.isEof());
 }
@@ -55,7 +55,7 @@ TEST_F(StdinStreamTest, testBufferTooSmallForAllChars)
     EXPECT_THAT(buffer, ElementsAre('a', 'b', 'c', 'd'));
 
     ASSERT_EQ(3U, cut.readBuffer(buffer));
-    EXPECT_THAT(buffer.subspan(0, 3), ElementsAre('e', 'f', 'g'));
+    EXPECT_THAT(buffer.first(3), ElementsAre('e', 'f', 'g'));
 
     ASSERT_EQ(0U, cut.readBuffer(buffer));
     EXPECT_FALSE(cut.isEof());

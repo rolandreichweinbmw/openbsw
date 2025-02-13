@@ -546,7 +546,7 @@ CodecResult DoCanFrameCodec<DataLinkLayer>::adjustFrame(
             static_cast<size_t>(paddedFrameSize) - payloadSize,
             _config._filler);
     }
-    payload = payload.subspan(0U, static_cast<size_t>(paddedFrameSize));
+    payload = payload.first(static_cast<size_t>(paddedFrameSize));
     return CodecResult::OK;
 }
 

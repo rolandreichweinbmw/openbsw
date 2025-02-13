@@ -87,7 +87,7 @@ public:
      */
     ::etl::span<uint8_t> getBuffer() const
     {
-        return _buffer.subspan(0, ::etl::min(_position, _buffer.size()));
+        return _buffer.first(::etl::min(_position, _buffer.size()));
     }
 
 private:

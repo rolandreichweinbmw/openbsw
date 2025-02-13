@@ -97,7 +97,7 @@ ConstString CommandContext::scanIdentifierToken()
     }
     if (check((_current != start) && ignoreWhitespace(), ICommand::Result::BAD_TOKEN))
     {
-        return buf.subspan(0, pos);
+        return buf.first(pos);
     }
 
     return ::etl::span<uint8_t>();

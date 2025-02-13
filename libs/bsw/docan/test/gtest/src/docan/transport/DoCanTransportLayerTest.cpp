@@ -179,7 +179,7 @@ TEST_F(DoCanTransportLayerTest, testTransportMessageReceptionLifecycle)
                 0x00))
             .WillOnce(Return(true));
         frameReceiver->firstDataFrameReceived(
-            connection, 7U, 2U, 7U, ::etl::span<uint8_t const>(data).subspan(0, 6U));
+            connection, 7U, 2U, 7U, ::etl::span<uint8_t const>(data).first(6U));
         Mock::VerifyAndClearExpectations(&_addressConverterMock);
         Mock::VerifyAndClearExpectations(&_messageProvidingListenerMock);
 
@@ -238,7 +238,7 @@ TEST_F(DoCanTransportLayerTest, testTransportMessageReceptionLifecycle)
                 0x00))
             .WillOnce(Return(true));
         frameReceiver->firstDataFrameReceived(
-            connection, MESSAGE_SIZE, FRAMES, FRAME_SIZE, slice.subspan(0, FRAME_SIZE));
+            connection, MESSAGE_SIZE, FRAMES, FRAME_SIZE, slice.first(FRAME_SIZE));
         slice.advance(FRAME_SIZE);
         Mock::VerifyAndClearExpectations(&_addressConverterMock);
         Mock::VerifyAndClearExpectations(&_messageProvidingListenerMock);
@@ -252,13 +252,13 @@ TEST_F(DoCanTransportLayerTest, testTransportMessageReceptionLifecycle)
         for (size_t i = 1; i < FRAMES - 1; i++)
         {
             frameReceiver->consecutiveDataFrameReceived(
-                0x13348447U, i & 0x0F, slice.subspan(0, FRAME_SIZE));
+                0x13348447U, i & 0x0F, slice.first(FRAME_SIZE));
             slice.advance(FRAME_SIZE);
         }
         // Last frame.
         EXPECT_LT(slice.size(), FRAME_SIZE);
         frameReceiver->consecutiveDataFrameReceived(
-            0x13348447U, (FRAMES - 1) & 0x0F, slice.subspan(0, slice.size()));
+            0x13348447U, (FRAMES - 1) & 0x0F, slice.first(slice.size()));
         slice.advance(slice.size());
 
         // check message

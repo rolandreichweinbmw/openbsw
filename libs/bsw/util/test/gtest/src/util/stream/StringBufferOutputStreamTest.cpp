@@ -10,7 +10,7 @@ TEST(StringBufferOutputStream, testAppendIsSafe)
 {
     char buffer[10];
     memset(buffer, 0x17, 10);
-    stream::StringBufferOutputStream cut(::etl::span<char>(buffer).subspan(0, 9));
+    stream::StringBufferOutputStream cut(::etl::span<char>(buffer).first(9));
     cut.write_string_view(::etl::string_view("abc"));
     cut.write_string_view(::etl::string_view("def"));
     cut.write_string_view(::etl::string_view("1234"));
@@ -22,7 +22,7 @@ TEST(StringBufferOutputStream, testAppendOnRawBufferIsSafe)
 {
     char buffer[10];
     memset(buffer, 0x17, 10);
-    stream::StringBufferOutputStream cut(::etl::span<char>(buffer).subspan(0, 9));
+    stream::StringBufferOutputStream cut(::etl::span<char>(buffer).first(9));
     cut.write_string_view(::etl::string_view("abc"));
     cut.write_string_view(::etl::string_view("def"));
     cut.write_string_view(::etl::string_view("1234"));
@@ -34,7 +34,7 @@ TEST(StringBufferOutputStream, testEofIsWorkingWithWrite)
 {
     char buffer[10];
     memset(buffer, 0x17, 10);
-    stream::StringBufferOutputStream cut(::etl::span<char>(buffer).subspan(0, 7));
+    stream::StringBufferOutputStream cut(::etl::span<char>(buffer).first(7));
     ASSERT_FALSE(cut.isEof());
     cut.write('a');
     ASSERT_FALSE(cut.isEof());
@@ -53,7 +53,7 @@ TEST(StringBufferOutputStream, testEofIsWorkingWithWriteBuffer)
 {
     char buffer[10];
     memset(buffer, 0x17, 10);
-    stream::StringBufferOutputStream cut(::etl::span<char>(buffer).subspan(0, 7));
+    stream::StringBufferOutputStream cut(::etl::span<char>(buffer).first(7));
     ASSERT_FALSE(cut.isEof());
     cut.write('a');
     ASSERT_FALSE(cut.isEof());
@@ -68,7 +68,7 @@ TEST(StringBufferOutputStream, testEolIsAppended)
 {
     char buffer[10];
     memset(buffer, 0x17, 10);
-    stream::StringBufferOutputStream cut(::etl::span<char>(buffer).subspan(0, 9), "\n");
+    stream::StringBufferOutputStream cut(::etl::span<char>(buffer).first(9), "\n");
     cut.write_string_view(::etl::string_view("abcdef1234"));
     ASSERT_EQ(0, strcmp("abcdef1\n", cut.getString()));
     ASSERT_EQ(0x17, buffer[9]);
@@ -78,7 +78,7 @@ TEST(StringBufferOutputStream, testEolAndEllipsisLetBufferOverflow)
 {
     char buffer[10];
     memset(buffer, 0x17, 10);
-    stream::StringBufferOutputStream cut(::etl::span<char>(buffer).subspan(0, 9), "\n");
+    stream::StringBufferOutputStream cut(::etl::span<char>(buffer).first(9), "\n");
     cut.write_string_view(::etl::string_view("abcdef12"));
     ASSERT_EQ(0, strcmp("abcdef1\n", cut.getString()));
     ASSERT_EQ(0x17, buffer[9]);
@@ -88,7 +88,7 @@ TEST(StringBufferOutputStream, testEolAndEllipsisIsAppended)
 {
     char buffer[10];
     memset(buffer, 0x17, 10);
-    stream::StringBufferOutputStream cut(::etl::span<char>(buffer).subspan(0, 9), "\n", "..");
+    stream::StringBufferOutputStream cut(::etl::span<char>(buffer).first(9), "\n", "..");
     cut.write_string_view(::etl::string_view("abcdef1234"));
     ASSERT_EQ(0, strcmp("abcde..\n", cut.getString()));
     ASSERT_EQ(0x17, buffer[9]);
@@ -98,7 +98,7 @@ TEST(StringBufferOutputStream, testEolAndEllipsisIsAppendedOnRawBuffer)
 {
     char buffer[10];
     memset(buffer, 0x17, 10);
-    stream::StringBufferOutputStream cut(::etl::span<char>(buffer).subspan(0, 9), "\n", "..");
+    stream::StringBufferOutputStream cut(::etl::span<char>(buffer).first(9), "\n", "..");
     cut.write_string_view(::etl::string_view("abcdef1234"));
     ASSERT_EQ(0, strcmp("abcde..\n", cut.getString()));
     ASSERT_EQ(0x17, buffer[9]);
@@ -127,7 +127,7 @@ TEST(StringBufferOutputStream, testGetBufferIfNotFilledCompletely)
 TEST(StringBufferOutputStream, testGetBufferIfFull)
 {
     char buffer[10];
-    stream::StringBufferOutputStream cut(::etl::span<char>(buffer).subspan(0, 9), "\n", "..");
+    stream::StringBufferOutputStream cut(::etl::span<char>(buffer).first(9), "\n", "..");
     cut.write_string_view(::etl::string_view("abcd1234"));
     ASSERT_EQ(buffer, cut.getBuffer().data());
     ASSERT_EQ(9U, cut.getBuffer().size());

@@ -335,7 +335,7 @@ TEST_F(NestedDiagRequestTest, RequestMessageIsCopiedWithoutPrefixToResponseBuffe
     EXPECT_EQ(fMessageBuffer.data() + 2U, responseBuffer.data());
     EXPECT_EQ(5U, responseBuffer.size());
     EXPECT_THAT(
-        ::etl::span<uint8_t>(fMessageBuffer).subspan(0U, 2U),
+        ::etl::span<uint8_t>(fMessageBuffer).first(2U),
         ElementsAreArray(nextRequestBuffer.subspan(1U, 2U)));
     // repeated request should return the same result
     ::etl::span<uint8_t const> responseBuffer2 = cut.getResponseBuffer();
@@ -377,7 +377,7 @@ TEST_F(NestedDiagRequestTest, ConsumingStoredRequestClipsRequest)
     EXPECT_CALL(cut, getStoredRequestLength(ElementsAreArray(requestBuffer))).Times(1);
     EXPECT_CALL(cut, storeRequest(ElementsAreArray(requestBuffer), _)).Times(1);
     cut.init(fJob, fMessageBuffer, ::etl::span<uint8_t const>(request));
-    EXPECT_THAT(requestBuffer.subspan(0U, 2U), ElementsAreArray(cut.consumeStoredRequest(2U)));
+    EXPECT_THAT(requestBuffer.first(2U), ElementsAreArray(cut.consumeStoredRequest(2U)));
     EXPECT_THAT(requestBuffer.subspan(2U, 1U), ElementsAreArray(cut.consumeStoredRequest(1U)));
     EXPECT_THAT(::etl::span<uint8_t const>(), ElementsAreArray(cut.consumeStoredRequest(3U)));
 }

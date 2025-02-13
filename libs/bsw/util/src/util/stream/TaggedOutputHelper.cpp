@@ -25,15 +25,11 @@ void TaggedOutputHelper::writeBytes(IOutputStream& strm, ::etl::span<uint8_t con
         if (_lineStart)
         {
             _lineStart = false;
-            ::etl::string_view view(_prefix);
-            strm.write(::etl::span<uint8_t const>(
-                reinterpret_cast<uint8_t const*>(view.begin()), view.size()));
+            strm.write_string_view(::etl::string_view(_prefix));
         }
         if (data == static_cast<uint8_t>('\n'))
         {
-            ::etl::string_view view(_suffix);
-            strm.write(::etl::span<uint8_t const>(
-                reinterpret_cast<uint8_t const*>(view.begin()), view.size()));
+            strm.write_string_view(::etl::string_view(_suffix));
             _lineStart = true;
         }
         else
@@ -53,9 +49,7 @@ void TaggedOutputHelper::endLine(IOutputStream& strm)
 {
     if (!_lineStart)
     {
-        ::etl::string_view view(_suffix);
-        strm.write(::etl::span<uint8_t const>(
-            reinterpret_cast<uint8_t const*>(view.begin()), view.size()));
+        strm.write_string_view(::etl::string_view(_suffix));
         _lineStart = true;
     }
 }

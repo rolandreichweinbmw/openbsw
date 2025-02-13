@@ -53,9 +53,8 @@ public:
 
     uint16_t getSize() const
     {
-        return (fBufferLength == 0U)
-                   ? 0U
-                   : static_cast<uint16_t>(*reinterpret_cast<etl::be_uint16_t*>(fpData));
+        return (fBufferLength == 0U) ? 0U
+                                     : static_cast<uint16_t>(etl::be_uint16_t::at_address(fpData));
     }
 
     bool empty() const { return (getSize() == 0U); }

@@ -353,7 +353,7 @@ bool readCanFrame(CanFrame& frame)
     etl::array<uint8_t, 4> txData{1, 2, 3, 4};
     frame.id = 123;
     ::etl::copy(::etl::make_span(txData), frame.data);
-    frame.data = frame.data.subspan(0, sizeof(txData));
+    frame.data = frame.data.first(sizeof(txData));
     return true;
 }
 } // namespace spsc

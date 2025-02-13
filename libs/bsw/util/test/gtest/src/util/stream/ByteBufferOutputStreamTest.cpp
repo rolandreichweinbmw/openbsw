@@ -126,7 +126,7 @@ TEST(ByteBufferOutputStreamTest, writeBufferWorksCorrectly)
 {
     uint8_t array[10];
     ::etl::mem_set(array, sizeof(array), 0xAF);
-    ByteBufferOutputStream stream(::etl::span<uint8_t>(array).subspan(0, 6));
+    ByteBufferOutputStream stream(::etl::span<uint8_t>(array).first(6));
 
     stream.write('T');
     stream.write_string_view(::etl::string_view("abc"));

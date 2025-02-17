@@ -704,7 +704,7 @@ TEST(DoCanFrameCodecTest, testEncodeDataFrame)
                 CodecResult::OK, cut.encodeDataFrame(payload, data, 0U, 6U, consumedDataSize));
             EXPECT_TRUE(::etl::equal(::etl::span<uint8_t const>(expected), payload));
             EXPECT_EQ(5U, consumedDataSize);
-            data = data.subspan(5U);
+            data.advance(5U);
         }
         {
             // consecutive frame
@@ -737,7 +737,7 @@ TEST(DoCanFrameCodecTest, testEncodeDataFrame)
                 CodecResult::OK, cut.encodeDataFrame(payload, data, 1U, 1U, consumedDataSize));
             EXPECT_TRUE(::etl::equal(::etl::span<uint8_t const>(expected), payload));
             EXPECT_EQ(1U, consumedDataSize);
-            data = data.subspan(1U);
+            data.advance(1U);
         }
         {
             // consecutive frame 2
@@ -747,7 +747,7 @@ TEST(DoCanFrameCodecTest, testEncodeDataFrame)
                 CodecResult::OK, cut.encodeDataFrame(payload, data, 2U, 1U, consumedDataSize));
             EXPECT_TRUE(::etl::equal(::etl::span<uint8_t const>(expected), payload));
             EXPECT_EQ(1U, consumedDataSize);
-            data = data.subspan(1U);
+            data.advance(1U);
         }
         {
             // consecutive frame 3
@@ -757,7 +757,7 @@ TEST(DoCanFrameCodecTest, testEncodeDataFrame)
                 CodecResult::OK, cut.encodeDataFrame(payload, data, 3U, 1U, consumedDataSize));
             EXPECT_TRUE(::etl::equal(::etl::span<uint8_t const>(expected), payload));
             EXPECT_EQ(1U, consumedDataSize);
-            data = data.subspan(1U);
+            data.advance(1U);
         }
         {
             // consecutive frame 4
@@ -767,7 +767,7 @@ TEST(DoCanFrameCodecTest, testEncodeDataFrame)
                 CodecResult::OK, cut.encodeDataFrame(payload, data, 4U, 1U, consumedDataSize));
             EXPECT_TRUE(::etl::equal(::etl::span<uint8_t const>(expected), payload));
             EXPECT_EQ(1U, consumedDataSize);
-            data = data.subspan(1U);
+            data.advance(1U);
         }
         {
             // consecutive frame 5
@@ -777,7 +777,7 @@ TEST(DoCanFrameCodecTest, testEncodeDataFrame)
                 CodecResult::OK, cut.encodeDataFrame(payload, data, 5U, 1U, consumedDataSize));
             EXPECT_TRUE(::etl::equal(::etl::span<uint8_t const>(expected), payload));
             EXPECT_EQ(1U, consumedDataSize);
-            data = data.subspan(1U);
+            data.advance(1U);
         }
         {
             // consecutive frame 6
@@ -787,7 +787,7 @@ TEST(DoCanFrameCodecTest, testEncodeDataFrame)
                 CodecResult::OK, cut.encodeDataFrame(payload, data, 6U, 1U, consumedDataSize));
             EXPECT_TRUE(::etl::equal(::etl::span<uint8_t const>(expected), payload));
             EXPECT_EQ(1U, consumedDataSize);
-            data = data.subspan(1U);
+            data.advance(1U);
         }
         {
             // consecutive frame 7
@@ -797,7 +797,7 @@ TEST(DoCanFrameCodecTest, testEncodeDataFrame)
                 CodecResult::OK, cut.encodeDataFrame(payload, data, 7U, 1U, consumedDataSize));
             EXPECT_TRUE(::etl::equal(::etl::span<uint8_t const>(expected), payload));
             EXPECT_EQ(1U, consumedDataSize);
-            data = data.subspan(1U);
+            data.advance(1U);
         }
     }
     {
@@ -821,7 +821,7 @@ TEST(DoCanFrameCodecTest, testEncodeDataFrame)
                     payload, data, 0U, CONSECUTIVE_FRAME_DATA_SIZE, consumedDataSize));
             EXPECT_THAT(payload, ::testing::ElementsAreArray(expected));
             EXPECT_EQ(1U, consumedDataSize);
-            data = data.subspan(consumedDataSize);
+            data.advance(consumedDataSize);
         }
         size_t i = 0;
         for (; i < FRAMES; i++)
@@ -843,7 +843,7 @@ TEST(DoCanFrameCodecTest, testEncodeDataFrame)
             ASSERT_EQ(CodecResult::OK, result);
             EXPECT_THAT(payload, ::testing::ElementsAreArray(expected));
             EXPECT_EQ(6U, consumedDataSize);
-            data = data.subspan(consumedDataSize);
+            data.advance(consumedDataSize);
         }
         EXPECT_EQ(i, FRAMES);
         EXPECT_EQ(data.size(), 0);
@@ -969,7 +969,7 @@ TEST(DoCanFrameCodecTest, testEncodeFramesWithEnforcedPadding)
                 CodecResult::OK, cut.encodeDataFrame(payload, data, 0U, 6U, consumedDataSize));
             EXPECT_TRUE(::etl::equal(::etl::span<uint8_t const>(expected), payload));
             EXPECT_EQ(5U, consumedDataSize);
-            data = data.subspan(5U);
+            data.advance(5U);
         }
         {
             // consecutive frame
@@ -1076,7 +1076,7 @@ TEST(DoCanFrameCodecTest, testEncodeShortAndLongFramesWithEnforcedPadding)
                 CodecResult::OK, cut.encodeDataFrame(payload, data, 0U, 16U, consumedDataSize));
             EXPECT_TRUE(::etl::equal(::etl::span<uint8_t const>(expected), payload));
             EXPECT_EQ(15U, consumedDataSize);
-            data = data.subspan(15U);
+            data.advance(15U);
         }
         {
             // consecutive frame

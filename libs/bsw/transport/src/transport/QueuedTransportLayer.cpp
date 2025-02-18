@@ -58,7 +58,7 @@ AbstractTransportLayer::ErrorCode QueuedTransportLayer::send(
         }
         else
         {
-            fJobsSent.push_front(*pJob);
+            fJobsSent.push_back(*pJob);
 
             mutex.unlock();
             status = fTransportLayer.send(transportMessage, this);
@@ -68,7 +68,7 @@ AbstractTransportLayer::ErrorCode QueuedTransportLayer::send(
             {
                 // job has NOT been sent --> remove from pending send jobs
                 fJobsSent.remove(pJob);
-                fJobsToBeSent.push_front(*pJob);
+                fJobsToBeSent.push_back(*pJob);
                 status = ErrorCode::TP_OK;
             }
             else if (status != ErrorCode::TP_OK)
@@ -101,7 +101,7 @@ AbstractTransportLayer::ErrorCode QueuedTransportLayer::send(
         TransportMessageSendJob* const pJob = getSendJob(transportMessage, pNotificationListener);
         if (pJob != nullptr)
         {
-            fJobsToBeSent.push_front(*pJob);
+            fJobsToBeSent.push_back(*pJob);
             status = ErrorCode::TP_OK;
         }
         else
@@ -157,7 +157,7 @@ void QueuedTransportLayer::transportMessageProcessed(
     {
         TransportMessageSendJob& job = fJobsToBeSent.front();
         fJobsToBeSent.pop_front();
-        fJobsSent.push_front(job);
+        fJobsSent.push_back(job);
         TransportMessage& tpMessage = *job.getTransportMessage();
 
         mutex.unlock();

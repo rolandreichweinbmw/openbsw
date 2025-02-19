@@ -263,8 +263,7 @@ IncomingDiagConnection::sendNegativeResponse(uint8_t const responseCode, Abstrac
     {
         ++fNumPendingMessageProcessedCallbacks;
 
-        auto lambda =
-            [&, responseCode]() { asyncSendNegativeResponse(responseCode, &sender); };
+        auto lambda = [&, responseCode]() { asyncSendNegativeResponse(responseCode, &sender); };
         fSendNegativeResponseClosure = ::async::Function(lambda);
         ::async::execute(fContext, fSendNegativeResponseClosure);
         return ::uds::ErrorCode::OK;

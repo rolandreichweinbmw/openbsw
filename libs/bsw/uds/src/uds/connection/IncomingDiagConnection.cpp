@@ -90,8 +90,12 @@ IncomingDiagConnection::sendPositiveResponseInternal(uint16_t const length, Abst
     {
         ++fNumPendingMessageProcessedCallbacks;
 
-        auto lambda = [&, length]() { asyncSendPositiveResponse(length, &sender); };
-        fSendPositiveResponseClosure = ::async::Function(lambda);
+        fSendPositiveResponseClosure = SendPositiveResponseClosure::CallType(
+            SendPositiveResponseClosure::CallType::fct::
+                create<IncomingDiagConnection, &IncomingDiagConnection::asyncSendPositiveResponse>(
+                    *this),
+            length,
+            &sender);
         ::async::execute(fContext, fSendPositiveResponseClosure);
         return ::uds::ErrorCode::OK;
     }
@@ -263,8 +267,12 @@ IncomingDiagConnection::sendNegativeResponse(uint8_t const responseCode, Abstrac
     {
         ++fNumPendingMessageProcessedCallbacks;
 
-        auto lambda = [&, responseCode]() { asyncSendNegativeResponse(responseCode, &sender); };
-        fSendNegativeResponseClosure = ::async::Function(lambda);
+        fSendNegativeResponseClosure = SendNegativeResponseClosure::CallType(
+            SendNegativeResponseClosure::CallType::fct::
+                create<IncomingDiagConnection, &IncomingDiagConnection::asyncSendNegativeResponse>(
+                    *this),
+            responseCode,
+            &sender);
         ::async::execute(fContext, fSendNegativeResponseClosure);
         return ::uds::ErrorCode::OK;
     }
@@ -406,8 +414,12 @@ void IncomingDiagConnection::endNestedRequest()
 void IncomingDiagConnection::transportMessageProcessed(
     transport::TransportMessage& transportMessage, ProcessingResult const result)
 {
-    auto lambda = [&, result]() { asyncTransportMessageProcessed(&transportMessage, result); };
-    fTransportMessageProcessedClosure = ::async::Function(lambda);
+    fTransportMessageProcessedClosure = TransportMessageClosure::CallType(
+        TransportMessageClosure::CallType::fct::
+            create<IncomingDiagConnection, &IncomingDiagConnection::asyncTransportMessageProcessed>(
+                *this),
+        &transportMessage,
+        result);
     ::async::execute(fContext, fTransportMessageProcessedClosure);
 }
 

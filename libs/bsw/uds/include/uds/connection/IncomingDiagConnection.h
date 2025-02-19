@@ -14,6 +14,7 @@
 #include <etl/delegate.h>
 #include <etl/uncopyable.h>
 #include <etl/vector.h>
+#include <util/estd/functional.h>
 
 namespace transport
 {
@@ -62,10 +63,24 @@ public:
     IncomingDiagConnection(::async::ContextType const diagContext)
     : fResponsePendingTimeout(*this)
     , fGlobalPendingTimeout(*this)
-    , fTransportMessageProcessedClosure(
-          [&]() { asyncTransportMessageProcessed(nullptr, ProcessingResult::PROCESSED_ERROR); })
-    , fSendPositiveResponseClosure([&]() { asyncSendPositiveResponse(0U, nullptr); })
-    , fSendNegativeResponseClosure([&]() { asyncSendNegativeResponse(0U, nullptr); })
+    , fTransportMessageProcessedClosure(TransportMessageClosure::CallType(
+          TransportMessageClosure::CallType::fct::create<
+              IncomingDiagConnection,
+              &IncomingDiagConnection::asyncTransportMessageProcessed>(*this),
+          nullptr,
+          ProcessingResult::PROCESSED_ERROR))
+    , fSendPositiveResponseClosure(SendPositiveResponseClosure::CallType(
+          SendPositiveResponseClosure::CallType::fct::
+              create<IncomingDiagConnection, &IncomingDiagConnection::asyncSendPositiveResponse>(
+                  *this),
+          0U,
+          nullptr))
+    , fSendNegativeResponseClosure(SendNegativeResponseClosure::CallType(
+          SendNegativeResponseClosure::CallType::fct::
+              create<IncomingDiagConnection, &IncomingDiagConnection::asyncSendNegativeResponse>(
+                  *this),
+          0U,
+          nullptr))
     , fTriggerNextNestedRequestDelegate(::async::Function::CallType::create<
                                         IncomingDiagConnection,
                                         &IncomingDiagConnection::triggerNextNestedRequest>(*this))
@@ -310,9 +325,16 @@ public:
     void triggerNextNestedRequest();
     void endNestedRequest();
 
-    ::async::Function fTransportMessageProcessedClosure;
-    ::async::Function fSendPositiveResponseClosure;
-    ::async::Function fSendNegativeResponseClosure;
+    using SendPositiveResponseClosure
+        = ::async::Call<::estd::closure<void(uint16_t, AbstractDiagJob*)>>;
+    using SendNegativeResponseClosure
+        = ::async::Call<::estd::closure<void(uint8_t, AbstractDiagJob*)>>;
+    using TransportMessageClosure
+        = ::async::Call<::estd::closure<void(transport::TransportMessage*, ProcessingResult)>>;
+
+    TransportMessageClosure fTransportMessageProcessedClosure;
+    SendPositiveResponseClosure fSendPositiveResponseClosure;
+    SendNegativeResponseClosure fSendNegativeResponseClosure;
     ::async::Function fTriggerNextNestedRequestDelegate;
     transport::ITransportMessageProcessedListener* fpRequestNotificationListener = nullptr;
     transport::TransportMessage fPendingMessage                                  = {};

@@ -361,6 +361,8 @@ TEST_F(UdsIntegration, positive_response)
 
     EXPECT_CALL(_messageProvider, releaseTransportMessage(SameAddress(pMessage)));
 
+    ASSERT_NE(pMessage, nullptr);
+
     pProcessedListener->transportMessageProcessed(
         *pMessage,
         transport::ITransportMessageProcessedListener::ProcessingResult::PROCESSED_NO_ERROR);

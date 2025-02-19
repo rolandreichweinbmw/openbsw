@@ -130,6 +130,11 @@ public:
     {
         auto result = etl::find_if(
             IncomingDiagConnectionPool.begin(), IncomingDiagConnectionPool.end(), condition);
+
+        if (result == IncomingDiagConnectionPool.end()) {
+            return nullptr;
+        }
+
         return reinterpret_cast<IncomingDiagConnection*>(result.operator->());
     }
 

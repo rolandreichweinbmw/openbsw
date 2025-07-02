@@ -33,11 +33,51 @@ SOFTWARE.
 
 #include <etl/platform.h>
 #include <etl/delegate.h>
+#include <etl/tuple.h>
 #include <etl/utility.h>
 
 namespace etl
 {
 
+#if ETL_USING_CPP11 && !defined(ETL_CLOSURE_FORCE_CPP03_IMPLEMENTATION)
+  template<typename>
+  class closure;
+
+  template <typename R, typename... Args>
+  class closure<R(Args...)>
+  {
+  public:
+    using fct = etl::delegate<R(Args...)>;
+    using tuple_type = etl::tuple<Args...>;
+
+    closure(fct const& f, const Args... args)
+      : m_f(f), m_args(args...)
+    {
+    }
+
+    R operator()() const
+    {
+      return execute(etl::index_sequence_for<Args...>{});
+    }
+
+    template <size_t index, typename Arg,
+      typename = etl::enable_if_t<etl::is_same<Arg, etl::tuple_element_t<index, tuple_type>>::value && !etl::is_reference<Arg>::value>>
+    void bind(Arg arg)
+    {
+      etl::get<index>(m_args) = arg;
+    }
+
+  private:
+    template<size_t... idx>
+    R execute(etl::index_sequence<idx...>) const
+    {
+      return m_f(etl::get<idx>(m_args)...);
+    }
+
+    fct m_f;
+    tuple_type m_args;
+  };
+#else
   //***************************************************************************
   template<typename>
   class closure;
@@ -151,6 +191,7 @@ namespace etl
     Arg3 m_arg3;
     Arg4 m_arg4;
   };
+#endif
 }
 
 #endif

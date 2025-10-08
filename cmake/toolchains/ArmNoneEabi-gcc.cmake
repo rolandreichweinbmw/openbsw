@@ -7,7 +7,7 @@ set(_C_FLAGS "-funsigned-bitfields")
 set(_CXX_FLAGS "-femit-class-debug-always \
     -funsigned-bitfields")
 
-set(_EXE_LINKER_FLAGS "-specs=nano.specs \
+set(_EXE_LINKER_FLAGS "--verbose -specs=nano.specs \
     -specs=nosys.specs")
 
 include("${CMAKE_CURRENT_LIST_DIR}/ArmNoneEabi.cmake")

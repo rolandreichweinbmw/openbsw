@@ -34,6 +34,8 @@ foreach (var ${_all_vars})
     endif ()
 endforeach ()
 
+set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
+
 project(
     "Eclipse OpenBSW"
     VERSION 0.1.0

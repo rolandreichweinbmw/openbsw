@@ -60,6 +60,7 @@
 
 .text
 .globl customHardFaultHandler
+.type customHardFaultHandler, %function
 
 customHardFaultHandler:
 
@@ -130,4 +131,4 @@ customHardFaultHandler:
     str     R1, [R3]
 
     // Complete HardFault handling
-    b       HardFault_Handler_Final
+//    b       HardFault_Handler_Final

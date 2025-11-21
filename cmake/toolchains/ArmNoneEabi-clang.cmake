@@ -41,7 +41,12 @@ set(_EXE_LINKER_FLAGS
     -L /home/rr/ATfE-21.1.1-Linux-x86_64/lib/clang-runtimes/llvmlibc/arm-none-eabi/armv7m_soft_fpv4_sp_d16_unaligned_size/lib \
     /home/rr/ATfE-21.1.1-Linux-x86_64/lib/clang-runtimes/llvmlibc/arm-none-eabi/armv7m_soft_fpv4_sp_d16_unaligned_size/lib/libclang_rt.builtins.a \
     /home/rr/ATfE-21.1.1-Linux-x86_64/lib/clang-runtimes/llvmlibc/arm-none-eabi/armv7m_soft_fpv4_sp_d16_unaligned_size/lib/libc.a \
+    /home/rr/ATfE-21.1.1-Linux-x86_64/lib/clang-runtimes/llvmlibc/arm-none-eabi/armv7m_soft_fpv4_sp_d16_unaligned_size/lib/libc++.a \
     /home/rr/ATfE-21.1.1-Linux-x86_64/lib/clang-runtimes/llvmlibc/arm-none-eabi/armv7m_soft_fpv4_sp_d16_unaligned_size/lib/libcrt0.a \
+    /home/rr/ATfE-21.1.1-Linux-x86_64/lib/clang-runtimes/llvmlibc/arm-none-eabi/armv7m_soft_fpv4_sp_d16_unaligned_size/lib/libcrt0-semihost.a \
+    /home/rr/ATfE-21.1.1-Linux-x86_64/lib/clang-runtimes/llvmlibc/arm-none-eabi/armv7m_soft_fpv4_sp_d16_unaligned_size/lib/libcrt0-none.a \
+    /home/rr/ATfE-21.1.1-Linux-x86_64/lib/clang-runtimes/llvmlibc/arm-none-eabi/armv7m_soft_fpv4_sp_d16_unaligned_size/lib/libc++abi.a \
+    /home/rr/ATfE-21.1.1-Linux-x86_64/lib/clang-runtimes/llvmlibc/arm-none-eabi/armv7m_soft_fpv4_sp_d16_unaligned_size/lib/libc++experimental.a \
     -nostdlib \
     -Wl,--end-group")
 

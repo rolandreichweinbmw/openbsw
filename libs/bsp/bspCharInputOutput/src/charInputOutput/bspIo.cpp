@@ -43,6 +43,7 @@ int vsnprintf(char* buf, size_t const maxsize, char const* fmt, va_list args)
 
 int vsprintf(char* buf, char const* fmt, va_list args) { return vsprintf_(buf, fmt, args); }
 
+#if 0
 int snprintf(char* buf, size_t maxsize, char const* fmt, ...)
 {
     va_list args;
@@ -51,6 +52,7 @@ int snprintf(char* buf, size_t maxsize, char const* fmt, ...)
     va_end(args);
     return ret;
 }
+#endif
 
 int sprintf(char* buf, char const* fmt, ...)
 {

@@ -29,13 +29,20 @@ set(CMAKE_CXX_COMPILER_TARGET ${CLANG_TARGET_TRIPLE})
 set(CMAKE_ASM_COMPILER_TARGET ${CLANG_TARGET_TRIPLE})
 
 set(CMAKE_SYSROOT
-    "${TOOLCHAIN_PREFIX}/lib/clang-runtimes/${CLANG_TARGET_TRIPLE}/armv7m_soft_fpv4_sp_d16"
+    "${TOOLCHAIN_PREFIX}/lib/clang-runtimes/${CLANG_TARGET_TRIPLE}"
 )
 
+set(_CXX_FLAGS "-nostdlib")
+
 set(_EXE_LINKER_FLAGS
-    "-Wl,--start-group \
-        -ldummyhost \
-        -lclang_rt.builtins \
+    "-v -Wl,--start-group \
+    -L${TOOLCHAIN_PREFIX}/lib/clang-runtimes/${CLANG_TARGET_TRIPLE}/armv7m_soft_fpv4_sp_d16_unaligned_size/lib \
+    -B${TOOLCHAIN_PREFIX}/lib/clang-runtimes/${CLANG_TARGET_TRIPLE}/armv7m_soft_fpv4_sp_d16_unaligned_size/lib \
+    -L /home/rr/ATfE-21.1.1-Linux-x86_64/lib/clang-runtimes/llvmlibc/arm-none-eabi/armv7m_soft_fpv4_sp_d16_unaligned_size/lib \
+    /home/rr/ATfE-21.1.1-Linux-x86_64/lib/clang-runtimes/llvmlibc/arm-none-eabi/armv7m_soft_fpv4_sp_d16_unaligned_size/lib/libclang_rt.builtins.a \
+    /home/rr/ATfE-21.1.1-Linux-x86_64/lib/clang-runtimes/llvmlibc/arm-none-eabi/armv7m_soft_fpv4_sp_d16_unaligned_size/lib/libc.a \
+    /home/rr/ATfE-21.1.1-Linux-x86_64/lib/clang-runtimes/llvmlibc/arm-none-eabi/armv7m_soft_fpv4_sp_d16_unaligned_size/lib/libcrt0.a \
+    -nostdlib \
     -Wl,--end-group")
 
 include("${CMAKE_CURRENT_LIST_DIR}/ArmNoneEabi.cmake")

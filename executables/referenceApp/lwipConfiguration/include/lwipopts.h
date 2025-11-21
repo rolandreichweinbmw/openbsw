@@ -55,6 +55,7 @@
 
 #ifndef LWIP_RAND
 #define LWIP_RAND() rand()
+//#define LWIP_RAND() (1)
 #endif
 
 #ifndef LWIP_AUTOIP_CREATE_SEED_ADDR

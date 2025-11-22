@@ -310,3 +310,10 @@ SafetyTask safetyTask{"safety", safetyStack};
 AsyncContextHook contextHook{runtimeMonitor};
 
 } // namespace app
+
+extern "C" {
+int atexit(void (*)(void))
+{
+    return 0;
+}
+}

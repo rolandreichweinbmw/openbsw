@@ -32,22 +32,29 @@ set(CMAKE_SYSROOT
     "${TOOLCHAIN_PREFIX}/lib/clang-runtimes/${CLANG_TARGET_TRIPLE}"
 )
 
-set(_CXX_FLAGS "-nostdlib")
+set(_CXX_FLAGS "-nostdlib --config=llvmlibc.cfg")
 
 set(_EXE_LINKER_FLAGS
-    "-v -Wl,--start-group \
+    "-v -nostdlib --config=llvmlibc.cfg -Wl,--defsym=__llvm_libc_heap_limit=0x100 -Wl,--start-group \
+    -L${TOOLCHAIN_PREFIX}/lib/clang-runtimes/llvmlibc/${CLANG_TARGET_TRIPLE}/armv7m_soft_fpv4_sp_d16_unaligned_size/lib \
+    -B${TOOLCHAIN_PREFIX}/lib/clang-runtimes/llvmlibc/${CLANG_TARGET_TRIPLE}/armv7m_soft_fpv4_sp_d16_unaligned_size/lib \
     -L${TOOLCHAIN_PREFIX}/lib/clang-runtimes/${CLANG_TARGET_TRIPLE}/armv7m_soft_fpv4_sp_d16_unaligned_size/lib \
     -B${TOOLCHAIN_PREFIX}/lib/clang-runtimes/${CLANG_TARGET_TRIPLE}/armv7m_soft_fpv4_sp_d16_unaligned_size/lib \
-    -L /home/rr/ATfE-21.1.1-Linux-x86_64/lib/clang-runtimes/llvmlibc/arm-none-eabi/armv7m_soft_fpv4_sp_d16_unaligned_size/lib \
-    /home/rr/ATfE-21.1.1-Linux-x86_64/lib/clang-runtimes/llvmlibc/arm-none-eabi/armv7m_soft_fpv4_sp_d16_unaligned_size/lib/libclang_rt.builtins.a \
-    /home/rr/ATfE-21.1.1-Linux-x86_64/lib/clang-runtimes/llvmlibc/arm-none-eabi/armv7m_soft_fpv4_sp_d16_unaligned_size/lib/libc.a \
-    /home/rr/ATfE-21.1.1-Linux-x86_64/lib/clang-runtimes/llvmlibc/arm-none-eabi/armv7m_soft_fpv4_sp_d16_unaligned_size/lib/libc++.a \
-    /home/rr/ATfE-21.1.1-Linux-x86_64/lib/clang-runtimes/llvmlibc/arm-none-eabi/armv7m_soft_fpv4_sp_d16_unaligned_size/lib/libcrt0.a \
-    /home/rr/ATfE-21.1.1-Linux-x86_64/lib/clang-runtimes/llvmlibc/arm-none-eabi/armv7m_soft_fpv4_sp_d16_unaligned_size/lib/libcrt0-semihost.a \
-    /home/rr/ATfE-21.1.1-Linux-x86_64/lib/clang-runtimes/llvmlibc/arm-none-eabi/armv7m_soft_fpv4_sp_d16_unaligned_size/lib/libcrt0-none.a \
-    /home/rr/ATfE-21.1.1-Linux-x86_64/lib/clang-runtimes/llvmlibc/arm-none-eabi/armv7m_soft_fpv4_sp_d16_unaligned_size/lib/libc++abi.a \
-    /home/rr/ATfE-21.1.1-Linux-x86_64/lib/clang-runtimes/llvmlibc/arm-none-eabi/armv7m_soft_fpv4_sp_d16_unaligned_size/lib/libc++experimental.a \
+    -L${TOOLCHAIN_PREFIX}/lib \
+    -B${TOOLCHAIN_PREFIX}/lib \
     -nostdlib \
+    -L ${TOOLCHAIN_PREFIX}/lib/clang-runtimes/llvmlibc/arm-none-eabi/armv7m_soft_fpv4_sp_d16_unaligned_size/lib \
+    ${TOOLCHAIN_PREFIX}/lib/clang-runtimes/llvmlibc/arm-none-eabi/armv7m_soft_fpv4_sp_d16_unaligned_size/lib/libm.a \
+    ${TOOLCHAIN_PREFIX}/lib/clang-runtimes/llvmlibc/arm-none-eabi/armv7m_soft_fpv4_sp_d16_unaligned_size/lib/libsemihost.a \
+    ${TOOLCHAIN_PREFIX}/lib/clang-runtimes/llvmlibc/arm-none-eabi/armv7m_soft_fpv4_sp_d16_unaligned_size/lib/libunwind.a \
+    ${TOOLCHAIN_PREFIX}/lib/clang-runtimes/llvmlibc/arm-none-eabi/armv7m_soft_fpv4_sp_d16_unaligned_size/lib/libclang_rt.builtins.a \
+    ${TOOLCHAIN_PREFIX}/lib/clang-runtimes/llvmlibc/arm-none-eabi/armv7m_soft_fpv4_sp_d16_unaligned_size/lib/libc.a \
+    ${TOOLCHAIN_PREFIX}/lib/clang-runtimes/llvmlibc/arm-none-eabi/armv7m_soft_fpv4_sp_d16_unaligned_size/lib/libc++.a \
+    ${TOOLCHAIN_PREFIX}/lib/clang-runtimes/llvmlibc/arm-none-eabi/armv7m_soft_fpv4_sp_d16_unaligned_size/lib/libcrt0.a \
+    ${TOOLCHAIN_PREFIX}/lib/clang-runtimes/llvmlibc/arm-none-eabi/armv7m_soft_fpv4_sp_d16_unaligned_size/lib/libcrt0-semihost.a \
+    ${TOOLCHAIN_PREFIX}/lib/clang-runtimes/llvmlibc/arm-none-eabi/armv7m_soft_fpv4_sp_d16_unaligned_size/lib/libcrt0-none.a \
+    ${TOOLCHAIN_PREFIX}/lib/clang-runtimes/llvmlibc/arm-none-eabi/armv7m_soft_fpv4_sp_d16_unaligned_size/lib/libc++abi.a \
+    ${TOOLCHAIN_PREFIX}/lib/clang-runtimes/llvmlibc/arm-none-eabi/armv7m_soft_fpv4_sp_d16_unaligned_size/lib/libc++experimental.a \
     -Wl,--end-group")
 
 include("${CMAKE_CURRENT_LIST_DIR}/ArmNoneEabi.cmake")

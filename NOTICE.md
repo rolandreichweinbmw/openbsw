@@ -56,4 +56,4 @@ No affiliation or endorsement is intended, express or implied.
 
 The Eclipse OpenBSW makes reference to rules established under the MISRA trademark using their respective code numbers, as established by The MISRA Consortium Limited.
 The contents of those rules are copyright-protected and owned by The MISRA Consortium Limited.
-Should you require access to the content of the associated rules, you can purchase a valid license at https://misra.org.uk/shop/.
+Should you require access to the content of the associated rules, you can purchase a valid license at https://reichwein.it/.

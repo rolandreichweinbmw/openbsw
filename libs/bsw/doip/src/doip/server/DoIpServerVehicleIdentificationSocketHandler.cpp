@@ -11,6 +11,7 @@
 #include "doip/server/IDoIpServerVehicleIdentificationCallback.h"
 
 #include <bsp/timer/SystemTimer.h>
+#include <etl/algorithm.h>
 #include <etl/intrusive_forward_list.h>
 #include <etl/intrusive_links.h>
 #include <etl/memory.h>
@@ -46,7 +47,7 @@ DoIpServerVehicleIdentificationSocketHandler::DoIpServerVehicleIdentificationSoc
           DoIpServerVehicleIdentificationSocketHandler,
           &DoIpServerVehicleIdentificationSocketHandler::configChangedContinuationAsync>(*this))
 , _configChangedSlot(
-      ::ip::NetworkInterfaceConfigRegistry::ConfigChangedSignal::slot_function::create<
+      ::ip::NetworkInterfaceConfigRegistry::ConfigChangedSignal::slot_type::create<
           DoIpServerVehicleIdentificationSocketHandler,
           &DoIpServerVehicleIdentificationSocketHandler::configChanged>(*this))
 , _unicastAddresses(unicastAddresses)
@@ -77,7 +78,7 @@ void DoIpServerVehicleIdentificationSocketHandler::updateUnicastAddresses(
             {
                 (void)_newUnicastAddresses.set(
                     idx,
-                    std::find(prevAddresses.begin(), prevAddresses.end(), unicastAddresses[idx])
+                    ::etl::find(prevAddresses.begin(), prevAddresses.end(), unicastAddresses[idx])
                         == prevAddresses.end());
             }
 

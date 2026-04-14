@@ -102,7 +102,7 @@ private:
 
     ::etl::vector<SocketHandler, NUM_SERVER_SOCKETS> _socketHandlers;
     ::etl::pool<Socket, NUM_PLAIN_SOCKETS> _sockets;
-    ::ip::NetworkInterfaceConfigRegistry::ConfigChangedSignal::slot _configChangedSlot;
+    ::ip::NetworkInterfaceConfigRegistry::ConfigChangedSignal::slot_type _configChangedSlot;
     ::ip::NetworkInterfaceConfigRegistry& _networkInterfaceConfigRegistry;
     ::doip::IDoIpServerSocketHandlerListener* _listener;
 };
@@ -125,7 +125,7 @@ DoIpServerSocketHandler<
                                                   networkInterfaceConfigRegistry)
 : IDoIpServerSocketHandler()
 , _configChangedSlot(
-      ::ip::NetworkInterfaceConfigRegistry::ConfigChangedSignal::slot_function::
+      ::ip::NetworkInterfaceConfigRegistry::ConfigChangedSignal::slot_type::
           create<DoIpServerSocketHandler, &DoIpServerSocketHandler::configChanged>(*this))
 , _networkInterfaceConfigRegistry(networkInterfaceConfigRegistry)
 , _listener(nullptr)

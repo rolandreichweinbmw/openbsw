@@ -4,10 +4,7 @@
 
 #include "ip/NetworkInterfaceConfig.h"
 
-#include <util/estd/signal.h>
-
-#include <estd/functional.h>
-#include <estd/ordered_map.h>
+#include <etl/signal.h>
 
 namespace ip
 {
@@ -24,7 +21,7 @@ namespace ip
  * Signal type for listening to configuration changes
  */
 using ConfigChangedSignal
-    = ::util::estd::signal<::estd::function<void(uint8_t, NetworkInterfaceConfig const&)>>;
+    = ::etl::signal<void(uint8_t, NetworkInterfaceConfig const&), 2>;
 
 /**
  * Update a configuration for a specific network interface identified by its key.

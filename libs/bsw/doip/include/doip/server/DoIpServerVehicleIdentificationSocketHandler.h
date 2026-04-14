@@ -171,7 +171,7 @@ private:
     IDoIpVehicleAnnouncementListener* _vehicleAnnouncementListener;
     ::async::Function _enqueueInitialBroadcastsUnicastAsync;
     ::async::Function _configChangedContinuationAsync;
-    ::ip::ConfigChangedSignal::slot _configChangedSlot;
+    ::ip::ConfigChangedSignal::slot_type _configChangedSlot;
     ::async::TimeoutType _timeoutTimeout;
     ::etl::intrusive_forward_list<DoIpServerVehicleIdentificationRequest, ::etl::forward_link<0>>
         _pendingRequests;

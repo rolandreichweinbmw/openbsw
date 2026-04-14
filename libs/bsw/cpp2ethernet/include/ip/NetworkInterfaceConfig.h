@@ -5,7 +5,7 @@
 #include "ip/IPAddress.h"
 
 #include <etl/array.h>
-#include <util/estd/signal.h>
+#include <etl/signal.h>
 
 namespace ip
 {
@@ -132,7 +132,7 @@ using NetworkInterfaceConfigKey = uint8_t;
 struct NetworkInterfaceConfigRegistry
 {
     using ConfigChangedSignal
-        = ::util::estd::signal<::estd::function<void(uint8_t, NetworkInterfaceConfig const&)>>;
+        = ::etl::signal<void(uint8_t, NetworkInterfaceConfig const&), 2>;
 
     NetworkInterfaceConfigRegistry(
         ::etl::span<uint8_t const> busIds, ::etl::span<NetworkInterfaceConfig const> configs)

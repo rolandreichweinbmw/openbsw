@@ -219,7 +219,8 @@ void staticInit()
 void run()
 {
     staticInit();
-    etl::print("hello\r\n");
+    volatile long double a1 = 1.23;
+    etl::print("hello {}\r\n", a1);
 #ifdef BUILD_RUST
     etl::print("Hello Rust!\r\n");
     rust_hello_world();

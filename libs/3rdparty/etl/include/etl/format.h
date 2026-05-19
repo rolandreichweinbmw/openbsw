@@ -1447,7 +1447,7 @@ namespace etl
       }
 
       T integral;
-      T fractional = modf(value, &integral);
+      T fractional = ::modf(value, &integral);
 
       // Take absolute values to avoid casting negative values to unsigned
       if (sign)
@@ -1457,7 +1457,7 @@ namespace etl
       }
 
       unsigned long long int scale          = int_pow<unsigned long long int>(10, fractional_decimals);
-      unsigned long long int fractional_int = static_cast<unsigned long long int>(round(fractional * scale));
+      unsigned long long int fractional_int = static_cast<unsigned long long int>(::round(fractional * scale));
       unsigned long long int integral_int   = static_cast<unsigned long long int>(integral);
 
       if (fractional_int == scale)
@@ -1484,20 +1484,20 @@ namespace etl
       bool sign = signbit(value);
 
       T integral;
-      T fractional = modf(value, &integral);
+      T fractional = ::modf(value, &integral);
 
       while (value >= 0x10 || value <= -0x10)
       {
         ++exponent_int;
         value /= 0x10;
-        fractional = modf(value, &integral);
+        fractional = ::modf(value, &integral);
       }
 
       while ((value > 0.0000000000001 && value < 1) || (value < -0.0000000000001 && value > -1))
       {
         --exponent_int;
         value *= 0x10;
-        fractional = modf(value, &integral);
+        fractional = ::modf(value, &integral);
       }
 
       // Take absolute values to avoid casting negative values to unsigned
@@ -1508,7 +1508,7 @@ namespace etl
       }
 
       unsigned long long int scale          = int_pow<unsigned long long int>(0x10, fractional_decimals);
-      unsigned long long int fractional_int = static_cast<unsigned long long int>(round(fractional * scale));
+      unsigned long long int fractional_int = static_cast<unsigned long long int>(::round(fractional * scale));
       unsigned long long int integral_int   = static_cast<unsigned long long int>(integral);
 
       if (fractional_int == scale)
@@ -1572,10 +1572,10 @@ namespace etl
       }
 
       T integral;
-      T fractional = modf(value, &integral);
+      T fractional = ::modf(value, &integral);
 
       unsigned long long int scale          = int_pow<unsigned long long int>(10, fractional_decimals);
-      unsigned long long int fractional_int = static_cast<unsigned long long int>(round(fractional * scale));
+      unsigned long long int fractional_int = static_cast<unsigned long long int>(::round(fractional * scale));
       unsigned long long int integral_int   = static_cast<unsigned long long int>(integral);
 
       if (fractional_int == scale)
@@ -1613,7 +1613,7 @@ namespace etl
       bool sign = signbit(value);
 
       T integral;
-      T fractional = modf(value, &integral);
+      T fractional = ::modf(value, &integral);
 
       // Take absolute values to avoid casting negative values to unsigned
       if (sign)
@@ -1623,7 +1623,7 @@ namespace etl
       }
 
       unsigned long long int scale          = int_pow<unsigned long long int>(10, fractional_decimals);
-      unsigned long long int fractional_int = static_cast<unsigned long long int>(round(fractional * scale));
+      unsigned long long int fractional_int = static_cast<unsigned long long int>(::round(fractional * scale));
       unsigned long long int integral_int   = static_cast<unsigned long long int>(integral);
 
       if (fractional_int == scale)

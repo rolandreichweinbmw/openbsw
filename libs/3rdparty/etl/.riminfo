@@ -1,15 +1,15 @@
-72acaf0dd0fd518cebe8b8bbd71fafabc8a2c960
+3a2078209bc0f70ba33678a4e173a538ba01992e
 
 RIM Info file. You're welcome to read but don't write it.
 Instead, use RIM commands to do the things you want to do.
 BEWARE: Any manual modification will invalidate the file!
 
-remote_url     : https://github.com/ETLCPP/etl.git
-revision_sha1  : 912e22f238b707edc4d47d830f61f922cea79d70
-target_revision: 20.47.1
+remote_url     : https://github.com/rolandreichweinbmw/etl.git
+revision_sha1  : 88a7e99f02a5d9d8b4d154bae391d4615f4d074a
+target_revision: fix-format-big-double
 ignores        : 
-checksum       : 63cd7d58048e3958637b86cc2a0b501643643132
+checksum       : fb53e1a85f0b78162cdff69049392339b1980b8e
 subdir         : 
 
-committer_date : 2026-04-05 14:32:40 +0100
+committer_date : 2026-05-18 09:51:21 +0200
 

@@ -28,7 +28,9 @@ Components
     Wraps a validated blob span and exposes a forward (input) iterator over its configurations. The
     constructor calls ``checkHeader()`` and verifies that the memory region size matches
     ``HEADER_SIZE + size``; on failure it logs an error and yields an empty span. Iteration
-    advances by each configuration's declared size and stops once the span is exhausted.
+    advances by each configuration's declared size and stops once the span is exhausted. The
+    recommended top-level entry point ``load()`` (declared in ``Blob.h``) also lives here: it runs
+    the full validation sequence and returns a CRC-verified blob span (or an empty span on failure).
 
 ``Config``
     Represents a single configuration as a ``type`` and a ``data`` span. ``Config::from_bytes()``
@@ -36,9 +38,9 @@ Components
     inconsistent sizes, and returns a span bounded to the configuration's extent.
 
 ``util``
-    Free functions for higher-level access: ``load()`` performs full validation, ``config()`` looks
-    up the first configuration of a given type, ``checkCrc()`` verifies a configuration's trailing
-    CRC, and the ``loadColumn()`` template safely reinterprets a sized byte run as a typed column.
+    Free helper functions (declared in ``util.h``): ``config()`` looks up the first configuration of
+    a given type, ``checkCrc()`` verifies a configuration's trailing CRC, and the ``loadColumn()``
+    template safely reinterprets a sized byte run as a typed column.
 
 Loading and validation flow
 ---------------------------

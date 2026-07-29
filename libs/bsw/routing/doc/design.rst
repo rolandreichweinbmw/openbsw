@@ -73,3 +73,62 @@ The diagram is generated with:
 .. graphviz:: resources/routing_example.dot
 
 
+
+System context
+--------------
+
+The building-block diagram in the module overview shows the internal components. From an
+architectural point of view it is equally important to see the module in its **system context** —
+the external actors it depends on and the boundaries it must not cross:
+
+.. uml::
+   :align: center
+
+   left to right direction
+
+   [Configuration blob\n(in flash)] as blob
+   [CAN / FlexRay\ndrivers] as bus
+   [Network stack\n(UDP sockets)] as net
+   [Periodic scheduler\n(async context)] as sched
+   [Error handler\n(integrator callback)] as err
+
+   package "routing" {
+     [Integration] as integ
+   }
+
+   blob --> integ : parsed tables (read-only)
+   bus <--> integ : PDUs via SPSC MemoryQueue\n(driver context)
+   net <--> integ : datagrams\n(network context)
+   sched --> integ : route()/send/timeout\n(periodic context)
+   integ --> err : status codes
+
+This context view makes the two critical boundaries explicit: the **flash boundary** (the blob is
+read-only and never copied) and the **context boundary** between the bus driver context and the
+routing/network context, which is crossed only through single-producer/single-consumer queues.
+
+Error handling and reliability
+------------------------------
+
+The module is *fail-operational at the PDU granularity*: a malformed or undeliverable PDU is
+dropped and reported, but never corrupts the pipeline or blocks other PDUs. Errors are surfaced
+through the integrator-supplied ``ErrorHandler`` callback rather than through exceptions or return
+codes on the hot path. The reported status codes are:
+
+.. literalinclude:: ../include/routing/ErrorHandler.h
+   :start-after: STATUS_CODES_BEGIN
+   :end-before: STATUS_CODES_END
+   :language: cpp
+
+Key reliability properties:
+
+* **Bounded, non-blocking degradation.** When an RX allocation fails (queue full), the incoming
+  datagram/frame is discarded and counted; the error is reported only on the first failure of a run
+  to avoid log flooding. Statistics counters (``failedMemAllocPdus``, ``invalidIpAddressPdus``,
+  ``timeoutSends``, ``flushes``, …) are exposed for health monitoring.
+* **Source filtering.** UDP receivers optionally validate the source IP against a configured
+  allow-list before accepting a datagram.
+* **No silent blocking on TX.** The legacy CAN TX path performs no retry; a failed bus write is
+  dropped rather than stalling the router.
+* **Configuration integrity** is a precondition supplied by the ``blob`` module when the integrator
+  passes a span returned by ``blob::load()``. The routing loaders then perform their own
+  table-structure checks before adding channels and routing entries.

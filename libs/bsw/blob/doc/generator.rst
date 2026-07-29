@@ -107,8 +107,8 @@ The ``blob.routing`` subpackage provides an auxiliary CLI for working with routi
 It can sort routings by channel ID, pretty-print them, render a Graphviz ``.dot`` visualization of
 the routing graph, and generate a C++ header containing the routing channel IDs.
 
-Regenerating the referenceApp headers
--------------------------------------
+Regenerating generated headers
+------------------------------
 
 The script ``tools/blob/regenerate.sh`` regenerates all three generated headers.
 It accepts positional arguments so it can be reused by any project that vendors
@@ -118,15 +118,14 @@ this repository:
 
     tools/blob/regenerate.sh JSONL_FILE OUT_BLOB_DIR OUT_ROUTING_DIR
 
-For the reference application, run from the **project root**:
+Run it from the **project root** with paths for the integrating project:
 
 .. code-block:: console
 
-    # Inside the openbsw-development Docker container (deps pre-installed):
     tools/blob/regenerate.sh \
-        executables/referenceApp/configuration/routing.jsonl \
-        executables/referenceApp/configuration/include/blob \
-        executables/referenceApp/configuration/include/routing
+        path/to/routing.jsonl \
+        path/to/generated/blob/include \
+        path/to/generated/routing/include
 
 .. code-block:: console
 
@@ -136,9 +135,9 @@ For the reference application, run from the **project root**:
 
     # Then run, pointing PYTHON at the venv interpreter:
     PYTHON=tools/.venv/bin/python3 tools/blob/regenerate.sh \
-        executables/referenceApp/configuration/routing.jsonl \
-        executables/referenceApp/configuration/include/blob \
-        executables/referenceApp/configuration/include/routing
+        path/to/routing.jsonl \
+        path/to/generated/blob/include \
+        path/to/generated/routing/include
 
 The script resolves all paths to absolute before changing directory internally,
 so relative paths work as long as they are valid from the directory where you
@@ -160,8 +159,8 @@ active or the container's ``/opt/venv`` on ``PATH``):
 .. code-block:: console
 
     cd tools
-    JSONL=../executables/referenceApp/configuration/routing.jsonl
-    OUT=../executables/referenceApp/configuration/include
+    JSONL=../path/to/routing.jsonl
+    OUT=../path/to/generated/include
 
     python3 -m blob binary -i "${JSONL}" -c blob.routing.table \
         | python3 -m blob header data -n CONFIGURATION_BLOB \

@@ -14,9 +14,8 @@
 #include "someip/NetworkChannel.h"
 #include "someip/logger.h"
 
-#include "someip/endian_helpers.h"
-
 #include <etl/algorithm.h>
+#include <etl/unaligned_type.h>
 
 // Logger API uses printf-style varargs for fixed diagnostic messages in this module.
 // NOLINTBEGIN(cppcoreguidelines-pro-type-vararg)
@@ -120,7 +119,7 @@ TpReceiver::TpResult TpReceiver::receive(
         return TpReceiver::TpResult::TP_ERROR;
     }
     ITpTransceiver::TpHeader tpHeader{};
-    ITpTransceiver::parseTpHeader(::someip::endian::read_be<uint32_t>(&payload[0U]), tpHeader);
+    ITpTransceiver::parseTpHeader(::etl::be_uint32_t(&payload[0U]), tpHeader);
 
     if (!tpHeader.hasMoreSegments)
     {

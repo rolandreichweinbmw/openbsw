@@ -13,10 +13,10 @@
 #include "someip/ITpTransceiver.h"
 #include "someip/NetworkChannel.h"
 #include "someip/SomeIpConstants.h"
-#include "someip/endian_helpers.h"
 #include "someip/logger.h"
 
 #include <etl/algorithm.h>
+#include <etl/unaligned_type.h>
 
 namespace someip
 {
@@ -64,8 +64,8 @@ TpSender::TpResult TpSender::send(NetworkChannel& channel, SomeIpMessage const& 
         ITpTransceiver::TpHeader tpHeader{};
         tpHeader.payloadOffset   = static_cast<uint32_t>(payloadOffset);
         tpHeader.hasMoreSegments = ((payloadLeft - chunkLength) > 0U);
-        ::someip::endian::write_be<uint32_t>(
-            &_buffer[packetOffset], ITpTransceiver::serializeTpHeader(tpHeader));
+        ::etl::be_uint32_ext_t{&_buffer[packetOffset]}
+        = ITpTransceiver::serializeTpHeader(tpHeader);
         packetOffset += ITpTransceiver::TP_HEADER_LENGTH;
 
         // copy payload

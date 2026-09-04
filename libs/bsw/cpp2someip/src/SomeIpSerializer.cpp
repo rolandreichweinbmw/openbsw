@@ -30,7 +30,7 @@ void SomeIpSerializer::operator<<(float_t const item)
     {
         // switch to big endian temporarily
         uint32_t const tmp = ::someip::internal::packIEEE754<uint32_t, float_t, 8U>(item);
-        ::someip::endian::write_be<uint32_t>(&_buffer[_currentPos], tmp);
+        ::etl::be_uint32_ext_t{&_buffer[_currentPos]} = tmp;
         _currentPos += 4U;
     }
 }
@@ -44,7 +44,7 @@ void SomeIpSerializer::operator<<(double_t const item)
     if (hasSpace(8))
     {
         uint64_t const tmp = ::someip::internal::packIEEE754<uint64_t, double_t, 11U>(item);
-        ::someip::endian::write_be<uint64_t>(&_buffer[_currentPos], tmp);
+        ::etl::be_uint64_ext_t{&_buffer[_currentPos]} = tmp;
         _currentPos += 8U;
     }
 }

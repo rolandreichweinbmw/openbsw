@@ -13,8 +13,8 @@
 #include "someip/ISomeIpSerializable.h"
 #include "someip/SomeIpStreamer.h"
 
-#include "someip/endian_helpers.h"
 #include <etl/span.h>
+#include <etl/unaligned_type.h>
 
 #include <cstdint>
 
@@ -237,11 +237,11 @@ private:
         {
             if (_bigEndian)
             {
-                item = ::someip::endian::read_be<T>(&_buffer[_currentPos]);
+                item = ::etl::unaligned_type<T, ::etl::endian::big>(&_buffer[_currentPos]);
             }
             else
             {
-                item = ::someip::endian::read_le<T>(&_buffer[_currentPos]);
+                item = ::etl::unaligned_type<T, ::etl::endian::little>(&_buffer[_currentPos]);
             }
             _currentPos += sizeof(T);
         }

@@ -18,10 +18,10 @@
 #include <ip/IPAddress.h>
 #include <ip/to_str.h>
 
-#include "someip/endian_helpers.h"
 #include <etl/algorithm.h>
 #include <etl/error_handler.h>
 #include <etl/span.h>
+#include <etl/unaligned_type.h>
 
 // Logger API uses printf-style varargs for fixed diagnostic messages in this module.
 // NOLINTBEGIN(cppcoreguidelines-pro-type-vararg)
@@ -32,6 +32,14 @@ using ::util::logger::SOMEIP;
 
 namespace
 {
+// ETL has no 24 bit unaligned type, so the SOME/IP-SD TTL field uses the lower 3 bytes of an
+// ::etl::be_uint32_t (same approach as ::uds::PositiveResponse::appendUint24).
+void writeBe24(uint8_t* const ptr, uint32_t const value)
+{
+    auto const be = ::etl::be_uint32_t(value);
+    (void)::etl::copy_n(be.data() + 1, 3U, ptr);
+}
+
 enum class MessageOffset : uint32_t
 {
     // in order of appearance in memory
@@ -71,15 +79,15 @@ using TtlHandling = TtlConstants;
 
 uint32_t getEntriesLength(internal::Message const& message)
 {
-    return ::someip::endian::read_be<uint32_t>(
+    return ::etl::be_uint32_t(
         &message.data[static_cast<uint32_t>(MessageOffset::MESSAGE_OFFSET_LENGTH_OF_ENTRIES)]);
 }
 
 void setEntriesLength(internal::Message& message, uint32_t const length)
 {
-    ::someip::endian::write_be<uint32_t>(
-        &message.data[static_cast<uint32_t>(MessageOffset::MESSAGE_OFFSET_LENGTH_OF_ENTRIES)],
-        length);
+    ::etl::be_uint32_ext_t{
+        &message.data[static_cast<uint32_t>(MessageOffset::MESSAGE_OFFSET_LENGTH_OF_ENTRIES)]}
+    = length;
 }
 
 uint32_t getFreeBytesForEntries(internal::Message const& message)
@@ -92,12 +100,12 @@ uint32_t getFreeBytesForEntries(internal::Message const& message)
 
 uint32_t getOptionsLength(internal::Message const& message)
 {
-    return ::someip::endian::read_be<uint32_t>(&message.data[message.divider]);
+    return ::etl::be_uint32_t(&message.data[message.divider]);
 }
 
 void setOptionsLength(internal::Message& message, uint32_t const length)
 {
-    ::someip::endian::write_be<uint32_t>(&message.data[message.divider], length);
+    ::etl::be_uint32_ext_t{&message.data[message.divider]} = length;
 }
 
 uint32_t getFreeBytesForOptions(internal::Message const& message)
@@ -117,9 +125,9 @@ void writeOption(
     port::type const port,
     proto::type const proto)
 {
-    ::someip::endian::write_be<uint16_t>(&option[0], static_cast<uint16_t>(option.size() - 3U));
-    option[2] = static_cast<uint8_t>(optionType);
-    option[3] = 0U; // reserved
+    ::etl::be_uint16_ext_t{&option[0]} = static_cast<uint16_t>(option.size() - 3U);
+    option[2]                          = static_cast<uint8_t>(optionType);
+    option[3]                          = 0U; // reserved
     option.advance(4);
     switch (optionType)
     {
@@ -145,9 +153,9 @@ void writeOption(
         }
     }
 
-    option[0] = 0U; // reserved
-    option[1] = proto;
-    ::someip::endian::write_be<uint16_t>(&option[2], port);
+    option[0]                          = 0U; // reserved
+    option[1]                          = proto;
+    ::etl::be_uint16_ext_t{&option[2]} = port;
 }
 
 bool findEndpointOption(
@@ -177,8 +185,8 @@ bool findEndpointOption(
     {
         // skip option length
         idx += static_cast<uint32_t>(MessageFieldSize::MESSAGE_FIELD_SIZE_ENDPOINT_OPTION_LENGTH);
-        MessageEndpointOptionType const optionType = static_cast<MessageEndpointOptionType>(
-            ::someip::endian::read_be<uint8_t>(&options[idx]));
+        MessageEndpointOptionType const optionType
+            = static_cast<MessageEndpointOptionType>(options[idx]);
         idx += static_cast<uint32_t>(MessageFieldSize::MESSAGE_FIELD_SIZE_ENDPOINT_OPTION_TYPE)
                + static_cast<uint32_t>(
                    MessageFieldSize::MESSAGE_FIELD_SIZE_ENDPOINT_OPTION_RESERVED1);
@@ -187,8 +195,7 @@ bool findEndpointOption(
             case MessageEndpointOptionType::MESSAGE_ENDPOINT_OPTION_TYPE_IPV4:
             case MessageEndpointOptionType::MESSAGE_ENDPOINT_OPTION_TYPE_MULTICAST_IPV4:
             {
-                writtenIpAddress
-                    = ::ip::make_ip4(::someip::endian::read_be<uint32_t>(&options[idx]));
+                writtenIpAddress = ::ip::make_ip4(::etl::be_uint32_t(&options[idx]));
                 idx += static_cast<uint32_t>(
                            MessageFieldSize::MESSAGE_FIELD_SIZE_ENDPOINT_OPTION_IPV4ADDRESS)
                        + static_cast<uint32_t>(
@@ -215,7 +222,7 @@ bool findEndpointOption(
         }
         auto const writtenProto = options[idx];
         idx += static_cast<uint32_t>(MessageFieldSize::MESSAGE_FIELD_SIZE_ENDPOINT_OPTION_PROTO);
-        auto const writtenPort = ::someip::endian::read_be<uint16_t>(&options[idx]);
+        uint16_t const writtenPort = ::etl::be_uint16_t(&options[idx]);
         idx += static_cast<uint32_t>(
             MessageFieldSize::MESSAGE_FIELD_SIZE_ENDPOINT_OPTION_PORT_NUMBER);
         found = (writtenIpAddress == ipAddress) && (proto == writtenProto) && (port == writtenPort);
@@ -321,14 +328,14 @@ uint16_t measureOption(
 
 void addHeader(internal::Message& message)
 {
-    uint8_t* ptr = &message.data[0U];
-    ::someip::endian::write_be<uint32_t>(ptr, SD_MESSAGE_ID); // message ID
+    uint8_t* ptr                = &message.data[0U];
+    ::etl::be_uint32_ext_t{ptr} = SD_MESSAGE_ID; // message ID
     ptr += sizeof(uint32_t);
-    ::someip::endian::write_be<uint32_t>(ptr, 0); // message length (filled in later)
+    ::etl::be_uint32_ext_t{ptr} = 0U; // message length (filled in later)
     ptr += sizeof(uint32_t);
-    ::someip::endian::write_be<uint32_t>(ptr, 0); // client ID, session ID
+    ::etl::be_uint32_ext_t{ptr} = 0U; // client ID, session ID
     ptr += sizeof(uint32_t);
-    ::someip::endian::write_be<uint32_t>(ptr, 0x01010200U); // versions, message type, return code
+    ::etl::be_uint32_ext_t{ptr} = 0x01010200U; // versions, message type, return code
 }
 
 void writeFlags(internal::Message& message, bool const reboot)
@@ -336,7 +343,7 @@ void writeFlags(internal::Message& message, bool const reboot)
     message.data[static_cast<uint32_t>(MessageOffset::MESSAGE_OFFSET_FLAGS)]
         = static_cast<uint8_t>(SdFlags::SD_FLAG_UNICAST)
           | static_cast<uint8_t>(reboot) * static_cast<uint8_t>(SdFlags::SD_FLAG_REBOOT);
-    ::someip::endian::write_be_24(
+    writeBe24(
         &message.data[static_cast<uint32_t>(MessageOffset::MESSAGE_OFFSET_RESERVED)],
         0U); // reserved
 }
@@ -364,11 +371,11 @@ void writeServiceDescription(
     ttl::type const ttl,
     ttl::type const preserveTtl)
 {
-    ::someip::endian::write_be<uint16_t>(&sdEntry[4], serviceId);
-    ::someip::endian::write_be<uint16_t>(&sdEntry[6], instanceId);
-    sdEntry[8] = majorVersion;
-    ::someip::endian::write_be_24(&sdEntry[9], preserveTtl * ttl);
-    ::someip::endian::write_be<uint32_t>(&sdEntry[12], minorVersion);
+    ::etl::be_uint16_ext_t{&sdEntry[4]} = serviceId;
+    ::etl::be_uint16_ext_t{&sdEntry[6]} = instanceId;
+    sdEntry[8]                          = majorVersion;
+    writeBe24(&sdEntry[9], preserveTtl * ttl);
+    ::etl::be_uint32_ext_t{&sdEntry[12]} = minorVersion;
 }
 
 SdMessageReturnCode writeOffer(
@@ -430,12 +437,12 @@ void writeEventGroupDescription(
     ttl::type const ttl,
     uint32_t const preserveTtl)
 {
-    ::someip::endian::write_be<uint16_t>(&sdEntry[4], serviceId);
-    ::someip::endian::write_be<uint16_t>(&sdEntry[6], instanceId);
-    sdEntry[8] = majorVersion;
-    ::someip::endian::write_be_24(&sdEntry[9], preserveTtl * ttl);
-    ::someip::endian::write_be<uint16_t>(&sdEntry[12], 0U); // reserved
-    ::someip::endian::write_be<uint16_t>(&sdEntry[14], eventGroup);
+    ::etl::be_uint16_ext_t{&sdEntry[4]} = serviceId;
+    ::etl::be_uint16_ext_t{&sdEntry[6]} = instanceId;
+    sdEntry[8]                          = majorVersion;
+    writeBe24(&sdEntry[9], preserveTtl * ttl);
+    ::etl::be_uint16_ext_t{&sdEntry[12]} = 0U; // reserved
+    ::etl::be_uint16_ext_t{&sdEntry[14]} = eventGroup;
 }
 
 SdMessageReturnCode writePublish(
@@ -498,12 +505,12 @@ void writeSubscription(
     ttl::type const ttl,
     uint32_t const preserveTtl)
 {
-    ::someip::endian::write_be<uint16_t>(&sdEntry[4], serviceId);
-    ::someip::endian::write_be<uint16_t>(&sdEntry[6], instanceId);
-    sdEntry[8] = majorVersion;
-    ::someip::endian::write_be_24(&sdEntry[9], preserveTtl * ttl);
-    ::someip::endian::write_be<uint16_t>(&sdEntry[12], static_cast<uint16_t>(minorVersion));
-    ::someip::endian::write_be<uint16_t>(&sdEntry[14], eventGroup);
+    ::etl::be_uint16_ext_t{&sdEntry[4]} = serviceId;
+    ::etl::be_uint16_ext_t{&sdEntry[6]} = instanceId;
+    sdEntry[8]                          = majorVersion;
+    writeBe24(&sdEntry[9], preserveTtl * ttl);
+    ::etl::be_uint16_ext_t{&sdEntry[12]} = static_cast<uint16_t>(minorVersion);
+    ::etl::be_uint16_ext_t{&sdEntry[14]} = eventGroup;
 }
 
 SdMessageReturnCode associateEndpointOption(
@@ -1403,15 +1410,16 @@ SdMessageBuilder::finishMessage(uint16_t const sessionId, bool const reboot)
           + static_cast<uint32_t>(
               static_cast<uint32_t>(MessageFieldSize::MESSAGE_FIELD_SIZE_LENGTH_OF_OPTIONS_ARRAY))
           + getOptionsLength(_message);
-    ::someip::endian::write_be<uint32_t>(
-        &_message.data[static_cast<uint32_t>(MessageOffset::MESSAGE_OFFSET_LENGTH)],
-        messageLength
-            - (static_cast<uint32_t>(MessageFieldSize::MESSAGE_FIELD_SIZE_LENGTH)
-               + static_cast<uint32_t>(MessageFieldSize::MESSAGE_FIELD_SIZE_MESSAGE_ID)));
+    ::etl::be_uint32_ext_t{
+        &_message.data[static_cast<uint32_t>(MessageOffset::MESSAGE_OFFSET_LENGTH)]}
+    = messageLength
+      - (static_cast<uint32_t>(MessageFieldSize::MESSAGE_FIELD_SIZE_LENGTH)
+         + static_cast<uint32_t>(MessageFieldSize::MESSAGE_FIELD_SIZE_MESSAGE_ID));
 
     // update session id
-    ::someip::endian::write_be<uint32_t>(
-        &_message.data[static_cast<uint32_t>(MessageOffset::MESSAGE_OFFSET_REQUEST_ID)], sessionId);
+    ::etl::be_uint32_ext_t{
+        &_message.data[static_cast<uint32_t>(MessageOffset::MESSAGE_OFFSET_REQUEST_ID)]}
+    = sessionId;
 
     auto const fullMessage = _message.data.first(messageLength);
     _message.data          = decltype(_message.data){};

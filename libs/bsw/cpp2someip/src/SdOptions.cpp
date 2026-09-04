@@ -11,7 +11,7 @@
 #include "someip/SdOptions.h"
 #include "someip/SdConstants.h"
 
-#include "someip/endian_helpers.h"
+#include <etl/unaligned_type.h>
 
 namespace someip
 {
@@ -24,7 +24,7 @@ bool SdOptions::init(::etl::span<uint8_t const> const& payload, size_t const ent
         return false;
     }
 
-    auto const optionsLength = ::someip::endian::read_be<uint32_t>(&payload[optionsLengthOffset]);
+    uint32_t const optionsLength = ::etl::be_uint32_t(&payload[optionsLengthOffset]);
     if ((optionsLengthOffset + static_cast<uint16_t>(SdConstants::SD_OPTIONS_LENGTH_FIELD_LENGTH)
          + optionsLength)
         > payload.size())

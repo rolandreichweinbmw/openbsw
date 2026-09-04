@@ -19,7 +19,8 @@
 
 #include <ip/IPAddress.h>
 
-#include "someip/endian_helpers.h"
+#include <etl/algorithm.h>
+#include <etl/unaligned_type.h>
 
 // Logger API uses printf-style varargs for fixed diagnostic messages in this module.
 // NOLINTBEGIN(cppcoreguidelines-pro-type-vararg)
@@ -30,6 +31,15 @@ using ::util::logger::SOMEIP;
 
 namespace
 {
+// ETL has no 24 bit unaligned type, so the SOME/IP-SD TTL field uses the lower 3 bytes of an
+// ::etl::be_uint32_t (same approach as ::uds::PositiveResponse::appendUint24).
+uint32_t readBe24(uint8_t const* const ptr)
+{
+    ::etl::be_uint32_t be(static_cast<uint32_t>(0));
+    (void)::etl::copy_n(ptr, 3U, be.data() + 1);
+    return be;
+}
+
 SdEndpoint searchIPMulticastOption(SdOptions const& options)
 {
     uint8_t numUdpOptions = 0U;
@@ -186,7 +196,7 @@ bool SdMessageParser::parseMessage(
     bool const sdFlagUnicast = ((flags & static_cast<uint8_t>(SdFlags::SD_FLAG_UNICAST)) != 0U);
     offset += static_cast<uint16_t>(SdConstants::SD_ENTRIES_LENGTH_OFFSET);
 
-    uint32_t const entriesLength = ::someip::endian::read_be<uint32_t>(&payload[offset]);
+    uint32_t const entriesLength = ::etl::be_uint32_t(&payload[offset]);
     if (payload.size() < (offset + static_cast<size_t>(entriesLength)))
     {
         return false;
@@ -225,20 +235,19 @@ bool SdMessageParser::parseEntry(
     SdOptions& options)
 {
     uint8_t const entryType = entry[static_cast<uint16_t>(SdConstants::SD_ENTRY_TYPE_OFFSET)];
-    service_id::type const serviceId = ::someip::endian::read_be<uint16_t>(
-        &entry[static_cast<uint16_t>(SdConstants::SD_SERVICE_ID_OFFSET)]);
-    instance_id::type const instanceId = ::someip::endian::read_be<uint16_t>(
-        &entry[static_cast<uint16_t>(SdConstants::SD_INSTANCE_ID_OFFSET)]);
+    service_id::type const serviceId
+        = ::etl::be_uint16_t(&entry[static_cast<uint16_t>(SdConstants::SD_SERVICE_ID_OFFSET)]);
+    instance_id::type const instanceId
+        = ::etl::be_uint16_t(&entry[static_cast<uint16_t>(SdConstants::SD_INSTANCE_ID_OFFSET)]);
     major_version::type const majorVersion
         = entry[static_cast<uint16_t>(SdConstants::SD_MAJOR_VERSION_OFFSET)];
-    ttl::type const ttl
-        = ::someip::endian::read_be_24(&entry[static_cast<uint16_t>(SdConstants::SD_TTL_OFFSET)]);
-    minor_version::type const minorVersion = ::someip::endian::read_be<uint32_t>(
-        &entry[static_cast<uint16_t>(SdConstants::SD_MINOR_VERSION_OFFSET)]);
-    uint16_t const reserved = ::someip::endian::read_be<uint16_t>(
-        &entry[static_cast<uint16_t>(SdConstants::SD_RESERVED_OFFSET)]);
-    eventgroup_id::type const eventgroup = ::someip::endian::read_be<uint16_t>(
-        &entry[static_cast<uint16_t>(SdConstants::SD_EVENTGROUP_OFFSET)]);
+    ttl::type const ttl = readBe24(&entry[static_cast<uint16_t>(SdConstants::SD_TTL_OFFSET)]);
+    minor_version::type const minorVersion
+        = ::etl::be_uint32_t(&entry[static_cast<uint16_t>(SdConstants::SD_MINOR_VERSION_OFFSET)]);
+    uint16_t const reserved
+        = ::etl::be_uint16_t(&entry[static_cast<uint16_t>(SdConstants::SD_RESERVED_OFFSET)]);
+    eventgroup_id::type const eventgroup
+        = ::etl::be_uint16_t(&entry[static_cast<uint16_t>(SdConstants::SD_EVENTGROUP_OFFSET)]);
 
     // A SUBSCRIBE might contain invalid service or event group which we have to reject with Nack!
     if ((ENTRY_TYPE_SUBSCRIBE != entryType)

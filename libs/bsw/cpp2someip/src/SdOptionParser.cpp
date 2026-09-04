@@ -17,7 +17,7 @@
 
 #include <ip/IPAddress.h>
 
-#include "someip/endian_helpers.h"
+#include <etl/unaligned_type.h>
 
 // Logger API uses printf-style varargs for fixed diagnostic messages in this module.
 // NOLINTBEGIN(cppcoreguidelines-pro-type-vararg)
@@ -92,7 +92,7 @@ parseIpOptionType(::etl::span<uint8_t const> const buffer, uint16_t offset, uint
 
     uint8_t const proto = buffer[offset];
     offset++;
-    auto const port = ::someip::endian::read_be<uint16_t>(buffer.data() + offset);
+    uint16_t const port = ::etl::be_uint16_t(buffer.data() + offset);
 
     return SdEndpoint(ipAddr, port, proto);
 }
@@ -111,7 +111,7 @@ bool goToOption(
         {
             return false;
         }
-        auto const optionLength = ::someip::endian::read_be<uint16_t>(option);
+        uint16_t const optionLength = ::etl::be_uint16_t(option);
         if ((optionsLength - offset)
             < (static_cast<uint32_t>(optionLength)
                + static_cast<uint32_t>(SdConstants::SD_OPTION_LENGTH_FIELD_LENGTH)
@@ -146,7 +146,7 @@ bool searchOptions(
             return false;
         }
 
-        auto const optionLength = ::someip::endian::read_be<uint16_t>(option);
+        uint16_t const optionLength = ::etl::be_uint16_t(option);
         if ((optionsLength - offset)
             < (static_cast<uint32_t>(optionLength)
                + static_cast<uint32_t>(SdConstants::SD_OPTION_LENGTH_FIELD_LENGTH)

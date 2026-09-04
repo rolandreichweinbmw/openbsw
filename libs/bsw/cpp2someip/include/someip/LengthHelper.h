@@ -13,8 +13,8 @@
 #include "someip/SomeIpParser.h"
 #include "someip/SomeIpSerializer.h"
 
-#include "someip/endian_helpers.h"
 #include <etl/span.h>
+#include <etl/unaligned_type.h>
 
 namespace someip
 {
@@ -34,8 +34,8 @@ public:
         if (lengthBuffer.size() == sizeof(LENGTH_TYPE))
         {
             size_t const totalBytesWritten = serializer.getCurrentPosition() - writingStartPos;
-            ::someip::endian::write_be<LENGTH_TYPE>(
-                lengthBuffer.data(), static_cast<LENGTH_TYPE>(totalBytesWritten));
+            ::etl::unaligned_type_ext<LENGTH_TYPE, ::etl::endian::big>{lengthBuffer.data()}
+            = static_cast<LENGTH_TYPE>(totalBytesWritten);
         }
     }
 

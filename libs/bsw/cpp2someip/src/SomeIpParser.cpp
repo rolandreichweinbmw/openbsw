@@ -62,7 +62,7 @@ void SomeIpParser::operator>>(float_t& item)
     }
     if (hasSpace(4))
     {
-        uint32_t const bits = ::someip::endian::read_be<uint32_t>(&_buffer[_currentPos]);
+        uint32_t const bits = ::etl::be_uint32_t(&_buffer[_currentPos]);
         item                = ::someip::internal::unpackIEEE754<float_t, uint32_t, 8U>(bits);
         _currentPos += 4U;
     }
@@ -78,7 +78,7 @@ void SomeIpParser::operator>>(double_t& item)
     {
         if (hasSpace(sizeof(item)))
         {
-            uint64_t const bits = ::someip::endian::read_be<uint64_t>(&_buffer[_currentPos]);
+            uint64_t const bits = ::etl::be_uint64_t(&_buffer[_currentPos]);
             item                = ::someip::internal::unpackIEEE754<double_t, uint64_t, 11U>(bits);
             _currentPos += 8U;
         }

@@ -11,10 +11,10 @@
 #include "someip/SomeIpMessage.h"
 
 #include "someip/SomeIpConstants.h"
-#include "someip/endian_helpers.h"
 
 #include <etl/algorithm.h>
 #include <etl/array.h>
+#include <etl/unaligned_type.h>
 #include <util/meta/Bitmask.h>
 
 namespace someip
@@ -62,7 +62,7 @@ namespace
 
 uint32_t readLength(::etl::span<uint8_t const> const& messageBuffer)
 {
-    return ::someip::endian::read_be<uint32_t>(&messageBuffer[SomeIpMessage::OFFSET_LENGTH]);
+    return ::etl::be_uint32_t(&messageBuffer[SomeIpMessage::OFFSET_LENGTH]);
 }
 
 uint32_t readTotalLength(::etl::span<uint8_t const> const& messageBuffer)
@@ -101,47 +101,47 @@ uint8_t* SomeIpMessage::getPayload()
 
 uint32_t SomeIpMessage::getMessageId() const
 {
-    return ::someip::endian::read_be<uint32_t>(&_buffer[OFFSET_MESSAGE_ID]);
+    return ::etl::be_uint32_t(&_buffer[OFFSET_MESSAGE_ID]);
 }
 
 void SomeIpMessage::setMessageId(uint32_t const messageId)
 {
-    ::someip::endian::write_be<uint32_t>(&_buffer[OFFSET_MESSAGE_ID], messageId);
+    ::etl::be_uint32_ext_t{&_buffer[OFFSET_MESSAGE_ID]} = messageId;
 }
 
 service_id::type SomeIpMessage::getServiceId() const
 {
-    return ::someip::endian::read_be<uint16_t>(&_buffer[OFFSET_SERVICE_ID]);
+    return ::etl::be_uint16_t(&_buffer[OFFSET_SERVICE_ID]);
 }
 
 void SomeIpMessage::setServiceId(service_id::type const serviceId)
 {
-    ::someip::endian::write_be<uint16_t>(&_buffer[OFFSET_SERVICE_ID], serviceId);
+    ::etl::be_uint16_ext_t{&_buffer[OFFSET_SERVICE_ID]} = serviceId;
 }
 
 uint16_t SomeIpMessage::getMethodId() const
 {
-    return ::someip::endian::read_be<uint16_t>(&_buffer[OFFSET_METHOD_ID]);
+    return ::etl::be_uint16_t(&_buffer[OFFSET_METHOD_ID]);
 }
 
 void SomeIpMessage::setMethodId(uint16_t const methodId)
 {
-    ::someip::endian::write_be<uint16_t>(&_buffer[OFFSET_METHOD_ID], methodId);
+    ::etl::be_uint16_ext_t{&_buffer[OFFSET_METHOD_ID]} = methodId;
 }
 
 void SomeIpMessage::setLength(uint32_t const length)
 {
-    ::someip::endian::write_be<uint32_t>(&_buffer[OFFSET_LENGTH], length);
+    ::etl::be_uint32_ext_t{&_buffer[OFFSET_LENGTH]} = length;
 }
 
 uint32_t SomeIpMessage::getRequestId() const
 {
-    return ::someip::endian::read_be<uint32_t>(&_buffer[OFFSET_REQUEST_ID]);
+    return ::etl::be_uint32_t(&_buffer[OFFSET_REQUEST_ID]);
 }
 
 void SomeIpMessage::setRequestId(uint32_t const requestId)
 {
-    ::someip::endian::write_be<uint32_t>(&_buffer[OFFSET_REQUEST_ID], requestId);
+    ::etl::be_uint32_ext_t{&_buffer[OFFSET_REQUEST_ID]} = requestId;
 }
 
 uint16_t SomeIpMessage::getClientId() const

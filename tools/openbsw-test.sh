@@ -41,6 +41,26 @@ cmake --build --preset nucleo-g474re-freertos-gcc --verbose -j $CORES
 fi
 fi
 
+if [[ "$TARGET" = "" || "$TARGET" = "pi" ]] ; then
+# Pi Pico
+CC=$MY_CC \
+CXX=$MY_CXX \
+cmake -B build/pipico -S . \
+  -DBUILD_EXECUTABLE=referenceApp -DBUILD_TARGET_PLATFORM=PIPICO \
+  --toolchain cmake/toolchains/ArmNoneEabi-gcc.cmake
+cmake --build build/pipico --target app.referenceApp -j $CORES
+fi
+
+if [[ "$TARGET" = "" || "$TARGET" = "pi-clang" ]] ; then
+# Pi Pico
+CC=$MY_CLANG \
+CXX=$MY_CLANGXX \
+cmake -B build/pipico-clang -S . \
+  -DBUILD_EXECUTABLE=referenceApp -DBUILD_TARGET_PLATFORM=PIPICO \
+  --toolchain cmake/toolchains/ArmNoneEabi-clang.cmake
+cmake --build build/pipico-clang --target app.referenceApp -j $CORES
+fi
+
 if [[ "$TARGET" = "" || "$TARGET" == "s32" ]] ; then
 echo "Building S32K148 ..."
 #CC=/home/rr/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-gcc \

@@ -77,7 +77,22 @@ EXPECTED_CF01_PAYLOAD = (
     "62 cf 01 01 02 00 02 22 02 16 0f 01 00 00 6d 2f 00 00 01 06 00 00 8f e0 00 00 01"
 )
 
-DEFAULT_REQUEST_TIMEOUT_S = 3.0
+# UDS timing budgets.
+#
+# udsoncan applies `request_timeout` as a *global* wall-clock budget for the
+# whole request, independent of p2/p2_star. It must therefore bound the P2*
+# budget it contains - if it is smaller, the global timer always fires first
+# and p2_timeout / p2_star_timeout can never take effect. That mismatch shows
+# up as intermittent "Global request timeout time has expired" failures on
+# loaded CI runners rather than as a clean P2 timeout.
+DEFAULT_P2_TIMEOUT_S = 2.0
+DEFAULT_P2_STAR_TIMEOUT_S = 5.0
+DEFAULT_REQUEST_TIMEOUT_S = DEFAULT_P2_STAR_TIMEOUT_S + 2.0
+
+assert DEFAULT_REQUEST_TIMEOUT_S > DEFAULT_P2_STAR_TIMEOUT_S, (
+    "global request timeout must bound the P2* budget it contains"
+)
+
 ECU_READY_RETRIES = 12
 ECU_READY_DELAY_S = 0.5
 
@@ -435,8 +450,8 @@ class UdsClientFactory:
                 "exception_on_negative_response": True,
                 "exception_on_invalid_response": True,
                 "exception_on_unexpected_response": True,
-                "p2_timeout": 5.0,
-                "p2_star_timeout": 5.0,
+                "p2_timeout": DEFAULT_P2_TIMEOUT_S,
+                "p2_star_timeout": DEFAULT_P2_STAR_TIMEOUT_S,
             },
         )
         # Do NOT call client.open() here. connection.open() already started

@@ -73,6 +73,7 @@ from udsoncan.exceptions import TimeoutException
 from conftest import (
     SUPPORTED_DID,
     EXPECTED_CF01_PAYLOAD,
+    DEFAULT_REQUEST_TIMEOUT_S,
     EA_RX_ID,
     EA_TX_ID,
     EA_NL_TA,
@@ -643,21 +644,41 @@ class TestGatewayAdversarial:
             ),
         ]
 
+        # The legs share one CAN bus, so arbitration and the per-leg flow
+        # control handshakes serialize them. Scale the per-request budget
+        # with the concurrency level instead of using the single-transfer
+        # default, which a burst can legitimately exceed without any
+        # dispatcher fault.
+        burst_timeout = DEFAULT_REQUEST_TIMEOUT_S * len(legs)
+
+        # Probe readiness before any thread starts. Doing it inside the
+        # threads would let one slow-to-answer leg delay the barrier release
+        # for every other leg and eat into their request budget.
+        clients = {}
+        for name, txid, rxid, target_address in legs:
+            client = uds_client_factory.create(
+                txid, rxid, target_address=target_address, timeout=burst_timeout
+            )
+            clients[name] = client
+            assert wait_for_ecu_ready(client), f"{name}: ECU not ready"
+
         barrier = threading.Barrier(len(legs))
         results = {}
+        elapsed = {}
 
         def _do_transfer(name, txid, rxid, target_address):
-            client = uds_client_factory.create(
-                txid, rxid, target_address=target_address
-            )
+            client = clients[name]
             try:
-                assert wait_for_ecu_ready(client), f"{name}: ECU not ready"
                 client.empty_rxqueue()
 
                 # Synchronize release so all requests hit the bus in the
                 # same window, rather than merely overlapping.
-                barrier.wait(timeout=5.0)
-                resp = client.send_request(req)
+                barrier.wait(timeout=burst_timeout)
+                started = time.monotonic()
+                try:
+                    resp = client.send_request(req)
+                finally:
+                    elapsed[name] = time.monotonic() - started
 
                 assert resp.valid, f"{name}: invalid response"
                 assert hexlify(resp.get_payload()) == EXPECTED_CF01_PAYLOAD, (
@@ -665,20 +686,31 @@ class TestGatewayAdversarial:
                 )
             except BaseException as exc:  # noqa: BLE001 - captured for join
                 results[name] = exc
-            finally:
-                client.close()
 
         threads = [
             threading.Thread(target=_do_transfer, args=leg) for leg in legs
         ]
-        for t in threads:
-            t.start()
-        for t in threads:
-            t.join(timeout=8.0)
+        try:
+            for t in threads:
+                t.start()
+            for t in threads:
+                t.join(timeout=burst_timeout + 1.0)
 
-        for t, (name, *_rest) in zip(threads, legs):
-            assert not t.is_alive(), f"{name}: transfer did not finish in time"
+            for t, (name, *_rest) in zip(threads, legs):
+                assert not t.is_alive(), f"{name}: transfer did not finish in time"
+        finally:
+            for client in clients.values():
+                client.close()
 
         if results:
-            failures = "\n".join(f"{k}: {v}" for k, v in results.items())
-            pytest.fail(f"Concurrent burst failures:\n{failures}")
+            failures = "\n".join(
+                f"{name}: {exc} (after {elapsed.get(name, float('nan')):.3f}s "
+                f"of a {burst_timeout:.3f}s budget)"
+                for name, exc in results.items()
+            )
+            timings = ", ".join(
+                f"{name}={elapsed[name]:.3f}s" for name in sorted(elapsed)
+            )
+            pytest.fail(
+                f"Concurrent burst failures:\n{failures}\nAll legs: {timings}"
+            )

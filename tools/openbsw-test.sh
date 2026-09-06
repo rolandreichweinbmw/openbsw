@@ -4,22 +4,40 @@ TARGET=$1
 
 set -e
 
-CORES=8
+CORES=$(nproc)
 
 #export CC=clang
 #export CXX=clang++
 #export CPP_STANDARD=17
 export CPP_STANDARD=17
 
+#export MY_CC=arm-none-eabi-gcc
+#export MY_CXX=arm-none-eabi-g++
+if [ -e /home/ernie ] ; then
+
+export MY_CC=/usr/local/arm-gnu-toolchain-14.3.rel1-x86_64-arm-none-eabi/bin/arm-none-eabi-gcc
+export MY_CXX=/usr/local/arm-gnu-toolchain-14.3.rel1-x86_64-arm-none-eabi/bin/arm-none-eabi-g++
+export MY_CLANG=/home/ernie/llvm-arm/bin/clang
+export MY_CLANGXX=/home/ernie/llvm-arm/bin/clang++
+
+else
+
+export MY_CC=/home/rr/arm-gnu-toolchain-14.3.rel1-x86_64-arm-none-eabi/bin/arm-none-eabi-gcc
+export MY_CXX=/home/rr/arm-gnu-toolchain-14.3.rel1-x86_64-arm-none-eabi/bin/arm-none-eabi-g++
+export MY_CLANG=/home/rr/llvm-arm/bin/clang
+export MY_CLANGXX=/home/rr/llvm-arm/bin/clang++
+
+fi
+
 if false ; then
 if [[ "$TARGET" = "" || "$TARGET" == "stm32" ]] ; then
 echo "Building STM32 NUCLEO ..."
 #CC=/home/rr/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-gcc \
 #CXX=/home/rr/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-g++
-CC=/home/rr/arm-gnu-toolchain-14.3.rel1-x86_64-arm-none-eabi/bin/arm-none-eabi-gcc \
-CXX=/home/rr/arm-gnu-toolchain-14.3.rel1-x86_64-arm-none-eabi/bin/arm-none-eabi-g++ \
+CC=$MY_CC \
+CXX=$MY_CXX \
 cmake --preset nucleo-g474re-freertos-gcc -DCMAKE_CXX_STANDARD=$CPP_STANDARD
-cmake --build --preset nucleo-g474re-freertos-gcc --verbose
+cmake --build --preset nucleo-g474re-freertos-gcc --verbose -j $CORES
 fi
 fi
 
@@ -27,10 +45,10 @@ if [[ "$TARGET" = "" || "$TARGET" == "s32" ]] ; then
 echo "Building S32K148 ..."
 #CC=/home/rr/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-gcc \
 #CXX=/home/rr/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-g++
-CC=/home/rr/arm-gnu-toolchain-14.3.rel1-x86_64-arm-none-eabi/bin/arm-none-eabi-gcc \
-CXX=/home/rr/arm-gnu-toolchain-14.3.rel1-x86_64-arm-none-eabi/bin/arm-none-eabi-g++ \
+CC=$MY_CC \
+CXX=$MY_CXX \
 cmake --preset s32k148-freertos-gcc -DCMAKE_CXX_STANDARD=$CPP_STANDARD
-cmake --build --preset s32k148-freertos-gcc --verbose
+cmake --build --preset s32k148-freertos-gcc --verbose -j $CORES
 fi
 
 if [[ "$TARGET" = "" || "$TARGET" == "s32-clang" ]] ; then
@@ -39,26 +57,26 @@ echo "Building S32K148 clang ..."
 #CXX=/home/rr/LLVM-ET-Arm-19.1.5-Linux-x86_64/bin/clang++
 #CC=/home/rr/ATfE-21.1.1-Linux-x86_64/bin/clang \
 #CXX=/home/rr/ATfE-21.1.1-Linux-x86_64/bin/clang++ \
-CC=/home/rr/llvm-arm/bin/clang \
-CXX=/home/rr/llvm-arm/bin/clang++ \
+CC=$MY_CLANG \
+CXX=$MY_CLANGXX \
 cmake --preset s32k148-freertos-clang -DCMAKE_CXX_STANDARD=$CPP_STANDARD
-cmake --build --preset s32k148-freertos-clang --verbose
+cmake --build --preset s32k148-freertos-clang --verbose -j $CORES
 fi
 
 if [[ "$TARGET" = "" || "$TARGET" == "s32-threadx" ]] ; then
 echo "Building S32K148 threadx ..."
-CC=/home/rr/arm-gnu-toolchain-14.3.rel1-x86_64-arm-none-eabi/bin/arm-none-eabi-gcc \
-CXX=/home/rr/arm-gnu-toolchain-14.3.rel1-x86_64-arm-none-eabi/bin/arm-none-eabi-g++ \
+CC=$MY_CC \
+CXX=$MY_CXX \
 cmake --preset s32k148-threadx-gcc -DCMAKE_CXX_STANDARD=$CPP_STANDARD
-cmake --build --preset s32k148-threadx-gcc --verbose
+cmake --build --preset s32k148-threadx-gcc --verbose -j $CORES
 fi
 
 if [[ "$TARGET" = "" || "$TARGET" == "s32-threadx-clang" ]] ; then
 echo "Building S32K148 threadx clang ..."
-CC=/home/rr/llvm-arm/bin/clang \
-CXX=/home/rr/llvm-arm/bin/clang++ \
+CC=$MY_CLANG \
+CXX=$MY_CLANGXX \
 cmake --preset s32k148-threadx-clang -DCMAKE_CXX_STANDARD=$CPP_STANDARD
-cmake --build --preset s32k148-threadx-clang --verbose
+cmake --build --preset s32k148-threadx-clang --verbose -j $CORES
 fi
 
 if [[ "$TARGET" = "" || "$TARGET" == "posix" ]] ; then
@@ -89,7 +107,7 @@ for i in posix s32k1xx ; do
 CC=clang \
 CXX=clang++ \
 cmake --preset tests-$i-debug -DCMAKE_CXX_STANDARD=$CPP_STANDARD
-cmake --build --preset tests-$i-debug --verbose
+cmake --build --preset tests-$i-debug --verbose -j $CORES
 ctest --preset tests-$i-debug --parallel
 done
 fi

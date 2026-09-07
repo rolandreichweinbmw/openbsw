@@ -45,20 +45,64 @@ if [[ "$TARGET" = "" || "$TARGET" = "pi" ]] ; then
 # Pi Pico
 CC=$MY_CC \
 CXX=$MY_CXX \
-cmake -B build/pipico -S . \
-  -DBUILD_EXECUTABLE=referenceApp -DBUILD_TARGET_PLATFORM=PIPICO \
-  --toolchain cmake/toolchains/ArmNoneEabi-gcc.cmake
-cmake --build build/pipico --target app.referenceApp -j $CORES
+cmake --preset pipico-freertos-gcc -DCMAKE_CXX_STANDARD=$CPP_STANDARD
+cmake --build --preset pipico-freertos-gcc --verbose -j $CORES
 fi
 
 if [[ "$TARGET" = "" || "$TARGET" = "pi-clang" ]] ; then
 # Pi Pico
 CC=$MY_CLANG \
 CXX=$MY_CLANGXX \
-cmake -B build/pipico-clang -S . \
-  -DBUILD_EXECUTABLE=referenceApp -DBUILD_TARGET_PLATFORM=PIPICO \
-  --toolchain cmake/toolchains/ArmNoneEabi-clang.cmake
-cmake --build build/pipico-clang --target app.referenceApp -j $CORES
+cmake --preset pipico-freertos-clang -DCMAKE_CXX_STANDARD=$CPP_STANDARD
+cmake --build --preset pipico-freertos-clang --verbose -j $CORES
+fi
+
+if [[ "$TARGET" = "" || "$TARGET" = "pi-threadx" ]] ; then
+# Pi Pico
+CC=$MY_CC \
+CXX=$MY_CXX \
+cmake --preset pipico-threadx-gcc -DCMAKE_CXX_STANDARD=$CPP_STANDARD
+cmake --build --preset pipico-threadx-gcc --verbose -j $CORES
+fi
+
+if [[ "$TARGET" = "" || "$TARGET" = "pi-threadx-clang" ]] ; then
+# Pi Pico
+CC=$MY_CLANG \
+CXX=$MY_CLANGXX \
+cmake --preset pipico-threadx-clang -DCMAKE_CXX_STANDARD=$CPP_STANDARD
+cmake --build --preset pipico-threadx-clang --verbose -j $CORES
+fi
+
+if [[ "$TARGET" = "" || "$TARGET" = "pi2" ]] ; then
+# Pi Pico
+CC=$MY_CC \
+CXX=$MY_CXX \
+cmake --preset pico2-freertos-gcc -DCMAKE_CXX_STANDARD=$CPP_STANDARD
+cmake --build --preset pico2-freertos-gcc --verbose -j $CORES
+fi
+
+if [[ "$TARGET" = "" || "$TARGET" = "pi2-clang" ]] ; then
+# Pi Pico
+CC=$MY_CLANG \
+CXX=$MY_CLANGXX \
+cmake --preset pico2-freertos-clang -DCMAKE_CXX_STANDARD=$CPP_STANDARD
+cmake --build --preset pico2-freertos-clang --verbose -j $CORES
+fi
+
+if [[ "$TARGET" = "" || "$TARGET" = "pi2-threadx" ]] ; then
+# Pi Pico
+CC=$MY_CC \
+CXX=$MY_CXX \
+cmake --preset pico2-threadx-gcc -DCMAKE_CXX_STANDARD=$CPP_STANDARD
+cmake --build --preset pico2-threadx-gcc --verbose -j $CORES
+fi
+
+if [[ "$TARGET" = "" || "$TARGET" = "pi2-threadx-clang" ]] ; then
+# Pi Pico
+CC=$MY_CLANG \
+CXX=$MY_CLANGXX \
+cmake --preset pico2-threadx-clang -DCMAKE_CXX_STANDARD=$CPP_STANDARD
+cmake --build --preset pico2-threadx-clang --verbose -j $CORES
 fi
 
 if [[ "$TARGET" = "" || "$TARGET" == "s32" ]] ; then

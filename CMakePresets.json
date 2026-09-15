@@ -128,6 +128,50 @@
             }
         },
         {
+            "name": "nucleo-g474re-freertos-clang",
+            "generator": "Ninja Multi-Config",
+            "displayName": "NUCLEO-G474RE FreeRTOS configuration (Clang)",
+            "description": "Configure for NUCLEO-G474RE platform with FreeRTOS using ARM Clang toolchain",
+            "inherits": "_config-base",
+            "toolchainFile": "${sourceDir}/cmake/toolchains/ArmNoneEabi-clang.cmake",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": {
+                "BUILD_EXECUTABLE": "referenceApp",
+                "BUILD_TARGET_PLATFORM": "NUCLEO_G474RE",
+                "BUILD_TARGET_RTOS": "FREERTOS",
+                "STM32_CHIP": "STM32G474RE",
+                "CMAKE_ASM_FLAGS_RELWITHDEBINFO": "-g3",
+                "CMAKE_CONFIGURATION_TYPES": "RelWithDebInfo;Debug;Release",
+                "CMAKE_C_FLAGS_RELEASE": "-Os -DNDEBUG",
+                "CMAKE_CXX_FLAGS_RELEASE": "-Os -DNDEBUG",
+                "CMAKE_C_FLAGS_RELWITHDEBINFO": "-g3 -Os -DNDEBUG",
+                "CMAKE_CXX_FLAGS_RELWITHDEBINFO": "-g3 -Os -DNDEBUG",
+                "CMAKE_DEFAULT_BUILD_TYPE": "RelWithDebInfo"
+            }
+        },
+        {
+            "name": "nucleo-g474re-threadx-clang",
+            "generator": "Ninja Multi-Config",
+            "displayName": "NUCLEO-G474RE ThreadX configuration (Clang)",
+            "description": "Configure for NUCLEO-G474RE platform with ThreadX using ARM Clang toolchain",
+            "inherits": "_config-base",
+            "toolchainFile": "${sourceDir}/cmake/toolchains/ArmNoneEabi-clang.cmake",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": {
+                "BUILD_EXECUTABLE": "referenceApp",
+                "BUILD_TARGET_PLATFORM": "NUCLEO_G474RE",
+                "BUILD_TARGET_RTOS": "THREADX",
+                "STM32_CHIP": "STM32G474RE",
+                "CMAKE_ASM_FLAGS_RELWITHDEBINFO": "-g3",
+                "CMAKE_CONFIGURATION_TYPES": "RelWithDebInfo;Debug;Release",
+                "CMAKE_C_FLAGS_RELEASE": "-Os -DNDEBUG",
+                "CMAKE_CXX_FLAGS_RELEASE": "-Os -DNDEBUG",
+                "CMAKE_C_FLAGS_RELWITHDEBINFO": "-g3 -Os -DNDEBUG",
+                "CMAKE_CXX_FLAGS_RELWITHDEBINFO": "-g3 -Os -DNDEBUG",
+                "CMAKE_DEFAULT_BUILD_TYPE": "RelWithDebInfo"
+            }
+        },
+        {
             "name": "nucleo-f413zh-freertos-gcc",
             "generator": "Ninja Multi-Config",
             "displayName": "NUCLEO-F413ZH FreeRTOS configuration (GCC)",
@@ -164,6 +208,50 @@
                 "CMAKE_CONFIGURATION_TYPES": "RelWithDebInfo;Debug;Release",
                 "CMAKE_C_FLAGS_RELWITHDEBINFO": "-g3 -O2 -DNDEBUG",
                 "CMAKE_CXX_FLAGS_RELWITHDEBINFO": "-g3 -O2 -DNDEBUG",
+                "CMAKE_DEFAULT_BUILD_TYPE": "RelWithDebInfo"
+            }
+        },
+        {
+            "name": "nucleo-f413zh-freertos-clang",
+            "generator": "Ninja Multi-Config",
+            "displayName": "NUCLEO-F413ZH FreeRTOS configuration (Clang)",
+            "description": "Configure for NUCLEO-F413ZH platform with FreeRTOS using ARM Clang toolchain",
+            "inherits": "_config-base",
+            "toolchainFile": "${sourceDir}/cmake/toolchains/ArmNoneEabi-clang.cmake",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": {
+                "BUILD_EXECUTABLE": "referenceApp",
+                "BUILD_TARGET_PLATFORM": "NUCLEO_F413ZH",
+                "BUILD_TARGET_RTOS": "FREERTOS",
+                "STM32_CHIP": "STM32F413ZH",
+                "CMAKE_ASM_FLAGS_RELWITHDEBINFO": "-g3",
+                "CMAKE_CONFIGURATION_TYPES": "RelWithDebInfo;Debug;Release",
+                "CMAKE_C_FLAGS_RELEASE": "-Os -DNDEBUG",
+                "CMAKE_CXX_FLAGS_RELEASE": "-Os -DNDEBUG",
+                "CMAKE_C_FLAGS_RELWITHDEBINFO": "-g3 -Os -DNDEBUG",
+                "CMAKE_CXX_FLAGS_RELWITHDEBINFO": "-g3 -Os -DNDEBUG",
+                "CMAKE_DEFAULT_BUILD_TYPE": "RelWithDebInfo"
+            }
+        },
+        {
+            "name": "nucleo-f413zh-threadx-clang",
+            "generator": "Ninja Multi-Config",
+            "displayName": "NUCLEO-F413ZH ThreadX configuration (Clang)",
+            "description": "Configure for NUCLEO-F413ZH platform with ThreadX using ARM Clang toolchain",
+            "inherits": "_config-base",
+            "toolchainFile": "${sourceDir}/cmake/toolchains/ArmNoneEabi-clang.cmake",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": {
+                "BUILD_EXECUTABLE": "referenceApp",
+                "BUILD_TARGET_PLATFORM": "NUCLEO_F413ZH",
+                "BUILD_TARGET_RTOS": "THREADX",
+                "STM32_CHIP": "STM32F413ZH",
+                "CMAKE_ASM_FLAGS_RELWITHDEBINFO": "-g3",
+                "CMAKE_CONFIGURATION_TYPES": "RelWithDebInfo;Debug;Release",
+                "CMAKE_C_FLAGS_RELEASE": "-Os -DNDEBUG",
+                "CMAKE_CXX_FLAGS_RELEASE": "-Os -DNDEBUG",
+                "CMAKE_C_FLAGS_RELWITHDEBINFO": "-g3 -Os -DNDEBUG",
+                "CMAKE_CXX_FLAGS_RELWITHDEBINFO": "-g3 -Os -DNDEBUG",
                 "CMAKE_DEFAULT_BUILD_TYPE": "RelWithDebInfo"
             }
         },
@@ -371,6 +459,30 @@
             "displayName": "NUCLEO-F413ZH ThreadX build (GCC)",
             "description": "Build reference application for NUCLEO-F413ZH platform with GCC",
             "configurePreset": "nucleo-f413zh-threadx-gcc"
+        },
+        {
+            "name": "nucleo-g474re-freertos-clang",
+            "displayName": "NUCLEO-G474RE FreeRTOS build (Clang)",
+            "description": "Build reference application for NUCLEO-G474RE platform with FreeRTOS and Clang",
+            "configurePreset": "nucleo-g474re-freertos-clang"
+        },
+        {
+            "name": "nucleo-g474re-threadx-clang",
+            "displayName": "NUCLEO-G474RE ThreadX build (Clang)",
+            "description": "Build reference application for NUCLEO-G474RE platform with ThreadX and Clang",
+            "configurePreset": "nucleo-g474re-threadx-clang"
+        },
+        {
+            "name": "nucleo-f413zh-freertos-clang",
+            "displayName": "NUCLEO-F413ZH FreeRTOS build (Clang)",
+            "description": "Build reference application for NUCLEO-F413ZH platform with FreeRTOS and Clang",
+            "configurePreset": "nucleo-f413zh-freertos-clang"
+        },
+        {
+            "name": "nucleo-f413zh-threadx-clang",
+            "displayName": "NUCLEO-F413ZH ThreadX build (Clang)",
+            "description": "Build reference application for NUCLEO-F413ZH platform with ThreadX and Clang",
+            "configurePreset": "nucleo-f413zh-threadx-clang"
         },
         {
             "name": "posix-freertos",

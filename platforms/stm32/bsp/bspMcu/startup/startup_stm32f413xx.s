@@ -29,6 +29,7 @@
 
   .section .text.Reset_Handler
   .weak Reset_Handler
+  .thumb_func
   .type Reset_Handler, %function
 Reset_Handler:
   ldr   sp, =_estack
@@ -82,6 +83,7 @@ LoopFillZerobss:
 .size Reset_Handler, .-Reset_Handler
 
   .section .text.Default_Handler,"ax",%progbits
+  .thumb_func
 Default_Handler:
 Infinite_Loop:
   b Infinite_Loop
@@ -429,6 +431,7 @@ g_pfnVectors:
   .thumb_set DFSDM2_FLT3_IRQHandler,Default_Handler
   .section .text.SystemInit,"ax",%progbits
   .weak SystemInit
+  .thumb_func
   .type SystemInit,%function
 SystemInit:
   bx lr

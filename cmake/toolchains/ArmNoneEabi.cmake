@@ -73,7 +73,7 @@ set(_EXE_LINKER_FLAGS
     -Wl,--gc-sections \
     -Wl,-Map,application.map,--cref")
 
-set(_ASM_FLAGS "-g -mcpu=cortex-m4")
+set(_ASM_FLAGS "-g -mcpu=cortex-m4 -x assembler-with-cpp")
 
 if (DEFINED CMAKE_CXX_FLAGS)
     # Check if our toolchain flags are already present

@@ -112,6 +112,8 @@ void CanSystem::dispatchRxTask() { ::async::execute(_context, _canRxRunnable); }
 
 void CanSystem::dispatchTxTask() { ::async::execute(_context, _canTxRunnable); }
 
+CanSystem::CanTxRunnable::CanTxRunnable([[maybe_unused]] CanSystem& parent) {}
+
 void CanSystem::CanTxRunnable::execute()
 {
     // Process TX completion in task context. The ISR dispatches here via

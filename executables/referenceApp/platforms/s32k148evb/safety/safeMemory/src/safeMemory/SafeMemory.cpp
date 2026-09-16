@@ -17,6 +17,9 @@
 #include <safeSupervisor/SafeSupervisor.h>
 #include <safeUtils/SafetyLogger.h>
 
+#include <cinttypes>
+#include <cstdio>
+
 namespace safety
 {
 using ::util::logger::Logger;
@@ -42,6 +45,12 @@ void cyclic()
     auto const hasFlashDoubleBitError = checkFlashDoubleBitError();
     if (hasRamDoubleBitError || hasFlashDoubleBitError)
     {
+        uint32_t const ramErrorAddress = hasRamDoubleBitError ? readErmMemoryErrorAddress() : 0U;
+        printf(
+            "SafeMemory: ECC error RAM=%u FLASH=%u address=0x%08" PRIx32 "\r\n",
+            static_cast<unsigned>(hasRamDoubleBitError),
+            static_cast<unsigned>(hasFlashDoubleBitError),
+            ramErrorAddress);
         if (hasRamDoubleBitError)
         {
             Logger::debug(SAFETY, "ECC_RAM_DOUBLE_BIT_ERROR");

@@ -15,6 +15,8 @@
 #include <reset/softwareSystemReset.h>
 #include <safeUtils/SafetyLogger.h>
 
+#include <cstdio>
+
 #ifdef PLATFORM_SUPPORT_IO
 #include <safeIo/SafeState.h>
 #endif
@@ -194,6 +196,10 @@ void SafeSupervisor::handle(Event const& event)
         }
     }
     enterLimpHome();
+    // The Logger calls above are asynchronous: the entries stay in the log buffer and are only
+    // written out by the idle task, which never runs again because of the reset below. Print the
+    // event synchronously (polled UART) as well, so that a safety reset is never silent.
+    printf("SafeSupervisor: fatal event %u, resetting\r\n", static_cast<unsigned>(event));
     // reset the MCU
     softwareSystemReset();
 }

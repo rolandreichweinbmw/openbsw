@@ -191,12 +191,15 @@ SECTIONS
   __DATA_ROM = .;
 
   /* MPU Protected Data Section (Hot Data in SRAM_L) */
+  /* NOTE: the archive:member patterns below must stay unquoted. GNU ld accepts both forms,
+     but ld.lld treats a quoted "*libsafe*:*" as a literal file name and silently matches
+     nothing, which would leave these MPU regions empty. */
   .mpu_data :
   {
     . = ALIGN(32);
     __MPU_DATA_START = .;
-    KEEP("*libsafe*:*"(.data))
-    KEEP("*libsafe*:*"(.data*))
+    KEEP(*libsafe*:*(.data))
+    KEEP(*libsafe*:*(.data*))
     . = ALIGN(32);
     __MPU_DATA_END = .;
   } > HotData
@@ -206,8 +209,8 @@ SECTIONS
   {
     . = ALIGN(32);
     __MPU_RODATA_START = .;
-    KEEP("*libsafe*:*"(.rodata))
-    KEEP("*libsafe*:*"(.rodata*))
+    KEEP(*libsafe*:*(.rodata))
+    KEEP(*libsafe*:*(.rodata*))
     . = ALIGN(32);
     __MPU_RODATA_END = .;
   } > HotData
@@ -217,8 +220,8 @@ SECTIONS
   {
     . = ALIGN(32);
     __MPU_BSS_START = .;
-    "*libsafe*:*"(.bss)
-    "*libsafe*:*"(.bss*)
+    *libsafe*:*(.bss)
+    *libsafe*:*(.bss*)
     . = ALIGN(32);
     __MPU_BSS_END = .;
   } > HotData

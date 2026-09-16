@@ -50,8 +50,11 @@ public:
     T& operator*() { return *reinterpret_cast<T*>(&_mem[0]); }
 
 private:
+    // NOTE: no member may require static initialization here. Safety objects live in the
+    // MPU protected .mpu_bss section, which has no load address, so pre-initialized data
+    // would never be copied from flash (clang folds self-referential initializers into
+    // .data, gcc emits a dynamic initializer instead).
     alignas(alignof(T)) uint8_t _mem[sizeof(T)];
-    T const* const _obj{reinterpret_cast<T*>(&_mem[0])}; // only for better debugging
 };
 } // namespace safety
 

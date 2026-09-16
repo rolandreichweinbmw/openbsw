@@ -22,7 +22,6 @@ cc_library(
         "include/charInputOutput/bspIoStd.h",
         "include/charInputOutput/charIo.h",
         "include/charInputOutput/charIoSerial.h",
-        "include/charInputOutput/printfPragma.hpp",
     ],
     strip_include_prefix = "include",
     visibility = ["//visibility:public"],

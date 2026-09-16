@@ -18,11 +18,15 @@ extern "C"
 #endif
 
 /**
- * Embedded version of printf() .
+ * Embedded version of printf(), retargeted to the BSP character output.
+ *
+ * This is a weak definition overriding the one of the C library, so an application may still
+ * provide its own strong implementation.
+ *
  * \return On success, the total number of characters written is returned.
- *          On failure, zero is returned.
+ *          On failure, a negative value is returned.
  */
-uint8_t debug_printf(char const* format, ...);
+int printf(char const* format, ...);
 
 #ifdef __cplusplus
 } /* extern "C" */

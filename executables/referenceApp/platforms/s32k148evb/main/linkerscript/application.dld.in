@@ -34,6 +34,9 @@ MEMORY
   NoInit                 (RW) : ORIGIN = SRAM_U_END + 1 - 0x400,  LENGTH = 0x400
 }
 
+/* First SRAM address covered by startup ECC initialization. */
+__ECC_RAM_START = ORIGIN(RAMFunctions);
+
 /* Output Sections */
 SECTIONS
 {

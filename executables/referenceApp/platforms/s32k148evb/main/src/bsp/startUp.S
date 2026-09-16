@@ -369,9 +369,9 @@ Reset_Handler:
 
     cpsie   i               /* Unmask interrupts */
 
-    /* Init ECC RAM */
+    /* Init ECC RAM before copying RAM functions and initialized data. */
 
-    ldr r1, =__DATA_RAM
+    ldr r1, =__ECC_RAM_START
     ldr r2, =__DATA_RAM_END
 
     subs    r2, r1
@@ -463,9 +463,9 @@ Reset_Handler:
 
     movs    r0, 0
 .LC2:
-    str r0, [r1, r2]
     subs    r2, 4
-    bge .LC2
+    str r0, [r1, r2]
+    bgt .LC2
 .LC3:
 
 /*
@@ -479,9 +479,9 @@ Reset_Handler:
 
     movs    r0, 0
 .LC6:
-    str r0, [r1, r2]
     subs    r2, 4
-    bge .LC6
+    str r0, [r1, r2]
+    bgt .LC6
 .LC7:
 
 #ifndef __START

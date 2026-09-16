@@ -29,7 +29,6 @@ export MY_CLANGXX=/home/rr/llvm-arm/bin/clang++
 
 fi
 
-if false ; then
 if [[ "$TARGET" = "" || "$TARGET" == "stm32" ]] ; then
 echo "Building STM32 NUCLEO ..."
 #CC=/home/rr/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-gcc \
@@ -39,7 +38,18 @@ CXX=$MY_CXX \
 cmake --preset nucleo-g474re-freertos-gcc -DCMAKE_CXX_STANDARD=$CPP_STANDARD
 cmake --build --preset nucleo-g474re-freertos-gcc --verbose -j $CORES
 fi
+
+if [[ "$TARGET" = "" || "$TARGET" == "stm32-clang" ]] ; then
+echo "Building STM32 NUCLEO clang ..."
+#CC=/home/rr/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-gcc \
+#CXX=/home/rr/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-g++
+CC=$MY_CLANG \
+CXX=$MY_CLANGXX \
+cmake --preset nucleo-g474re-freertos-clang -DCMAKE_CXX_STANDARD=$CPP_STANDARD
+cmake --build --preset nucleo-g474re-freertos-clang --verbose -j $CORES
 fi
+
+if [ -e platforms/rp2xxx ] ; then
 
 if [[ "$TARGET" = "" || "$TARGET" = "pi" ]] ; then
 # Pi Pico
@@ -103,6 +113,8 @@ CC=$MY_CLANG \
 CXX=$MY_CLANGXX \
 cmake --preset pico2-threadx-clang -DCMAKE_CXX_STANDARD=$CPP_STANDARD
 cmake --build --preset pico2-threadx-clang --verbose -j $CORES
+fi
+
 fi
 
 if [[ "$TARGET" = "" || "$TARGET" == "s32" ]] ; then
@@ -191,9 +203,11 @@ fi
 #fi
 
 if [[ "$TARGET" = "" || "$TARGET" = "bazel" ]] ; then
+# docker compose build development
+# docker compose run --rm development [...]
 bazel run //:format_check
 bazel query //...
-bazel build //...
+docker compose run --rm development bazel build //...
 #bazel build --config=s32k148 //...
 #bazel test //...
 fi

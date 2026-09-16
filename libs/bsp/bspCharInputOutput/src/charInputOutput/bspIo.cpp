@@ -88,19 +88,26 @@ void fctprintf_helper(char c, void* /* satisfy fctprintf outFunc reqs */)
     (void)__outedit(static_cast<int>(u_char), 0);
 }
 
-uint8_t debug_printf(char const* format, ...)
+/*
+ * Retarget the C library's printf() to the BSP character output.
+ *
+ * NOTE: do NOT use `#pragma weak printf = <impl>` for this. In C++ clang applies C++ name
+ * mangling to the pragma operand even inside an `extern "C"` block, so it emits a weak
+ * `_Z6printfPKcz` symbol instead of `printf`. The retargeting is then silently ineffective and
+ * printf() calls end up in the (unretargeted) C library implementation, producing no output.
+ * A weak definition with C linkage works for both gcc and clang.
+ */
+__attribute__((weak)) int printf(char const* format, ...)
 {
     va_list args;
     va_start(args, format);
-    (void)vfctprintf(&fctprintf_helper, nullptr, format, args);
+    auto const ret = vfctprintf(&fctprintf_helper, nullptr, format, args);
     va_end(args);
 
-    return 0;
+    return ret;
 }
 
 // NOLINTEND(cppcoreguidelines-pro-type-vararg)
-
-#include "charInputOutput/printfPragma.hpp"
 
 #ifdef __cplusplus
 } // extern "C"
